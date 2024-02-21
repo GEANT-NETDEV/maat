@@ -1,0 +1,52 @@
+# suppress inspection "UnusedProperty" for whole file
+mongo-host=$MONGO_HOST
+mongo-user=$MONGO_USER
+mongo-password=$MONGO_PASSWORD
+spring.config.active.on-profile=test
+spring.main.banner-mode=off
+logging.group.all=org.apache.catalina, org.apache.coyote, org.apache.tomcat, org.hibernate, org.springframework, \
+  com.intellij.rt.junit.JUnitStarter, org.mongodb, org.jboss
+logging.level.all=WARN
+
+api.resource.version=v4.0.0
+api.service.version=v4.0.0
+
+resource.protocol=$MAAT_RESOURCE_PROTOCOL
+resource.address=$MAAT_RESOURCE_ADDRESS
+resource.port=$MAAT_RESOURCE_PORT
+service.protocol=$MAAT_SERVICE_PROTOCOL
+service.address=$MAAT_SERVICE_ADDRESS
+service.port=$MAAT_SERVICE_PORT
+
+# SSL properties
+server.ssl.enabled=false
+server.ssl.key-store-type=PKCS12
+server.ssl.key-store=src/main/resources/spa-inventory3.p12
+server.ssl.key-store-password=thisisInventory3
+server.ssl.key-alias=spa-inventory3
+
+# Keycloak properties
+keycloak.enabled=false
+spring.security.oauth2.resourceserver.jwt.issuer-uri=http://keycloakhost:8090/realms/MaatRealm
+spring.security.oauth2.resourceserver.jwt.jwk-set-uri=${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
+
+token.converter.principal-attribute=preferred_username
+token.converter.resource-id=inv3
+
+#base=BaseResourceService, extended=ExtendedResourceService
+resourceService.type=extended
+resourceService.checkExistingResource=true
+
+#Description: true -> sending notifications to listeners active; false -> inactive
+notification.sendNotificationToListeners=true
+
+#base=BaseServiceService
+serviceService.type=base
+
+###Swagger UI ####
+openapi.dev-url=http://localhost:8080
+openapi.prod-url=https://maat:8080.com
+springdoc.swagger-ui.path=/
+
+validator.resource.schema=true
+validator.service.schema=true

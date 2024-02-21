@@ -1,0 +1,4 @@
+FROM nginx
+
+COPY ./tmf/* /var/www/share/
+COPY ./nginx_conf/file_share/nginx.conf /etc/nginx/

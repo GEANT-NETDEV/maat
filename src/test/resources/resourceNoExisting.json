@@ -1,0 +1,50 @@
+{
+  "id": "ff8081817eab4b88017eda0ce6d00b10",
+  "href": "https://83.97.93.171:8190/api/v2/logicalResource/ff8081817eab4b88017eda0ce6d00b10",
+  "name": "cesnet-ap1-expressroutes",
+  "description": "This is the logic port cesnet-ap1-expressroutes that belongs to domain/router gcs.geant.net:2019:topology-1-pra-cz",
+  "category": "stp",
+  "@type": "LogicalResource",
+  "@schemaLocation": "file://geant.org/spa/TMF639-ResourceInventory-v4.0.0-SPA_ext_v1.json",
+  "resourceRelationship": [
+    {
+      "relationshipType": "bref:testRelation",
+      "resource": {
+        "id": "11111111111111111111111111111111",
+        "href": "http://localhost:12345/api/v2/logicalResource/11111111111111111111111111111111"
+      },
+      "@schemaLocation": "http://geant.org/spa/TMF639-ResourceInventory-v4.0.0-SPA_ext_v1.json",
+      "@type": "ResourceRelationship"
+    }
+  ],
+  "resourceCharacteristic": [
+    {
+      "name": "type",
+      "value": "ethernet",
+      "@schemaLocation": "http://geant.org/spa/TMF639-ResourceInventory-v4.0.0-SPA_ext_v1.json",
+      "@type": "Characteristic"
+    },
+    {
+      "name": "bandwidth",
+      "value": "10000",
+      "@schemaLocation": "http://geant.org/spa/TMF639-ResourceInventory-v4.0.0-SPA_ext_v1.json",
+      "@type": "Characteristic"
+    },
+    {
+      "name": "securityCategory",
+      "value": "green",
+      "@schemaLocation": "http://geant.org/spa/TMF639-ResourceInventory-v4.0.0-SPA_ext_v1.json",
+      "@type": "SecurityCategoryCharacteristic"
+    }
+  ],
+  "relatedParty": [
+    {
+      "id": "10",
+      "href": "https://83.97.93.171:8080/API/customerManagement/customer/10",
+      "name": " Operations Centre",
+      "role": "customer",
+      "@schemaLocation": "http://geant.org/spa/TMF639-ResourceInventory-v4.0.0-SPA_ext_v1.json",
+      "@referredType": "relatedParty"
+    }
+  ]
+}

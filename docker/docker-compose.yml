@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  maat:
+    image: artifactory.software.geant.org/spa-docker/maat:0.1
+    hostname: $MAAT_HOST
+    ports:
+      - "8080:8080"
+    expose:
+      - "8080"
+    environment:
+      - MONGO_HOST=$MONGODB_HOST
+      - MONGO_USER=$MONGO_USER
+      - MONGO_PASSWORD=$MONGO_PASSWORD
+      - MAAT_RESOURCE_PROTOCOL=$MAAT_RESOURCE_PROTOCOL
+      - MAAT_RESOURCE_ADDRESS=$MAAT_RESOURCE_ADDRESS
+      - MAAT_RESOURCE_PORT=$MAAT_RESOURCE_PORT
+      - MAAT_SERVICE_PROTOCOL=$MAAT_SERVICE_PROTOCOL
+      - MAAT_SERVICE_ADDRESS=$MAAT_SERVICE_ADDRESS
+      - MAAT_SERVICE_PORT=$MAAT_SERVICE_PORT
+
+  mongodb:
+    image: mongo:latest
+    hostname: $MONGODB_HOST
+    ports:
+      - "27017:27017"
+    expose:
+      - "27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGO_USER
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD

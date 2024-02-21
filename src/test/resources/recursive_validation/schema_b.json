@@ -1,0 +1,31 @@
+{
+  "definitions": {
+    "B": {
+      "type": "object",
+      "description": "",
+      "required": [
+        "b",
+        "bb"
+      ],
+      "properties": {
+        "b": {
+          "type": "string",
+          "description": "Public name"
+        },
+        "bb": {
+          "type": "string",
+          "description": "Public name"
+        },
+        "@schemaLocation": {
+          "type": "string",
+          "format": "uri",
+          "description": "A URI to a JSON-Schema file that defines additional attributes and relationships"
+        },
+        "@type": {
+          "type": "string",
+          "description": "When sub-classing, this defines the sub-class Extensible name"
+        }
+      }
+    }
+  }
+}

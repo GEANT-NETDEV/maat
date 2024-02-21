@@ -1,0 +1,27 @@
+{
+  "name": "r-cesnet-ap1-expressroutes",
+  "description": "This is the logic port cesnet-ap1-expressroutes that belongs to domain/router gcs.geant.net:2019:topology-1-pra-cz",
+  "category": "sdp",
+  "@type": "LogicalResource",
+  "@schemaLocation": "https://box.psnc.pl/f/e67cfb174e/?dl=1",
+  "resourceCharacteristic": [
+    {
+      "name": "type",
+      "value": "txt"
+    },
+    {
+      "name": "code",
+      "value": "abc123"
+    }
+  ],
+  "resourceRelationship": [],
+  "relatedParty": [
+    {
+      "id": "10",
+      "href": "https://83.97.93.171:8080/API/customerManagement/customer/10",
+      "name": " Operations Centre",
+      "role": "customer",
+      "@referredType": "relatedParty"
+    }
+  ]
+}

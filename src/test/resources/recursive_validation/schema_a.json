@@ -1,0 +1,53 @@
+{
+  "definitions": {
+    "A": {
+      "type": "object",
+      "description": "",
+      "required": [
+        "aaa",
+        "bbb"
+      ],
+      "properties": {
+        "aaa": {
+          "type": "string",
+          "description": "Public name"
+        },
+        "bbb": {
+          "$ref": "#/definitions/B",
+          "description": "Naming domain"
+        },
+        "@schemaLocation": {
+          "type": "string",
+          "format": "uri",
+          "description": "A URI to a JSON-Schema file that defines additional attributes and relationships"
+        },
+        "@type": {
+          "type": "string",
+          "description": "When sub-classing, this defines the sub-class Extensible name"
+        }
+      }
+    },
+    "B": {
+      "type": "object",
+      "description": "",
+      "required": [
+        "b"
+      ],
+      "properties": {
+        "b": {
+          "type": "string",
+          "description": "Public name"
+        },
+        "@schemaLocation": {
+          "type": "string",
+          "format": "uri",
+          "description": "A URI to a JSON-Schema file that defines additional attributes and relationships"
+        },
+        "@type": {
+          "type": "string",
+          "description": "When sub-classing, this defines the sub-class Extensible name"
+        }
+      }
+    }
+  }
+}

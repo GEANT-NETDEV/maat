@@ -1,0 +1,61 @@
+version: '3'
+
+services:
+
+  maat:
+    image: artifactory.software.geant.org/spa-docker/maat:0.1
+    hostname: $MAAT_HOST
+    ports:
+      - "8080:8080"
+    environment:
+      - MONGO_HOST=$MONGODB_HOST
+      - MONGO_USER=$MONGO_USER
+      - MONGO_PASSWORD=$MONGO_PASSWORD
+      - MAAT_RESOURCE_PROTOCOL=$MAAT_RESOURCE_PROTOCOL
+      - MAAT_RESOURCE_ADDRESS=$MAAT_RESOURCE_ADDRESS
+      - MAAT_RESOURCE_PORT=$MAAT_RESOURCE_PORT
+      - MAAT_SERVICE_PROTOCOL=$MAAT_SERVICE_PROTOCOL
+      - MAAT_SERVICE_ADDRESS=$MAAT_SERVICE_ADDRESS
+      - MAAT_SERVICE_PORT=$MAAT_SERVICE_PORT
+
+  mongodb:
+    image: mongo:latest
+    hostname: $MONGODB_HOST
+    ports:
+      - "27017:27017"
+    expose:
+      - "27017"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGO_USER
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
+
+  eventListener:
+    image: artifactory.software.geant.org/spa-docker/eventlistener:0.5
+    hostname: $EVENT_LISTENER_HOST
+    ports:
+      - "8081:8081"
+    depends_on:
+      - maat
+    restart: on-failure
+    environment:
+      - MONGO_HOST=$MONGODB_EL_HOST
+      - MONGO_USER=$MONGO_EL_USER
+      - MONGO_PASSWORD=$MONGO_EL_PASSWORD
+      - MONGO_PORT=$MONGO_EL_PORT
+      - MONGO_TIMEOUT=$MONGO_EL_TIMEOUT
+      - AUTO_REGISTER=$AUTO_REGISTER
+      - MAAT_HOST=$MAAT_HOST
+      - MAAT_PORT=$MAAT_PORT
+      - EVENT_LISTENER_HOST=$EVENT_LISTENER_HOST
+      - EVENT_LISTENER_PORT=$EVENT_LISTENER_PORT
+
+  mongodb2:
+    image: mongo:latest
+    hostname: $MONGODB_EL_HOST
+    ports:
+      - "27022:27017"
+    expose:
+      - "27022"
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGO_EL_USER
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_EL_PASSWORD

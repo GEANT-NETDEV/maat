@@ -1,0 +1,84 @@
+{
+	"info": {
+		"_postman_id": "a7c283b6-9bc6-4a6a-9c32-159ad7f26de5",
+		"name": "Example_with_simple_schema",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24659957"
+	},
+	"item": [
+		{
+			"name": "GET_Resources",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{gp4l_url_resource}}",
+					"host": [
+						"{{gp4l_url_resource}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "GET_Services",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{gp4l_url_service}}",
+					"host": [
+						"{{gp4l_url_service}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST_Resource",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Resource1\",\r\n  \"location\": \"Poznan\",\r\n  \"@type\": \"Resource\",\r\n  \"note\":[\r\n    {\r\n      \"author\": \"Martin\",\r\n      \"date\": \"2024-01-23T00:00:00.000Z\",\r\n      \"text\": \"Example text\"\r\n    }\r\n  ],\r\n  \"@schemaLocation\": \"https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/ResourceInventory-example-1.json\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{gp4l_url_resource}}",
+					"host": [
+						"{{gp4l_url_resource}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "POST_Service",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"service1\",\r\n  \"@type\": \"Service\",\r\n  \"category\": \"protocol\",\r\n  \"description\": \"example description\",\r\n  \"note\":[\r\n    {\r\n      \"author\": \"Martin\",\r\n      \"date\": \"2024-01-23T00:00:00.000Z\",\r\n      \"text\": \"Example text\"\r\n    }\r\n  ],\r\n  \"@schemaLocation\": \"https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/ServiceInventory-example-1.json\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{gp4l_url_service}}",
+					"host": [
+						"{{gp4l_url_service}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

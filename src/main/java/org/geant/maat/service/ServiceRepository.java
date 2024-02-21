@@ -1,0 +1,30 @@
+package org.geant.maat.service;
+
+import org.geant.maat.infrastructure.DomainError;
+import com.fasterxml.jackson.databind.JsonNode;
+import io.vavr.control.Either;
+
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+public interface ServiceRepository {
+
+    Optional<Service> find(String id);
+
+    Either<DomainError, JsonNode> find(String id, Collection<String> propsToFilter);
+
+    Collection<JsonNode> findAll(List<String> fields, Map<String, String> filtering);
+
+    Either<DomainError, Service> save(Service service);
+
+    Either<DomainError, String> delete(String id);
+
+    Either<DomainError, JsonNode> update(String id, JsonNode updateJson);
+
+    void clean();
+
+    Collection<JsonNode> findAll(List<String> fields, Map<String, String> filtering, int offset, int limit);
+
+}

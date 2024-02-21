@@ -1,0 +1,11 @@
+{
+  "aaa": "aaa",
+  "@type": "A",
+  "@schemaLocation": "src/test/resources/recursive_validation/schema_a.json",
+  "bbb": {
+    "b": "b",
+    "bb": 123,
+    "@schemaLocation": "src/test/resources/recursive_validation/schema_b.json",
+    "@type": "B"
+  }
+}

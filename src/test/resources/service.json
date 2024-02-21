@@ -1,0 +1,95 @@
+{
+  "serviceType": "r-Cloud",
+  "name": "rom1 vCPE serial 1355615",
+  "description": "Instantiation of vCPE",
+  "state": "inactive",
+  "category": "CFS",
+  "serviceSpecification": {
+    "id": "1212",
+    "href": "https://mycsp.com:8080/tmf-api/serviceCatalogManagement/v4/serviceSpecification/1212",
+    "name": "vCPE",
+    "version": "1.0.0",
+    "@referredType": "ServiceSpecification"
+  },
+  "feature": [
+    {
+      "id": "Feat1",
+      "isEnabled": true,
+      "name": "ElasticBandwith",
+      "featureCharacteristic": [
+        {
+          "name": "isCapped",
+          "value": true,
+          "valueType": "boolean"
+        }
+      ]
+    }
+  ],
+  "serviceCharacteristic": [
+    {
+      "id": "452-gh6",
+      "name": "vCPE",
+      "valueType": "object",
+      "value": {
+        "@type": "JSONSpecification",
+        "@schemaLocation": "http://my.schemas/vCPE.schema.json",
+        "vCPE_IP": "193.218.236.21",
+        "MaxTxRate": 300,
+        "TransmitPower": "11 dBm",
+        "maxTream": "OFF"
+      }
+    },
+    {
+      "id": "452-gh6",
+      "name": "vCPE",
+      "valueType": "String",
+      "value": {}
+    }
+  ],
+  "serviceRelationship": [
+    {
+      "relationshipType": "DependentOn",
+      "service": {
+        "href": "https://mycsp.com:8080/tmf-api/serviceInventory/v4/service/5645",
+        "id": "5645",
+        "@type": "ServiceRef",
+        "@referredType": "Service"
+      }
+    }
+  ],
+  "supportingResource": [
+    {
+      "id": "7171",
+      "href": "https://mycsp.com:8080/tmf-api/resourceInventoryManagement/v4/resource/7171",
+      "name": "BNG_MUX",
+      "value": "01 25 65",
+      "@referredType": "VNF"
+    }
+  ],
+  "relatedParty": [
+    {
+      "href": "https://mycsp.com:8080/tmf-api/partyManagement/v4/party/456",
+      "id": "456",
+      "name": "Jean Pontus",
+      "role": "user",
+      "@referredType": "Individual"
+    }
+  ],
+  "note": [
+    {
+      "author": "Harvey Poupon",
+      "date": "2018-01-15T12:26:11.748Z",
+      "text": "This service was installed for a rock star."
+    }
+  ],
+  "supportingService": [
+    {
+      "href": "https://mycsp.com:8080/tmf-api/serviceInventory/v4/service/6500",
+      "id": "6503",
+      "@type": "ServiceRef",
+      "@referredType": "Service"
+    }
+  ],
+  "@type": "Service",
+  "@schemaLocation": "file:///C:/Users/Michal/Desktop/TMF638-ServiceInventory-v4-upaded-roman.json"
+}
