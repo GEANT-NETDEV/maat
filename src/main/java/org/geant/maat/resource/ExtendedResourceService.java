@@ -111,6 +111,10 @@ public class ExtendedResourceService implements ResourceService {
 
         for(JsonNode js : arrayWithBref){
             String category=mapResourcesExists.get(js.get("resource").get("href").textValue());
+            String category_js=js.get("relationshipType").textValue();
+            category_js=category_js.replaceFirst("bref:", "");
+            if (!category_js.equals(category))
+                return Either.left(new DomainError("The resource category specified in the query differs from its category in the database: href=" + js.get("resource").get("href").textValue() +", category in query="+ category_js +", category in database="+ category , Error.BAD_CATEGORY));
             ((ObjectNode) js).put("relationshipType", "bref:"+category);
         }
         ((ObjectNode) json).putArray("test").addAll(arrayNoBref).addAll(arrayWithBref);
@@ -312,9 +316,7 @@ public class ExtendedResourceService implements ResourceService {
             while(nodes.hasNext()) {
                 JsonNode next= nodes.next();
                 if(next.get("resource").get("href").textValue().equals(baseHref)){
-                    if(relationNames.contains(next.get("relationshipType").textValue())){
-                        nodes.remove();
-                    }
+                    nodes.remove();
                 }
             }
         }
