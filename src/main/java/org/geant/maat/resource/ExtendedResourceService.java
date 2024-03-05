@@ -117,7 +117,7 @@ public class ExtendedResourceService implements ResourceService {
                 return Either.left(new DomainError("The resource category specified in the query differs from its category in the database: href=" + js.get("resource").get("href").textValue() +", category in query="+ category_js +", category in database="+ category , Error.BAD_CATEGORY));
             ((ObjectNode) js).put("relationshipType", "bref:"+category);
         }
-        ((ObjectNode) json).putArray("test").addAll(arrayNoBref).addAll(arrayWithBref);
+        ((ObjectNode) json).putArray("relationshipType").addAll(arrayNoBref).addAll(arrayWithBref);
         if(Objects.requireNonNull(environment.getProperty("resourceService.checkExistingResource")).equalsIgnoreCase("true") && !resourcesNoExists.isEmpty()){
             ExtendedResourceLogger.info("Some relationships referenced by relationships do not exist:" +resourcesNoExists);
             return Either.left(new DomainError("Some relationships referenced by relationships do not exist: " + resourcesNoExists, Error.RESOURCE_MISSING));
