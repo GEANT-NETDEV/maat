@@ -40,3 +40,466 @@
   "id" : "2cf5631f-329e-45e0-9f62-af1132632d16",
   "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/2cf5631f-329e-45e0-9f62-af1132632d16"
 }
+2024-03-07T12:45:05.502+01:00  INFO 4424 --- [main] org.geant.maat.MaatApplication           : Starting MaatApplication using Java 18.0.2 with PID 4424 (C:\Praca\Projekt_Geant\03_2024_Maat\07032024_Maat_time\target\classes started by Marcin Siuda in C:\Praca\Projekt_Geant\03_2024_Maat\07032024_Maat_time)
+2024-03-07T12:45:05.507+01:00  INFO 4424 --- [main] org.geant.maat.MaatApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-03-07T12:45:13.862+01:00  INFO 4424 --- [main] org.geant.maat.MaatApplication           : Started MaatApplication in 9.199 seconds (process running for 10.186)
+2024-03-07T12:45:41.022+01:00  INFO 4424 --- [http-nio-8080-exec-1] org.geant.maat.service.ServiceService    : Creating service from json:
+{
+  "serviceType" : "r-Cloud",
+  "name" : "rom1 vCPE serial 1355615",
+  "description" : "Instantiation of vCPE",
+  "state" : "inactive",
+  "category" : "CFS",
+  "lastUpdateDate" : "2024-01-23T00:00:00.000Z",
+  "serviceSpecification" : {
+    "id" : "1212",
+    "href" : "https://mycsp.com:8080/tmf-api/serviceCatalogManagement/v4/serviceSpecification/1212",
+    "name" : "vCPE",
+    "version" : "1.0.0",
+    "@referredType" : "ServiceSpecification"
+  },
+  "feature" : [ {
+    "id" : "Feat1",
+    "isEnabled" : true,
+    "name" : "ElasticBandwith",
+    "featureCharacteristic" : [ {
+      "name" : "isCapped",
+      "value" : true,
+      "valueType" : "boolean"
+    } ]
+  } ],
+  "serviceCharacteristic" : [ {
+    "id" : "452-gh6",
+    "name" : "vCPE",
+    "valueType" : "object",
+    "value" : {
+      "@type" : "JSONSpecification",
+      "@schemaLocation" : "http://my.schemas/vCPE.schema.json",
+      "vCPE_IP" : "193.218.236.21",
+      "MaxTxRate" : 300,
+      "TransmitPower" : "11 dBm",
+      "maxTream" : "OFF"
+    }
+  }, {
+    "id" : "452-gh6",
+    "name" : "vCPE",
+    "valueType" : "String",
+    "value" : { }
+  } ],
+  "serviceRelationship" : [ {
+    "relationshipType" : "DependentOn",
+    "service" : {
+      "href" : "https://mycsp.com:8080/tmf-api/serviceInventory/v4/service/5645",
+      "id" : "5645",
+      "@type" : "ServiceRef",
+      "@referredType" : "Service"
+    }
+  } ],
+  "supportingResource" : [ {
+    "id" : "7171",
+    "href" : "https://mycsp.com:8080/tmf-api/resourceInventoryManagement/v4/resource/7171",
+    "name" : "BNG_MUX",
+    "value" : "01 25 65",
+    "@referredType" : "VNF"
+  } ],
+  "relatedParty" : [ {
+    "href" : "https://mycsp.com:8080/tmf-api/partyManagement/v4/party/456",
+    "id" : "456",
+    "name" : "Jean Pontus",
+    "role" : "user",
+    "@referredType" : "Individual"
+  } ],
+  "note" : [ {
+    "author" : "Harvey Poupon",
+    "date" : "2018-01-15T12:26:11.748Z",
+    "text" : "This service was installed for a rock star."
+  } ],
+  "supportingService" : [ {
+    "href" : "https://mycsp.com:8080/tmf-api/serviceInventory/v4/service/6500",
+    "id" : "6503",
+    "@type" : "ServiceRef",
+    "@referredType" : "Service"
+  } ],
+  "@type" : "Service",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json"
+}
+2024-03-07T12:45:41.842+01:00  INFO 4424 --- [http-nio-8080-exec-1] o.g.m.notification.NotificationService   : Found 2 listeners
+2024-03-07T12:45:41.925+01:00  INFO 4424 --- [http-nio-8080-exec-1] org.geant.maat.service.ServiceService    : Service created: 
+{
+  "serviceType" : "r-Cloud",
+  "name" : "rom1 vCPE serial 1355615",
+  "description" : "Instantiation of vCPE",
+  "state" : "inactive",
+  "category" : "CFS",
+  "lastUpdateDate" : "2024-01-23T00:00:00.000Z",
+  "serviceSpecification" : {
+    "id" : "1212",
+    "href" : "https://mycsp.com:8080/tmf-api/serviceCatalogManagement/v4/serviceSpecification/1212",
+    "name" : "vCPE",
+    "version" : "1.0.0",
+    "@referredType" : "ServiceSpecification"
+  },
+  "feature" : [ {
+    "id" : "Feat1",
+    "isEnabled" : true,
+    "name" : "ElasticBandwith",
+    "featureCharacteristic" : [ {
+      "name" : "isCapped",
+      "value" : true,
+      "valueType" : "boolean"
+    } ]
+  } ],
+  "serviceCharacteristic" : [ {
+    "id" : "452-gh6",
+    "name" : "vCPE",
+    "valueType" : "object",
+    "value" : {
+      "@type" : "JSONSpecification",
+      "@schemaLocation" : "http://my.schemas/vCPE.schema.json",
+      "vCPE_IP" : "193.218.236.21",
+      "MaxTxRate" : 300,
+      "TransmitPower" : "11 dBm",
+      "maxTream" : "OFF"
+    }
+  }, {
+    "id" : "452-gh6",
+    "name" : "vCPE",
+    "valueType" : "String",
+    "value" : { }
+  } ],
+  "serviceRelationship" : [ {
+    "relationshipType" : "DependentOn",
+    "service" : {
+      "href" : "https://mycsp.com:8080/tmf-api/serviceInventory/v4/service/5645",
+      "id" : "5645",
+      "@type" : "ServiceRef",
+      "@referredType" : "Service"
+    }
+  } ],
+  "supportingResource" : [ {
+    "id" : "7171",
+    "href" : "https://mycsp.com:8080/tmf-api/resourceInventoryManagement/v4/resource/7171",
+    "name" : "BNG_MUX",
+    "value" : "01 25 65",
+    "@referredType" : "VNF"
+  } ],
+  "relatedParty" : [ {
+    "href" : "https://mycsp.com:8080/tmf-api/partyManagement/v4/party/456",
+    "id" : "456",
+    "name" : "Jean Pontus",
+    "role" : "user",
+    "@referredType" : "Individual"
+  } ],
+  "note" : [ {
+    "author" : "Harvey Poupon",
+    "date" : "2018-01-15T12:26:11.748Z",
+    "text" : "This service was installed for a rock star."
+  } ],
+  "supportingService" : [ {
+    "href" : "https://mycsp.com:8080/tmf-api/serviceInventory/v4/service/6500",
+    "id" : "6503",
+    "@type" : "ServiceRef",
+    "@referredType" : "Service"
+  } ],
+  "@type" : "Service",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json",
+  "id" : "375a0fba-f82f-4801-9224-489abb0e7754",
+  "href" : "http://localhost:8080/serviceInventoryManagement/v4.0.0/service/375a0fba-f82f-4801-9224-489abb0e7754",
+  "serviceDate" : "2024-03-07T12:45:41.023841+01:00"
+}
+2024-03-07T12:55:52.540+01:00  INFO 22532 --- [main] org.geant.maat.MaatApplication           : Starting MaatApplication using Java 18.0.2 with PID 22532 (C:\Praca\Projekt_Geant\03_2024_Maat\07032024_Maat_time\target\classes started by Marcin Siuda in C:\Praca\Projekt_Geant\03_2024_Maat\07032024_Maat_time)
+2024-03-07T12:55:52.546+01:00  INFO 22532 --- [main] org.geant.maat.MaatApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-03-07T12:56:03.755+01:00  INFO 22532 --- [main] org.geant.maat.MaatApplication           : Started MaatApplication in 12.325 seconds (process running for 13.393)
+2024-03-07T12:56:53.418+01:00  INFO 22532 --- [http-nio-8080-exec-1] org.geant.maat.service.ServiceService    : Creating service from json:
+{
+  "@type" : "Service",
+  "category" : "protocol.bgp",
+  "name" : "name1",
+  "description" : "Description",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json"
+}
+2024-03-07T12:56:53.934+01:00  INFO 22532 --- [http-nio-8080-exec-1] org.geant.maat.service.ServiceService    : Could not create service, because: Validation error(s) :
+lastUpdateDate: Value '2024-03-07T11:56:53.418583800' does not match format 'date-time'. (code: 1007)
+From: lastUpdateDate.<format>
+
+2024-03-07T12:57:43.002+01:00  INFO 18640 --- [main] org.geant.maat.MaatApplication           : Starting MaatApplication using Java 18.0.2 with PID 18640 (C:\Praca\Projekt_Geant\03_2024_Maat\07032024_Maat_time\target\classes started by Marcin Siuda in C:\Praca\Projekt_Geant\03_2024_Maat\07032024_Maat_time)
+2024-03-07T12:57:43.011+01:00  INFO 18640 --- [main] org.geant.maat.MaatApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-03-07T12:57:51.308+01:00  INFO 18640 --- [main] org.geant.maat.MaatApplication           : Started MaatApplication in 9.569 seconds (process running for 10.416)
+2024-03-07T12:58:03.177+01:00  INFO 18640 --- [http-nio-8080-exec-1] org.geant.maat.service.ServiceService    : Creating service from json:
+{
+  "@type" : "Service",
+  "category" : "protocol.bgp",
+  "name" : "name1",
+  "description" : "Description",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json"
+}
+2024-03-07T12:58:03.785+01:00  INFO 18640 --- [http-nio-8080-exec-1] o.g.m.notification.NotificationService   : Found 2 listeners
+2024-03-07T12:58:03.846+01:00  INFO 18640 --- [http-nio-8080-exec-1] org.geant.maat.service.ServiceService    : Service created: 
+{
+  "@type" : "Service",
+  "category" : "protocol.bgp",
+  "name" : "name1",
+  "description" : "Description",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json",
+  "id" : "03bdbe65-edc2-4646-83c1-651e66881479",
+  "href" : "http://localhost:8080/serviceInventoryManagement/v4.0.0/service/03bdbe65-edc2-4646-83c1-651e66881479",
+  "serviceDate" : "2024-03-07T12:58:03.178047400+01:00",
+  "lastUpdateDate" : "2024-03-07T11:58:03.178047400Z"
+}
+2024-03-07T13:00:40.020+01:00  INFO 14764 --- [main] org.geant.maat.MaatApplication           : Starting MaatApplication using Java 18.0.2 with PID 14764 (C:\Praca\Projekt_Geant\03_2024_Maat\07032024_Maat_time\target\classes started by Marcin Siuda in C:\Praca\Projekt_Geant\03_2024_Maat\07032024_Maat_time)
+2024-03-07T13:00:40.026+01:00  INFO 14764 --- [main] org.geant.maat.MaatApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-03-07T13:00:48.261+01:00  INFO 14764 --- [main] org.geant.maat.MaatApplication           : Started MaatApplication in 9.046 seconds (process running for 9.791)
+2024-03-07T13:00:59.506+01:00  INFO 14764 --- [http-nio-8080-exec-2] org.geant.maat.service.ServiceService    : Creating service from json:
+{
+  "@type" : "Service",
+  "category" : "protocol.bgp",
+  "name" : "name1",
+  "description" : "Description",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json"
+}
+2024-03-07T13:01:00.077+01:00  INFO 14764 --- [http-nio-8080-exec-2] o.g.m.notification.NotificationService   : Found 2 listeners
+2024-03-07T13:01:00.148+01:00  INFO 14764 --- [http-nio-8080-exec-2] org.geant.maat.service.ServiceService    : Service created: 
+{
+  "@type" : "Service",
+  "category" : "protocol.bgp",
+  "name" : "name1",
+  "description" : "Description",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json",
+  "id" : "5a8a6a5e-a5f8-405a-b7a2-306d1a6eff76",
+  "href" : "http://localhost:8080/serviceInventoryManagement/v4.0.0/service/5a8a6a5e-a5f8-405a-b7a2-306d1a6eff76",
+  "serviceDate" : "2024-03-07T13:00:59.507301400+01:00",
+  "lastUpdateDate" : "2024-03-07T13:00:59.507301400+01:00"
+}
+2024-03-07T13:01:45.659+01:00  INFO 14764 --- [http-nio-8080-exec-3] org.geant.maat.service.ServiceService    : Getting services' fields [] matching filters {}
+2024-03-07T13:01:45.666+01:00  INFO 14764 --- [http-nio-8080-exec-3] org.geant.maat.service.ServiceService    : Found 8 services
+2024-03-07T13:04:56.422+01:00  INFO 27176 --- [main] org.geant.maat.MaatApplication           : Starting MaatApplication using Java 18.0.2 with PID 27176 (C:\Praca\Projekt_Geant\03_2024_Maat\07032024_Maat_time\target\classes started by Marcin Siuda in C:\Praca\Projekt_Geant\03_2024_Maat\07032024_Maat_time)
+2024-03-07T13:04:56.428+01:00  INFO 27176 --- [main] org.geant.maat.MaatApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-03-07T13:05:05.628+01:00  INFO 27176 --- [main] org.geant.maat.MaatApplication           : Started MaatApplication in 10.786 seconds (process running for 12.373)
+2024-03-07T13:05:09.088+01:00  INFO 27176 --- [http-nio-8080-exec-2] org.geant.maat.service.ServiceService    : Creating service from json:
+{
+  "@type" : "Service",
+  "category" : "protocol.bgp",
+  "name" : "name1",
+  "description" : "Description",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json"
+}
+2024-03-07T13:05:09.967+01:00  INFO 27176 --- [http-nio-8080-exec-2] o.g.m.notification.NotificationService   : Found 2 listeners
+2024-03-07T13:05:10.077+01:00  INFO 27176 --- [http-nio-8080-exec-2] org.geant.maat.service.ServiceService    : Service created: 
+{
+  "@type" : "Service",
+  "category" : "protocol.bgp",
+  "name" : "name1",
+  "description" : "Description",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json",
+  "id" : "20991c33-1403-469b-83ff-849c0155954a",
+  "href" : "http://localhost:8080/serviceInventoryManagement/v4.0.0/service/20991c33-1403-469b-83ff-849c0155954a",
+  "serviceDate" : "2024-03-07T13:05:09.089639400+01:00",
+  "lastUpdateDate" : "2024-03-07T12:05:09Z"
+}
+2024-03-07T13:05:57.783+01:00  INFO 22348 --- [main] org.geant.maat.MaatApplication           : Starting MaatApplication using Java 18.0.2 with PID 22348 (C:\Praca\Projekt_Geant\03_2024_Maat\07032024_Maat_time\target\classes started by Marcin Siuda in C:\Praca\Projekt_Geant\03_2024_Maat\07032024_Maat_time)
+2024-03-07T13:05:57.790+01:00  INFO 22348 --- [main] org.geant.maat.MaatApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-03-07T13:06:05.735+01:00  INFO 22348 --- [main] org.geant.maat.MaatApplication           : Started MaatApplication in 9.204 seconds (process running for 10.174)
+2024-03-07T13:06:09.811+01:00  INFO 22348 --- [http-nio-8080-exec-2] org.geant.maat.service.ServiceService    : Creating service from json:
+{
+  "@type" : "Service",
+  "category" : "protocol.bgp",
+  "name" : "name1",
+  "description" : "Description",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json"
+}
+2024-03-07T13:06:10.753+01:00  INFO 22348 --- [http-nio-8080-exec-2] o.g.m.notification.NotificationService   : Found 2 listeners
+2024-03-07T13:06:10.891+01:00  INFO 22348 --- [http-nio-8080-exec-2] org.geant.maat.service.ServiceService    : Service created: 
+{
+  "@type" : "Service",
+  "category" : "protocol.bgp",
+  "name" : "name1",
+  "description" : "Description",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json",
+  "id" : "5f4205d1-166c-4011-919d-cbb8054fee81",
+  "href" : "http://localhost:8080/serviceInventoryManagement/v4.0.0/service/5f4205d1-166c-4011-919d-cbb8054fee81",
+  "serviceDate" : "2024-03-07T13:06:09+01:00",
+  "lastUpdateDate" : "2024-03-07T12:06:09Z"
+}
+2024-03-07T13:09:22.513+01:00  INFO 22348 --- [http-nio-8080-exec-5] org.geant.maat.service.ServiceService    : Getting services' fields [] matching filters {}
+2024-03-07T13:09:22.520+01:00  INFO 22348 --- [http-nio-8080-exec-5] org.geant.maat.service.ServiceService    : Found 10 services
+2024-03-07T13:27:59.659+01:00  INFO 35196 --- [main] org.geant.maat.MaatApplication           : Starting MaatApplication using Java 18.0.2 with PID 35196 (C:\Praca\Projekt_Geant\03_2024_Maat\07032024_Maat_time\target\classes started by Marcin Siuda in C:\Praca\Projekt_Geant\03_2024_Maat\07032024_Maat_time)
+2024-03-07T13:27:59.667+01:00  INFO 35196 --- [main] org.geant.maat.MaatApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-03-07T13:28:10.734+01:00  INFO 35196 --- [main] org.geant.maat.MaatApplication           : Started MaatApplication in 12.875 seconds (process running for 14.318)
+2024-03-07T13:28:13.031+01:00  INFO 35196 --- [http-nio-8080-exec-2] org.geant.maat.service.ServiceService    : Getting services' fields [] matching filters {}
+2024-03-07T13:28:13.292+01:00  INFO 35196 --- [http-nio-8080-exec-2] org.geant.maat.service.ServiceService    : Found 10 services
+2024-03-07T13:28:21.144+01:00  INFO 35196 --- [http-nio-8080-exec-3] org.geant.maat.service.ServiceService    : Creating service from json:
+{
+  "@type" : "Service",
+  "category" : "protocol.bgp",
+  "name" : "name1",
+  "description" : "Description",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json"
+}
+2024-03-07T13:28:21.890+01:00  INFO 35196 --- [http-nio-8080-exec-3] o.g.m.notification.NotificationService   : Found 2 listeners
+2024-03-07T13:28:22.007+01:00  INFO 35196 --- [http-nio-8080-exec-3] org.geant.maat.service.ServiceService    : Service created: 
+{
+  "@type" : "Service",
+  "category" : "protocol.bgp",
+  "name" : "name1",
+  "description" : "Description",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json",
+  "id" : "d9b19829-15fb-47aa-b26d-be7ca570aab7",
+  "href" : "http://localhost:8080/serviceInventoryManagement/v4.0.0/service/d9b19829-15fb-47aa-b26d-be7ca570aab7",
+  "serviceDate" : "2024-03-07T13:28:21+01:00",
+  "lastUpdateDate" : "2024-03-07T13:28:21+01:00"
+}
+2024-03-07T13:52:47.697+01:00  INFO 30260 --- [main] org.geant.maat.MaatApplication           : Starting MaatApplication using Java 18.0.2 with PID 30260 (C:\Praca\Projekt_Geant\03_2024_Maat\07032024_Maat_time\target\classes started by Marcin Siuda in C:\Praca\Projekt_Geant\03_2024_Maat\07032024_Maat_time)
+2024-03-07T13:52:47.704+01:00  INFO 30260 --- [main] org.geant.maat.MaatApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-03-07T13:52:58.244+01:00  INFO 30260 --- [main] org.geant.maat.MaatApplication           : Started MaatApplication in 12.168 seconds (process running for 13.032)
+2024-03-07T13:53:05.491+01:00  INFO 30260 --- [http-nio-8080-exec-1] org.geant.maat.service.ServiceService    : Creating service from json:
+{
+  "@type" : "Service",
+  "category" : "protocol.bgp",
+  "name" : "name1",
+  "description" : "Description",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json"
+}
+2024-03-07T13:53:06.657+01:00  INFO 30260 --- [http-nio-8080-exec-1] o.g.m.notification.NotificationService   : Found 2 listeners
+2024-03-07T13:53:06.797+01:00  INFO 30260 --- [http-nio-8080-exec-1] org.geant.maat.service.ServiceService    : Service created: 
+{
+  "@type" : "Service",
+  "category" : "protocol.bgp",
+  "name" : "name1",
+  "description" : "Description",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json",
+  "id" : "87a65983-b245-406a-b76b-ad9d1f42db66",
+  "href" : "http://localhost:8080/serviceInventoryManagement/v4.0.0/service/87a65983-b245-406a-b76b-ad9d1f42db66",
+  "serviceDate" : "2024-03-07T12:53:05Z",
+  "lastUpdateDate" : "2024-03-07T12:53:05Z"
+}
+2024-03-07T14:07:14.817+01:00  INFO 1940 --- [main] org.geant.maat.MaatApplication           : Starting MaatApplication using Java 18.0.2 with PID 1940 (C:\Praca\Projekt_Geant\03_2024_Maat\07032024_Maat_time\target\classes started by Marcin Siuda in C:\Praca\Projekt_Geant\03_2024_Maat\07032024_Maat_time)
+2024-03-07T14:07:14.825+01:00  INFO 1940 --- [main] org.geant.maat.MaatApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-03-07T14:07:25.671+01:00  INFO 1940 --- [main] org.geant.maat.MaatApplication           : Started MaatApplication in 12.152 seconds (process running for 13.1)
+2024-03-07T14:07:28.968+01:00  INFO 1940 --- [http-nio-8080-exec-2] org.geant.maat.service.ServiceService    : Getting services' fields [] matching filters {}
+2024-03-07T14:07:29.275+01:00  INFO 1940 --- [http-nio-8080-exec-2] org.geant.maat.service.ServiceService    : Found 12 services
+2024-03-07T14:10:56.774+01:00  INFO 1940 --- [http-nio-8080-exec-5] org.geant.maat.service.ServiceService    : Updating service 87a65983-b245-406a-b76b-ad9d1f42db66, update json:
+{
+  "name" : "abc456"
+}
+2024-03-07T14:10:57.372+01:00  INFO 1940 --- [http-nio-8080-exec-5] org.geant.maat.service.ServiceService    : Service 87a65983-b245-406a-b76b-ad9d1f42db66 updated successfully
+{
+  "@type" : "Service",
+  "category" : "protocol.bgp",
+  "name" : "abc456",
+  "description" : "Description",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json",
+  "href" : "http://localhost:8080/serviceInventoryManagement/v4.0.0/service/87a65983-b245-406a-b76b-ad9d1f42db66",
+  "serviceDate" : "2024-03-07T12:53:05Z",
+  "lastUpdateDate" : "2024-03-07T13:10:56Z",
+  "id" : "87a65983-b245-406a-b76b-ad9d1f42db66"
+}
+2024-03-07T14:10:57.452+01:00  INFO 1940 --- [http-nio-8080-exec-5] o.g.m.notification.NotificationService   : Found 2 listeners
+2024-03-07T14:15:06.715+01:00  INFO 1940 --- [http-nio-8080-exec-8] org.geant.maat.service.ServiceService    : Updating service 87a65983-b245-406a-b76b-ad9d1f42db66, update json:
+{
+  "name" : "abc455"
+}
+2024-03-07T14:15:06.872+01:00  INFO 1940 --- [http-nio-8080-exec-8] org.geant.maat.service.ServiceService    : Service 87a65983-b245-406a-b76b-ad9d1f42db66 updated successfully
+{
+  "@type" : "Service",
+  "category" : "protocol.bgp",
+  "name" : "abc455",
+  "description" : "Description",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json",
+  "href" : "http://localhost:8080/serviceInventoryManagement/v4.0.0/service/87a65983-b245-406a-b76b-ad9d1f42db66",
+  "serviceDate" : "2024-03-07T12:53:05Z",
+  "lastUpdateDate" : "2024-03-07T13:15:06Z",
+  "id" : "87a65983-b245-406a-b76b-ad9d1f42db66"
+}
+2024-03-07T14:15:06.875+01:00  INFO 1940 --- [http-nio-8080-exec-8] o.g.m.notification.NotificationService   : Found 2 listeners
+2024-03-07T14:15:18.902+01:00  INFO 1940 --- [http-nio-8080-exec-9] o.geant.maat.resource.ResourceService    : Getting resource 87a65983-b245-406a-b76b-ad9d1f42db66, properties: []
+2024-03-07T14:15:18.948+01:00  INFO 1940 --- [http-nio-8080-exec-9] o.geant.maat.resource.ResourceService    : Getting 87a65983-b245-406a-b76b-ad9d1f42db66 failed: Resource not found
+2024-03-07T14:15:25.764+01:00  INFO 1940 --- [http-nio-8080-exec-10] org.geant.maat.service.ServiceService    : Getting service 87a65983-b245-406a-b76b-ad9d1f42db66, properties: []
+2024-03-07T14:15:25.768+01:00  INFO 1940 --- [http-nio-8080-exec-10] org.geant.maat.service.ServiceService    : Service 87a65983-b245-406a-b76b-ad9d1f42db66 found
+{
+  "@type" : "Service",
+  "category" : "protocol.bgp",
+  "name" : "abc455",
+  "description" : "Description",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json",
+  "href" : "http://localhost:8080/serviceInventoryManagement/v4.0.0/service/87a65983-b245-406a-b76b-ad9d1f42db66",
+  "serviceDate" : "2024-03-07T12:53:05Z",
+  "lastUpdateDate" : "2024-03-07T13:15:06Z",
+  "id" : "87a65983-b245-406a-b76b-ad9d1f42db66"
+}
+2024-03-07T14:15:57.592+01:00  INFO 1940 --- [http-nio-8080-exec-1] org.geant.maat.service.ServiceService    : Updating service 87a65983-b245-406a-b76b-ad9d1f42db66, update json:
+{
+  "lastUpdateDate" : "2024-03-07T13:15:01Z"
+}
+2024-03-07T14:15:57.593+01:00  INFO 1940 --- [http-nio-8080-exec-1] org.geant.maat.service.ServiceService    : Update of 87a65983-b245-406a-b76b-ad9d1f42db66 failed: Found forbidden props: [lastUpdateDate]
+2024-03-07T14:19:30.865+01:00  INFO 34868 --- [main] org.geant.maat.MaatApplication           : Starting MaatApplication using Java 18.0.2 with PID 34868 (C:\Praca\Projekt_Geant\03_2024_Maat\07032024_Maat_time\target\classes started by Marcin Siuda in C:\Praca\Projekt_Geant\03_2024_Maat\07032024_Maat_time)
+2024-03-07T14:19:30.870+01:00  INFO 34868 --- [main] org.geant.maat.MaatApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-03-07T14:19:39.888+01:00  INFO 34868 --- [main] org.geant.maat.MaatApplication           : Started MaatApplication in 10.13 seconds (process running for 11.127)
+2024-03-07T14:19:52.851+01:00  INFO 34868 --- [http-nio-8080-exec-2] o.geant.maat.resource.ResourceService    : Creating resource from json:
+{
+  "name" : "resource1",
+  "description" : "Resource's description",
+  "category" : "device",
+  "@type" : "PhysicalResource",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json"
+}
+2024-03-07T14:19:53.889+01:00  INFO 34868 --- [http-nio-8080-exec-2] o.g.m.notification.NotificationService   : Found 2 listeners
+2024-03-07T14:19:54.129+01:00  INFO 34868 --- [http-nio-8080-exec-2] o.geant.maat.resource.ResourceService    : Resource created: 
+{
+  "name" : "resource1",
+  "description" : "Resource's description",
+  "category" : "device",
+  "@type" : "PhysicalResource",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+  "id" : "e4f41d9b-7c5e-4539-b882-f57737fb90fe",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/e4f41d9b-7c5e-4539-b882-f57737fb90fe",
+  "startOperatingDate" : "2024-03-07T13:19:52Z",
+  "lastUpdateDate" : "2024-03-07T13:19:52Z"
+}
+2024-03-07T14:20:36.680+01:00  INFO 34868 --- [http-nio-8080-exec-3] o.geant.maat.resource.ResourceService    : Updating resource e4f41d9b-7c5e-4539-b882-f57737fb90fe, update json:
+{
+  "href" : "https://localhost:443/resourceInventoryManagement/v4.0.0/resource/bc7ea5ca-61a1-4ef8-a1ee-f5bc4ffdf6b4"
+}
+2024-03-07T14:20:36.681+01:00  INFO 34868 --- [http-nio-8080-exec-3] o.geant.maat.resource.ResourceService    : Getting resource with id e4f41d9b-7c5e-4539-b882-f57737fb90fe
+2024-03-07T14:20:36.688+01:00  INFO 34868 --- [http-nio-8080-exec-3] o.geant.maat.resource.ResourceService    : Resource found:
+{
+  "name" : "resource1",
+  "description" : "Resource's description",
+  "category" : "device",
+  "@type" : "PhysicalResource",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/e4f41d9b-7c5e-4539-b882-f57737fb90fe",
+  "startOperatingDate" : "2024-03-07T13:19:52Z",
+  "lastUpdateDate" : "2024-03-07T13:19:52Z",
+  "id" : "e4f41d9b-7c5e-4539-b882-f57737fb90fe"
+}
+2024-03-07T14:20:36.690+01:00  INFO 34868 --- [http-nio-8080-exec-3] o.geant.maat.resource.ResourceService    : Update of e4f41d9b-7c5e-4539-b882-f57737fb90fe failed: Found forbidden props: [href]
+2024-03-07T14:21:00.025+01:00  INFO 34868 --- [http-nio-8080-exec-4] o.geant.maat.resource.ResourceService    : Updating resource e4f41d9b-7c5e-4539-b882-f57737fb90fe, update json:
+{
+  "name" : "resource2"
+}
+2024-03-07T14:21:00.026+01:00  INFO 34868 --- [http-nio-8080-exec-4] o.geant.maat.resource.ResourceService    : Getting resource with id e4f41d9b-7c5e-4539-b882-f57737fb90fe
+2024-03-07T14:21:00.030+01:00  INFO 34868 --- [http-nio-8080-exec-4] o.geant.maat.resource.ResourceService    : Resource found:
+{
+  "name" : "resource1",
+  "description" : "Resource's description",
+  "category" : "device",
+  "@type" : "PhysicalResource",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/e4f41d9b-7c5e-4539-b882-f57737fb90fe",
+  "startOperatingDate" : "2024-03-07T13:19:52Z",
+  "lastUpdateDate" : "2024-03-07T13:19:52Z",
+  "id" : "e4f41d9b-7c5e-4539-b882-f57737fb90fe"
+}
+2024-03-07T14:21:00.124+01:00  INFO 34868 --- [http-nio-8080-exec-4] o.geant.maat.resource.ResourceService    : Resource e4f41d9b-7c5e-4539-b882-f57737fb90fe updated successfully
+{
+  "name" : "resource2",
+  "description" : "Resource's description",
+  "category" : "device",
+  "@type" : "PhysicalResource",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/e4f41d9b-7c5e-4539-b882-f57737fb90fe",
+  "startOperatingDate" : "2024-03-07T13:19:52Z",
+  "lastUpdateDate" : "2024-03-07T13:21:00Z",
+  "id" : "e4f41d9b-7c5e-4539-b882-f57737fb90fe"
+}
+2024-03-07T14:21:00.127+01:00  INFO 34868 --- [http-nio-8080-exec-4] o.g.m.notification.NotificationService   : Found 2 listeners

@@ -5,6 +5,8 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.vavr.control.Either;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -39,11 +41,14 @@ class ResourceUpdater {
             }
         });
 
+        String updateDate = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString();
+        resource.put("lastUpdateDate", updateDate);
+
         return validator.validate(resource).flatMap(jsonNode -> repository.update(id, jsonNode));
     }
 
     private Collection<String> listForbiddenProps(JsonNode json) {
-        var forbiddenProps = Arrays.asList("id", "href", "@schemaLocation", "@type");
+        var forbiddenProps = Arrays.asList("id", "href", "@schemaLocation", "@type", "startOperatingDate", "lastUpdateDate");
         var fieldNames = json.fieldNames();
         var result = new ArrayList<String>();
         while (fieldNames.hasNext()) {
