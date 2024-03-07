@@ -1,0 +1,42 @@
+2024-03-07T10:04:08.950+01:00  INFO 24948 --- [main] org.geant.maat.MaatApplication           : Starting MaatApplication using Java 18.0.2 with PID 24948 (C:\Praca\Projekt_Geant\02_2024_Inventory3\28022024_maat_update\target\classes started by Marcin Siuda in C:\Praca\Projekt_Geant\02_2024_Inventory3\28022024_maat_update)
+2024-03-07T10:04:08.965+01:00  INFO 24948 --- [main] org.geant.maat.MaatApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-03-07T10:04:13.585+01:00  INFO 24948 --- [main] org.geant.maat.MaatApplication           : Started MaatApplication in 5.279 seconds (process running for 5.891)
+2024-03-07T10:04:34.789+01:00  INFO 6276 --- [main] org.geant.maat.MaatApplication           : Starting MaatApplication using Java 18.0.2 with PID 6276 (C:\Praca\Projekt_Geant\02_2024_Inventory3\28022024_maat_update\target\classes started by Marcin Siuda in C:\Praca\Projekt_Geant\02_2024_Inventory3\28022024_maat_update)
+2024-03-07T10:04:34.793+01:00  INFO 6276 --- [main] org.geant.maat.MaatApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-03-07T10:04:38.922+01:00  INFO 6276 --- [main] org.geant.maat.MaatApplication           : Started MaatApplication in 4.696 seconds (process running for 5.124)
+2024-03-07T10:04:47.446+01:00  INFO 6276 --- [http-nio-8080-exec-2] o.geant.maat.resource.ResourceService    : Getting resources' fields [name, name,description, name,description,resourceRelationship.relationshipType,id] matching filters {name=abc123, resourceRelationship.relationshipType=refers}
+2024-03-07T10:04:59.366+01:00  INFO 6276 --- [http-nio-8080-exec-2] o.geant.maat.resource.ResourceService    : Found 0 resources
+2024-03-07T10:04:59.367+01:00  INFO 6276 --- [http-nio-8080-exec-2] o.geant.maat.resource.ResourceService    : Getting resources' fields [name, name,description, name,description,resourceRelationship.relationshipType,id] matching filters {name=abc123, resourceRelationship.relationshipType=refers} offset 1 limit 1
+2024-03-07T10:04:59.371+01:00  INFO 6276 --- [http-nio-8080-exec-2] o.geant.maat.resource.ResourceService    : Found 0 resources
+2024-03-07T10:05:05.818+01:00  INFO 6276 --- [http-nio-8080-exec-3] o.geant.maat.resource.ResourceService    : Getting resources' fields [] matching filters {}
+2024-03-07T10:05:05.838+01:00  INFO 6276 --- [http-nio-8080-exec-3] o.geant.maat.resource.ResourceService    : Found 1 resources
+2024-03-07T10:46:24.109+01:00  INFO 35492 --- [main] org.geant.maat.MaatApplication           : Starting MaatApplication using Java 18.0.2 with PID 35492 (C:\Praca\Projekt_Geant\02_2024_Inventory3\28022024_maat_update\target\classes started by Marcin Siuda in C:\Praca\Projekt_Geant\02_2024_Inventory3\28022024_maat_update)
+2024-03-07T10:46:24.113+01:00  INFO 35492 --- [main] org.geant.maat.MaatApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-03-07T10:46:29.344+01:00  INFO 35492 --- [main] org.geant.maat.MaatApplication           : Started MaatApplication in 5.996 seconds (process running for 6.541)
+2024-03-07T10:48:40.205+01:00  INFO 35492 --- [http-nio-8080-exec-2] o.geant.maat.resource.ResourceService    : Getting resources' fields [] matching filters {}
+2024-03-07T10:48:40.362+01:00  INFO 35492 --- [http-nio-8080-exec-2] o.geant.maat.resource.ResourceService    : Found 1 resources
+2024-03-07T10:50:40.839+01:00  INFO 35492 --- [http-nio-8080-exec-5] o.geant.maat.resource.ResourceService    : Creating resource from json:
+{
+  "name" : "name",
+  "value" : 123
+}
+2024-03-07T10:50:40.848+01:00  INFO 35492 --- [http-nio-8080-exec-5] o.geant.maat.resource.ResourceService    : Could not create resource, because: Schemed json need to have @schemaLocation property
+2024-03-07T10:52:00.574+01:00  INFO 35492 --- [http-nio-8080-exec-7] o.geant.maat.resource.ResourceService    : Creating resource from json:
+{
+  "name" : "resource1",
+  "description" : "Resource's description",
+  "category" : "device",
+  "@type" : "PhysicalResource",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json"
+}
+2024-03-07T10:52:01.239+01:00  INFO 35492 --- [http-nio-8080-exec-7] o.g.m.notification.NotificationService   : Found 2 listeners
+2024-03-07T10:52:01.276+01:00  INFO 35492 --- [http-nio-8080-exec-7] o.geant.maat.resource.ResourceService    : Resource created: 
+{
+  "name" : "resource1",
+  "description" : "Resource's description",
+  "category" : "device",
+  "@type" : "PhysicalResource",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+  "id" : "2cf5631f-329e-45e0-9f62-af1132632d16",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/2cf5631f-329e-45e0-9f62-af1132632d16"
+}
