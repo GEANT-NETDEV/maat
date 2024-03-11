@@ -137,6 +137,7 @@ Content of the file request_service.json
     "serviceType": "Link",
     "name": "name2",
     "description": "Service description",
+    "@type": "Service",
     "@schemaLocation": "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json"
 }
 ```
