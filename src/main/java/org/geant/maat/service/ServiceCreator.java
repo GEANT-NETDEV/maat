@@ -4,9 +4,13 @@ import org.geant.maat.infrastructure.DomainError;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.vavr.control.Either;
+
+import java.time.Instant;
 import java.time.OffsetDateTime;
 
 
+import java.time.ZoneOffset;
+import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
 public class ServiceCreator {
@@ -28,11 +32,12 @@ public class ServiceCreator {
     private JsonNode addMandatoryProperties(JsonNode json) {
         ObjectNode objectNode = json.deepCopy();
         String id = UUID.randomUUID().toString();
-        String serviceDate = OffsetDateTime.now().toString();
+        String date = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString();
 
         objectNode.put("id", id);
         objectNode.put("href", hrefBuilder.id(id));
-        objectNode.put("serviceDate", serviceDate);
+        objectNode.put("serviceDate", date);
+        objectNode.put("lastUpdateDate", date);
         return objectNode;
     }
 

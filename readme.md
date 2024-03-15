@@ -120,7 +120,7 @@ Content of the file request_resource.json
     "description": "Resource's description",
     "category": "link",
     "@type": "LogicalResource",
-    "@schemaLocation": "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-ext_20240121-1.json"
+    "@schemaLocation": "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json"
 }
 ```
 
@@ -137,7 +137,8 @@ Content of the file request_service.json
     "serviceType": "Link",
     "name": "name2",
     "description": "Service description",
-    "@schemaLocation": "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4.json"
+    "@type": "Service",
+    "@schemaLocation": "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json"
 }
 ```
 Attribute "@schemaLocation" must have the correct local path/url of schema file (see "Request Validation" section of this documentation).
@@ -247,8 +248,8 @@ Validation is performed using a schema that defines the appropriate attributes a
 
 Schema location for validation in the POST request is located in the @schemaLocation attribute. This attribute can contain public <b>[GitHub](https://github.com/GEANT-NETDEV/Inv3-schema)</b> address:
 
-- for resource validation: https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-ext_20240121-1.json
-- for service validation: https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4.json
+- for resource validation: https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json
+- for service validation: https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json
 
 or a file path
 
@@ -262,7 +263,7 @@ or a file path
 
 ### Non-TMF schema for validation
 The schema file does not have to follow the TMF standard. It can be simplified to address user requirements regarding data models. An example of simple schema files for resources and services can be found here:
-- for resource validation: https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/ResourceInventory-example-1.json
-- for service validation: https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/ServiceInventory-example-1.json
+- for resource validation: https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json
+- for service validation: https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json
 
 A Postman collection for testing requests with above schema files is available here: [Example_with_simple_schema.postman_collection.json](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat/browse/src/main/resources/Example_with_simple_schema.postman_collection.json)

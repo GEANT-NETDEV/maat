@@ -128,6 +128,11 @@ public class ExtendedResourceService implements ResourceService {
             ExtendedResourceLogger.info("Some resources referenced by relationships do not exist:" +resourcesNoExists);
             return Either.left(new DomainError("Some resources referenced by relationships do not exist: " + resourcesNoExists, Error.RESOURCE_MISSING));
         }
+
+        String date = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString();
+        ((ObjectNode) json).put("startOperatingDate", date);
+        ((ObjectNode) json).put("lastUpdateDate", date);
+
         var resource = creator.create(json).flatMap(resourceRepository::save);
 
         if (registerNewEventFlag) resource.peek(r -> notifications.registerNewEvent(new EventDto(EventType.ResourceCreateEvent, r.toJson())));
@@ -149,6 +154,7 @@ public class ExtendedResourceService implements ResourceService {
         ((ObjectNode) toJson).remove("href");
         ((ObjectNode) toJson).remove("id");
         ((ObjectNode) toJson).remove("category");
+        ((ObjectNode) toJson).remove("startOperatingDate");
         return toJson;
     }
 
@@ -350,6 +356,10 @@ public class ExtendedResourceService implements ResourceService {
     @Override
     public Either<DomainError, JsonNode> updateResource(String id, JsonNode updateJson, Boolean registerNewEventFlag) {
         ExtendedResourceLogger.infoJson(String.format("Updating resource %s, update json:", id), updateJson);
+
+        String updateDate = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString();
+        ((ObjectNode) updateJson).put("lastUpdateDate", updateDate);
+
         Resource baseResource=getResource(id).stream().findFirst().orElse(null);
         if(baseResource==null){
             return Either.left(new DomainError("Update failed. Resources not found: " + id, Error.RESOURCE_MISSING));
