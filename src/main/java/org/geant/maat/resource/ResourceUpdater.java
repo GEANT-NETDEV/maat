@@ -41,14 +41,11 @@ class ResourceUpdater {
             }
         });
 
-        String updateDate = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString();
-        resource.put("lastUpdateDate", updateDate);
-
         return validator.validate(resource).flatMap(jsonNode -> repository.update(id, jsonNode));
     }
 
     private Collection<String> listForbiddenProps(JsonNode json) {
-        var forbiddenProps = Arrays.asList("id", "href", "@schemaLocation", "@type", "startOperatingDate", "lastUpdateDate");
+        var forbiddenProps = Arrays.asList("id", "href", "@schemaLocation", "@type");
         var fieldNames = json.fieldNames();
         var result = new ArrayList<String>();
         while (fieldNames.hasNext()) {

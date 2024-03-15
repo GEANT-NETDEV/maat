@@ -28,12 +28,9 @@ class ResourceCreator {
     private JsonNode addMandatoryProperties(JsonNode json) {
         ObjectNode objectNode = json.deepCopy();
         String id = UUID.randomUUID().toString();
-        String date = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString();
 
         objectNode.put("id", id);
         objectNode.put("href", hrefBuilder.id(id));
-        objectNode.put("startOperatingDate", date);
-        objectNode.put("lastUpdateDate", date);
         return objectNode;
     }
 }
