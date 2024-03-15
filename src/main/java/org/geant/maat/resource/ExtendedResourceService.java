@@ -503,7 +503,12 @@ public class ExtendedResourceService implements ResourceService {
             return;
         }
 
-        JsonNode resourceRelationship=ifResourceExists.getProperty("resourceRelationship").orElse(null);
+        JsonNode resource = ifResourceExists.toJson();
+
+        String updateDate = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString();
+        ((ObjectNode) resource).put("lastUpdateDate", updateDate);
+
+        JsonNode resourceRelationship = resource.get("resourceRelationship");
 
         if(resourceRelationship!=null){
             Iterator<JsonNode> nodes = resourceRelationship.elements();
@@ -514,7 +519,7 @@ public class ExtendedResourceService implements ResourceService {
                 }
             }
         }
-        updater.update(ifResourceExists.getId(), deletePropertiesForbiddenToUpdate(ifResourceExists.toJson()));
+        updater.update(ifResourceExists.getId(), deletePropertiesForbiddenToUpdate(resource));
     }
 
 
