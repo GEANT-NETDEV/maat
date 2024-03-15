@@ -7,7 +7,8 @@ enum Error implements DomainErrorMapper {
     SCHEMA_ERROR,
     RESOURCE_MISSING,
     FORBIDDEN_PROPERTIES,
-    BAD_CATEGORY;
+    BAD_CATEGORY,
+    RELATIONSHIP_ERROR;
 
     public int toHttpStatus() {
         return switch (this) {
