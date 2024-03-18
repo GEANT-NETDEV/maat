@@ -1,0 +1,448 @@
+2024-03-18T11:08:10.698+01:00  INFO 7808 --- [main] org.geant.maat.MaatApplication           : Starting MaatApplication using Java 18.0.2 with PID 7808 (C:\Praca\Projekt_Geant\03_2024_Maat\18032024_NewImage\target\classes started by Marcin Siuda in C:\Praca\Projekt_Geant\03_2024_Maat\18032024_NewImage)
+2024-03-18T11:08:10.703+01:00  INFO 7808 --- [main] org.geant.maat.MaatApplication           : No active profile set, falling back to 1 default profile: "default"
+2024-03-18T11:08:16.368+01:00  INFO 7808 --- [main] org.geant.maat.MaatApplication           : Started MaatApplication in 6.405 seconds (process running for 7.23)
+2024-03-18T11:10:53.188+01:00  INFO 7808 --- [http-nio-8080-exec-2] o.geant.maat.resource.ResourceService    : Getting resources' fields [] matching filters {}
+2024-03-18T11:10:53.559+01:00  INFO 7808 --- [http-nio-8080-exec-2] o.geant.maat.resource.ResourceService    : Found 4 resources
+2024-03-18T11:11:44.986+01:00  INFO 7808 --- [http-nio-8080-exec-3] o.geant.maat.resource.ResourceService    : Deleting resource dfcee20b-6a45-4a9a-9d30-41a2f821630b
+2024-03-18T11:11:44.986+01:00  INFO 7808 --- [http-nio-8080-exec-3] o.geant.maat.resource.ResourceService    : Getting resource dfcee20b-6a45-4a9a-9d30-41a2f821630b, properties: []
+2024-03-18T11:11:45.012+01:00  INFO 7808 --- [http-nio-8080-exec-3] o.geant.maat.resource.ResourceService    : Resource dfcee20b-6a45-4a9a-9d30-41a2f821630b found
+{
+  "name" : "MX304",
+  "@type" : "Entity",
+  "category" : "model",
+  "description" : "MX304 Series",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+  "resourceRelationship" : [ {
+    "relationshipType" : "bref:vendor",
+    "resource" : {
+      "id" : "beb8cad5-ca59-4e56-9c7b-716d6b469962",
+      "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/beb8cad5-ca59-4e56-9c7b-716d6b469962"
+    },
+    "@type" : "ResourceRelationship"
+  } ],
+  "startOperatingDate" : "2024-03-15T14:14:03Z",
+  "lastUpdateDate" : "2024-03-15T14:14:03Z",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/dfcee20b-6a45-4a9a-9d30-41a2f821630b",
+  "id" : "dfcee20b-6a45-4a9a-9d30-41a2f821630b"
+}
+2024-03-18T11:11:45.060+01:00  INFO 7808 --- [http-nio-8080-exec-3] o.geant.maat.resource.ResourceService    : Resource dfcee20b-6a45-4a9a-9d30-41a2f821630b deleted
+{
+  "name" : "MX304",
+  "@type" : "Entity",
+  "category" : "model",
+  "description" : "MX304 Series",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+  "resourceRelationship" : [ {
+    "relationshipType" : "bref:vendor",
+    "resource" : {
+      "id" : "beb8cad5-ca59-4e56-9c7b-716d6b469962",
+      "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/beb8cad5-ca59-4e56-9c7b-716d6b469962"
+    },
+    "@type" : "ResourceRelationship"
+  } ],
+  "startOperatingDate" : "2024-03-15T14:14:03Z",
+  "lastUpdateDate" : "2024-03-15T14:14:03Z",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/dfcee20b-6a45-4a9a-9d30-41a2f821630b",
+  "id" : "dfcee20b-6a45-4a9a-9d30-41a2f821630b"
+}
+2024-03-18T11:11:45.184+01:00  INFO 7808 --- [http-nio-8080-exec-4] o.geant.maat.resource.ResourceService    : Getting resource beb8cad5-ca59-4e56-9c7b-716d6b469962, properties: []
+2024-03-18T11:11:45.191+01:00  INFO 7808 --- [http-nio-8080-exec-4] o.geant.maat.resource.ResourceService    : Resource beb8cad5-ca59-4e56-9c7b-716d6b469962 found
+{
+  "name" : "Juniper",
+  "@type" : "Entity",
+  "category" : "vendor",
+  "description" : "Juniper Inc.",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+  "startOperatingDate" : "2024-03-15T14:13:42Z",
+  "lastUpdateDate" : "2024-03-15T14:14:03Z",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/beb8cad5-ca59-4e56-9c7b-716d6b469962",
+  "resourceRelationship" : [ {
+    "relationshipType" : "ref:vendor",
+    "resource" : {
+      "id" : "dfcee20b-6a45-4a9a-9d30-41a2f821630b",
+      "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/dfcee20b-6a45-4a9a-9d30-41a2f821630b"
+    },
+    "@type" : "ResourceRelationship"
+  } ],
+  "id" : "beb8cad5-ca59-4e56-9c7b-716d6b469962"
+}
+2024-03-18T11:11:46.347+01:00  INFO 7808 --- [http-nio-8080-exec-3] o.g.m.notification.NotificationService   : Found 1 listeners
+2024-03-18T11:12:09.547+01:00  INFO 7808 --- [http-nio-8080-exec-6] o.geant.maat.resource.ResourceService    : Deleting resource beb8cad5-ca59-4e56-9c7b-716d6b469962
+2024-03-18T11:12:09.547+01:00  INFO 7808 --- [http-nio-8080-exec-6] o.geant.maat.resource.ResourceService    : Getting resource beb8cad5-ca59-4e56-9c7b-716d6b469962, properties: []
+2024-03-18T11:12:09.551+01:00  INFO 7808 --- [http-nio-8080-exec-6] o.geant.maat.resource.ResourceService    : Resource beb8cad5-ca59-4e56-9c7b-716d6b469962 found
+{
+  "name" : "Juniper",
+  "@type" : "Entity",
+  "category" : "vendor",
+  "description" : "Juniper Inc.",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+  "startOperatingDate" : "2024-03-15T14:13:42Z",
+  "lastUpdateDate" : "2024-03-18T10:11:45Z",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/beb8cad5-ca59-4e56-9c7b-716d6b469962",
+  "resourceRelationship" : [ ],
+  "id" : "beb8cad5-ca59-4e56-9c7b-716d6b469962"
+}
+2024-03-18T11:12:09.556+01:00  INFO 7808 --- [http-nio-8080-exec-6] o.geant.maat.resource.ResourceService    : Resource beb8cad5-ca59-4e56-9c7b-716d6b469962 deleted
+{
+  "name" : "Juniper",
+  "@type" : "Entity",
+  "category" : "vendor",
+  "description" : "Juniper Inc.",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+  "startOperatingDate" : "2024-03-15T14:13:42Z",
+  "lastUpdateDate" : "2024-03-18T10:11:45Z",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/beb8cad5-ca59-4e56-9c7b-716d6b469962",
+  "resourceRelationship" : [ ],
+  "id" : "beb8cad5-ca59-4e56-9c7b-716d6b469962"
+}
+2024-03-18T11:12:09.560+01:00  INFO 7808 --- [http-nio-8080-exec-6] o.g.m.notification.NotificationService   : Found 1 listeners
+2024-03-18T11:12:32.970+01:00  INFO 7808 --- [http-nio-8080-exec-7] o.geant.maat.resource.ResourceService    : Deleting resource 6224aec8-e771-4dad-927e-c51ef7b13aa6
+2024-03-18T11:12:32.971+01:00  INFO 7808 --- [http-nio-8080-exec-7] o.geant.maat.resource.ResourceService    : Getting resource 6224aec8-e771-4dad-927e-c51ef7b13aa6, properties: []
+2024-03-18T11:12:32.978+01:00  INFO 7808 --- [http-nio-8080-exec-7] o.geant.maat.resource.ResourceService    : Resource 6224aec8-e771-4dad-927e-c51ef7b13aa6 found
+{
+  "name" : "MX304",
+  "@type" : "Entity",
+  "category" : "model",
+  "description" : "MX304 Series",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+  "resourceRelationship" : [ {
+    "relationshipType" : "bref:vendor",
+    "resource" : {
+      "id" : "8ff9efbb-d570-4cb7-8ed5-e106feb8739a",
+      "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/8ff9efbb-d570-4cb7-8ed5-e106feb8739a"
+    },
+    "@type" : "ResourceRelationship"
+  } ],
+  "startOperatingDate" : "2024-03-15T13:24:14Z",
+  "lastUpdateDate" : "2024-03-15T13:24:14Z",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/6224aec8-e771-4dad-927e-c51ef7b13aa6",
+  "id" : "6224aec8-e771-4dad-927e-c51ef7b13aa6"
+}
+2024-03-18T11:12:32.990+01:00  INFO 7808 --- [http-nio-8080-exec-7] o.geant.maat.resource.ResourceService    : Resource 6224aec8-e771-4dad-927e-c51ef7b13aa6 deleted
+{
+  "name" : "MX304",
+  "@type" : "Entity",
+  "category" : "model",
+  "description" : "MX304 Series",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+  "resourceRelationship" : [ {
+    "relationshipType" : "bref:vendor",
+    "resource" : {
+      "id" : "8ff9efbb-d570-4cb7-8ed5-e106feb8739a",
+      "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/8ff9efbb-d570-4cb7-8ed5-e106feb8739a"
+    },
+    "@type" : "ResourceRelationship"
+  } ],
+  "startOperatingDate" : "2024-03-15T13:24:14Z",
+  "lastUpdateDate" : "2024-03-15T13:24:14Z",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/6224aec8-e771-4dad-927e-c51ef7b13aa6",
+  "id" : "6224aec8-e771-4dad-927e-c51ef7b13aa6"
+}
+2024-03-18T11:12:32.998+01:00  INFO 7808 --- [http-nio-8080-exec-8] o.geant.maat.resource.ResourceService    : Getting resource 8ff9efbb-d570-4cb7-8ed5-e106feb8739a, properties: []
+2024-03-18T11:12:33.007+01:00  INFO 7808 --- [http-nio-8080-exec-8] o.geant.maat.resource.ResourceService    : Resource 8ff9efbb-d570-4cb7-8ed5-e106feb8739a found
+{
+  "name" : "Juniper",
+  "@type" : "Entity",
+  "category" : "vendor",
+  "description" : "Juniper Inc.",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+  "startOperatingDate" : "2024-03-15T13:23:37Z",
+  "lastUpdateDate" : "2024-03-15T13:24:14Z",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/8ff9efbb-d570-4cb7-8ed5-e106feb8739a",
+  "resourceRelationship" : [ {
+    "relationshipType" : "ref:vendor",
+    "resource" : {
+      "id" : "6224aec8-e771-4dad-927e-c51ef7b13aa6",
+      "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/6224aec8-e771-4dad-927e-c51ef7b13aa6"
+    },
+    "@type" : "ResourceRelationship"
+  } ],
+  "id" : "8ff9efbb-d570-4cb7-8ed5-e106feb8739a"
+}
+2024-03-18T11:12:33.242+01:00  INFO 7808 --- [http-nio-8080-exec-7] o.g.m.notification.NotificationService   : Found 1 listeners
+2024-03-18T11:12:36.213+01:00  INFO 7808 --- [http-nio-8080-exec-9] o.geant.maat.resource.ResourceService    : Getting resources' fields [] matching filters {}
+2024-03-18T11:12:36.220+01:00  INFO 7808 --- [http-nio-8080-exec-9] o.geant.maat.resource.ResourceService    : Found 1 resources
+2024-03-18T11:12:47.142+01:00  INFO 7808 --- [http-nio-8080-exec-10] o.geant.maat.resource.ResourceService    : Deleting resource 8ff9efbb-d570-4cb7-8ed5-e106feb8739a
+2024-03-18T11:12:47.143+01:00  INFO 7808 --- [http-nio-8080-exec-10] o.geant.maat.resource.ResourceService    : Getting resource 8ff9efbb-d570-4cb7-8ed5-e106feb8739a, properties: []
+2024-03-18T11:12:47.146+01:00  INFO 7808 --- [http-nio-8080-exec-10] o.geant.maat.resource.ResourceService    : Resource 8ff9efbb-d570-4cb7-8ed5-e106feb8739a found
+{
+  "name" : "Juniper",
+  "@type" : "Entity",
+  "category" : "vendor",
+  "description" : "Juniper Inc.",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+  "startOperatingDate" : "2024-03-15T13:23:37Z",
+  "lastUpdateDate" : "2024-03-18T10:12:33Z",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/8ff9efbb-d570-4cb7-8ed5-e106feb8739a",
+  "resourceRelationship" : [ ],
+  "id" : "8ff9efbb-d570-4cb7-8ed5-e106feb8739a"
+}
+2024-03-18T11:12:47.153+01:00  INFO 7808 --- [http-nio-8080-exec-10] o.geant.maat.resource.ResourceService    : Resource 8ff9efbb-d570-4cb7-8ed5-e106feb8739a deleted
+{
+  "name" : "Juniper",
+  "@type" : "Entity",
+  "category" : "vendor",
+  "description" : "Juniper Inc.",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+  "startOperatingDate" : "2024-03-15T13:23:37Z",
+  "lastUpdateDate" : "2024-03-18T10:12:33Z",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/8ff9efbb-d570-4cb7-8ed5-e106feb8739a",
+  "resourceRelationship" : [ ],
+  "id" : "8ff9efbb-d570-4cb7-8ed5-e106feb8739a"
+}
+2024-03-18T11:12:47.156+01:00  INFO 7808 --- [http-nio-8080-exec-10] o.g.m.notification.NotificationService   : Found 1 listeners
+2024-03-18T11:12:50.991+01:00  INFO 7808 --- [http-nio-8080-exec-1] o.geant.maat.resource.ResourceService    : Getting resources' fields [] matching filters {}
+2024-03-18T11:12:50.998+01:00  INFO 7808 --- [http-nio-8080-exec-1] o.geant.maat.resource.ResourceService    : Found 0 resources
+2024-03-18T11:13:38.890+01:00  INFO 7808 --- [http-nio-8080-exec-4] o.geant.maat.resource.ResourceService    : Creating resource from json:
+{
+  "name" : "Juniper",
+  "@type" : "Entity",
+  "category" : "vendor",
+  "description" : "Juniper Inc.",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4.json"
+}
+2024-03-18T11:13:39.364+01:00  INFO 7808 --- [http-nio-8080-exec-4] o.geant.maat.resource.ResourceService    : Could not create resource, because: Definition for resource type 'Entity' is missing
+2024-03-18T11:13:49.208+01:00  INFO 7808 --- [http-nio-8080-exec-5] o.geant.maat.resource.ResourceService    : Creating resource from json:
+{
+  "name" : "Juniper",
+  "@type" : "Entity",
+  "category" : "vendor",
+  "description" : "Juniper Inc.",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json"
+}
+2024-03-18T11:13:49.416+01:00  INFO 7808 --- [http-nio-8080-exec-5] o.g.m.notification.NotificationService   : Found 1 listeners
+2024-03-18T11:13:49.422+01:00  INFO 7808 --- [http-nio-8080-exec-5] o.geant.maat.resource.ResourceService    : Resource created: 
+{
+  "name" : "Juniper",
+  "@type" : "Entity",
+  "category" : "vendor",
+  "description" : "Juniper Inc.",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+  "resourceRelationship" : [ ],
+  "startOperatingDate" : "2024-03-18T10:13:49Z",
+  "lastUpdateDate" : "2024-03-18T10:13:49Z",
+  "id" : "c216b02d-ab84-4576-8318-b491a1011d1d",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/c216b02d-ab84-4576-8318-b491a1011d1d"
+}
+2024-03-18T11:15:40.175+01:00  INFO 7808 --- [http-nio-8080-exec-7] o.geant.maat.resource.ResourceService    : Getting resources' fields [] matching filters {}
+2024-03-18T11:15:40.182+01:00  INFO 7808 --- [http-nio-8080-exec-7] o.geant.maat.resource.ResourceService    : Found 1 resources
+2024-03-18T11:21:10.661+01:00  INFO 7808 --- [http-nio-8080-exec-1] o.geant.maat.resource.ResourceService    : Creating resource from json:
+{
+  "name" : "MX304",
+  "@type" : "Entity",
+  "category" : "model",
+  "description" : "MX304 Series",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4.json",
+  "resourceRelationship" : [ {
+    "relationshipType" : "bref:vendor",
+    "resource" : {
+      "id" : "c216b02d-ab84-4576-8318-b491a1011d1d",
+      "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/c216b02d-ab84-4576-8318-b491a1011d1d"
+    },
+    "@type" : "ResourceRelationship"
+  } ]
+}
+2024-03-18T11:21:10.679+01:00  INFO 7808 --- [http-nio-8080-exec-2] o.geant.maat.resource.ResourceService    : Getting resource c216b02d-ab84-4576-8318-b491a1011d1d, properties: []
+2024-03-18T11:21:10.685+01:00  INFO 7808 --- [http-nio-8080-exec-2] o.geant.maat.resource.ResourceService    : Resource c216b02d-ab84-4576-8318-b491a1011d1d found
+{
+  "name" : "Juniper",
+  "@type" : "Entity",
+  "category" : "vendor",
+  "description" : "Juniper Inc.",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+  "resourceRelationship" : [ ],
+  "startOperatingDate" : "2024-03-18T10:13:49Z",
+  "lastUpdateDate" : "2024-03-18T10:13:49Z",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/c216b02d-ab84-4576-8318-b491a1011d1d",
+  "id" : "c216b02d-ab84-4576-8318-b491a1011d1d"
+}
+2024-03-18T11:21:11.036+01:00  INFO 7808 --- [http-nio-8080-exec-1] o.geant.maat.resource.ResourceService    : Could not create resource, because: Definition for resource type 'Entity' is missing
+2024-03-18T11:21:25.658+01:00  INFO 7808 --- [http-nio-8080-exec-3] o.geant.maat.resource.ResourceService    : Creating resource from json:
+{
+  "name" : "MX304",
+  "@type" : "LogicalResource",
+  "category" : "model",
+  "description" : "MX304 Series",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4.json",
+  "resourceRelationship" : [ {
+    "relationshipType" : "bref:vendor",
+    "resource" : {
+      "id" : "c216b02d-ab84-4576-8318-b491a1011d1d",
+      "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/c216b02d-ab84-4576-8318-b491a1011d1d"
+    },
+    "@type" : "ResourceRelationship"
+  } ]
+}
+2024-03-18T11:21:25.665+01:00  INFO 7808 --- [http-nio-8080-exec-5] o.geant.maat.resource.ResourceService    : Getting resource c216b02d-ab84-4576-8318-b491a1011d1d, properties: []
+2024-03-18T11:21:25.669+01:00  INFO 7808 --- [http-nio-8080-exec-5] o.geant.maat.resource.ResourceService    : Resource c216b02d-ab84-4576-8318-b491a1011d1d found
+{
+  "name" : "Juniper",
+  "@type" : "Entity",
+  "category" : "vendor",
+  "description" : "Juniper Inc.",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+  "resourceRelationship" : [ ],
+  "startOperatingDate" : "2024-03-18T10:13:49Z",
+  "lastUpdateDate" : "2024-03-18T10:13:49Z",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/c216b02d-ab84-4576-8318-b491a1011d1d",
+  "id" : "c216b02d-ab84-4576-8318-b491a1011d1d"
+}
+2024-03-18T11:21:25.926+01:00  INFO 7808 --- [http-nio-8080-exec-3] o.g.m.notification.NotificationService   : Found 1 listeners
+2024-03-18T11:21:25.932+01:00  INFO 7808 --- [http-nio-8080-exec-3] o.geant.maat.resource.ResourceService    : Resource created: 
+{
+  "name" : "MX304",
+  "@type" : "LogicalResource",
+  "category" : "model",
+  "description" : "MX304 Series",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4.json",
+  "resourceRelationship" : [ {
+    "relationshipType" : "bref:vendor",
+    "resource" : {
+      "id" : "c216b02d-ab84-4576-8318-b491a1011d1d",
+      "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/c216b02d-ab84-4576-8318-b491a1011d1d"
+    },
+    "@type" : "ResourceRelationship"
+  } ],
+  "startOperatingDate" : "2024-03-18T10:21:25Z",
+  "lastUpdateDate" : "2024-03-18T10:21:25Z",
+  "id" : "f313df4f-1e43-4677-b194-36f9a0ad69e2",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/f313df4f-1e43-4677-b194-36f9a0ad69e2"
+}
+2024-03-18T11:21:25.943+01:00  INFO 7808 --- [http-nio-8080-exec-6] o.geant.maat.resource.ResourceService    : Getting resource c216b02d-ab84-4576-8318-b491a1011d1d, properties: []
+2024-03-18T11:21:25.950+01:00  INFO 7808 --- [http-nio-8080-exec-6] o.geant.maat.resource.ResourceService    : Resource c216b02d-ab84-4576-8318-b491a1011d1d found
+{
+  "name" : "Juniper",
+  "@type" : "Entity",
+  "category" : "vendor",
+  "description" : "Juniper Inc.",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+  "resourceRelationship" : [ ],
+  "startOperatingDate" : "2024-03-18T10:13:49Z",
+  "lastUpdateDate" : "2024-03-18T10:13:49Z",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/c216b02d-ab84-4576-8318-b491a1011d1d",
+  "id" : "c216b02d-ab84-4576-8318-b491a1011d1d"
+}
+2024-03-18T11:21:32.326+01:00  INFO 7808 --- [http-nio-8080-exec-10] o.geant.maat.resource.ResourceService    : Getting resources' fields [] matching filters {}
+2024-03-18T11:21:32.331+01:00  INFO 7808 --- [http-nio-8080-exec-10] o.geant.maat.resource.ResourceService    : Found 2 resources
+2024-03-18T11:22:22.654+01:00  INFO 7808 --- [http-nio-8080-exec-2] o.geant.maat.resource.ResourceService    : Deleting resource c216b02d-ab84-4576-8318-b491a1011d1d
+2024-03-18T11:22:22.655+01:00  INFO 7808 --- [http-nio-8080-exec-2] o.geant.maat.resource.ResourceService    : Getting resource c216b02d-ab84-4576-8318-b491a1011d1d, properties: []
+2024-03-18T11:22:22.663+01:00  INFO 7808 --- [http-nio-8080-exec-2] o.geant.maat.resource.ResourceService    : Resource c216b02d-ab84-4576-8318-b491a1011d1d found
+{
+  "name" : "Juniper",
+  "@type" : "Entity",
+  "category" : "vendor",
+  "description" : "Juniper Inc.",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+  "resourceRelationship" : [ {
+    "relationshipType" : "ref:model",
+    "resource" : {
+      "id" : "f313df4f-1e43-4677-b194-36f9a0ad69e2",
+      "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/f313df4f-1e43-4677-b194-36f9a0ad69e2"
+    },
+    "@type" : "ResourceRelationship"
+  } ],
+  "startOperatingDate" : "2024-03-18T10:13:49Z",
+  "lastUpdateDate" : "2024-03-18T10:21:25Z",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/c216b02d-ab84-4576-8318-b491a1011d1d",
+  "id" : "c216b02d-ab84-4576-8318-b491a1011d1d"
+}
+2024-03-18T11:22:22.679+01:00  INFO 7808 --- [http-nio-8080-exec-2] o.geant.maat.resource.ResourceService    : Resource c216b02d-ab84-4576-8318-b491a1011d1d deleted
+{
+  "name" : "Juniper",
+  "@type" : "Entity",
+  "category" : "vendor",
+  "description" : "Juniper Inc.",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+  "resourceRelationship" : [ {
+    "relationshipType" : "ref:model",
+    "resource" : {
+      "id" : "f313df4f-1e43-4677-b194-36f9a0ad69e2",
+      "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/f313df4f-1e43-4677-b194-36f9a0ad69e2"
+    },
+    "@type" : "ResourceRelationship"
+  } ],
+  "startOperatingDate" : "2024-03-18T10:13:49Z",
+  "lastUpdateDate" : "2024-03-18T10:21:25Z",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/c216b02d-ab84-4576-8318-b491a1011d1d",
+  "id" : "c216b02d-ab84-4576-8318-b491a1011d1d"
+}
+2024-03-18T11:22:22.692+01:00  INFO 7808 --- [http-nio-8080-exec-1] o.geant.maat.resource.ResourceService    : Getting resource f313df4f-1e43-4677-b194-36f9a0ad69e2, properties: []
+2024-03-18T11:22:22.703+01:00  INFO 7808 --- [http-nio-8080-exec-1] o.geant.maat.resource.ResourceService    : Resource f313df4f-1e43-4677-b194-36f9a0ad69e2 found
+{
+  "name" : "MX304",
+  "@type" : "LogicalResource",
+  "category" : "model",
+  "description" : "MX304 Series",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4.json",
+  "resourceRelationship" : [ {
+    "relationshipType" : "bref:vendor",
+    "resource" : {
+      "id" : "c216b02d-ab84-4576-8318-b491a1011d1d",
+      "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/c216b02d-ab84-4576-8318-b491a1011d1d"
+    },
+    "@type" : "ResourceRelationship"
+  } ],
+  "startOperatingDate" : "2024-03-18T10:21:25Z",
+  "lastUpdateDate" : "2024-03-18T10:21:25Z",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/f313df4f-1e43-4677-b194-36f9a0ad69e2",
+  "id" : "f313df4f-1e43-4677-b194-36f9a0ad69e2"
+}
+2024-03-18T11:22:22.912+01:00  INFO 7808 --- [http-nio-8080-exec-2] o.g.m.notification.NotificationService   : Found 1 listeners
+2024-03-18T11:22:27.217+01:00  INFO 7808 --- [http-nio-8080-exec-4] o.geant.maat.resource.ResourceService    : Getting resources' fields [] matching filters {}
+2024-03-18T11:22:27.223+01:00  INFO 7808 --- [http-nio-8080-exec-4] o.geant.maat.resource.ResourceService    : Found 1 resources
+2024-03-18T11:22:55.108+01:00  INFO 7808 --- [http-nio-8080-exec-5] o.geant.maat.resource.ResourceService    : Updating resource f313df4f-1e43-4677-b194-36f9a0ad69e2, update json:
+{
+  "name" : "testJuniper"
+}
+2024-03-18T11:22:55.110+01:00  INFO 7808 --- [http-nio-8080-exec-5] o.geant.maat.resource.ResourceService    : Getting resource with id f313df4f-1e43-4677-b194-36f9a0ad69e2
+2024-03-18T11:22:55.116+01:00  INFO 7808 --- [http-nio-8080-exec-5] o.geant.maat.resource.ResourceService    : Resource found:
+{
+  "name" : "MX304",
+  "@type" : "LogicalResource",
+  "category" : "model",
+  "description" : "MX304 Series",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4.json",
+  "resourceRelationship" : [ ],
+  "startOperatingDate" : "2024-03-18T10:21:25Z",
+  "lastUpdateDate" : "2024-03-18T10:22:22Z",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/f313df4f-1e43-4677-b194-36f9a0ad69e2",
+  "id" : "f313df4f-1e43-4677-b194-36f9a0ad69e2"
+}
+2024-03-18T11:22:55.369+01:00  INFO 7808 --- [http-nio-8080-exec-5] o.geant.maat.resource.ResourceService    : Resource f313df4f-1e43-4677-b194-36f9a0ad69e2 updated successfully
+{
+  "name" : "testJuniper",
+  "@type" : "LogicalResource",
+  "category" : "model",
+  "description" : "MX304 Series",
+  "resourceVersion" : "v1",
+  "@schemaLocation" : "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4.json",
+  "resourceRelationship" : [ ],
+  "startOperatingDate" : "2024-03-18T10:21:25Z",
+  "lastUpdateDate" : "2024-03-18T10:22:55Z",
+  "href" : "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/f313df4f-1e43-4677-b194-36f9a0ad69e2",
+  "id" : "f313df4f-1e43-4677-b194-36f9a0ad69e2"
+}
+2024-03-18T11:22:55.374+01:00  INFO 7808 --- [http-nio-8080-exec-5] o.g.m.notification.NotificationService   : Found 1 listeners

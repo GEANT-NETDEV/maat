@@ -3,7 +3,7 @@ version: '3'
 services:
 
   maat:
-    image: artifactory.software.geant.org/spa-docker/maat:0.1
+    image: artifactory.software.geant.org/spa-docker/maat:0.3
     hostname: $MAAT_HOST
     ports:
       - "8080:8080"
@@ -25,6 +25,8 @@ services:
       - "27017:27017"
     expose:
       - "27017"
+    volumes:
+      - mongodb:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_USER
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
@@ -43,13 +45,6 @@ services:
     hostname: tmfscheme
     ports:
       - 8083:8083
-
-  #share:
-  #  image: nginx
-  #  ports:
-  #    - 8083:8083
-  #  volumes:
-  #    - "C:/Work/Maat/docker/tmf:/var/www/share"
 
   eventListener:
     image: artifactory.software.geant.org/spa-docker/eventlistener:0.5
@@ -78,6 +73,12 @@ services:
       - "27022:27017"
     expose:
       - "27022"
+    volumes:
+      - mongodb2:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_EL_USER
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_EL_PASSWORD
+
+volumes:
+  mongodb:
+  mongodb2:
