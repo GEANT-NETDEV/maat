@@ -267,3 +267,28 @@ The schema file does not have to follow the TMF standard. It can be simplified t
 - for service validation: https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json
 
 A Postman collection for testing requests with above schema files is available here: [Example_with_simple_schema.postman_collection.json](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat/browse/src/main/resources/Example_with_simple_schema.postman_collection.json)
+
+# MongoDB
+## MongoDB backup data
+To create a copy of the MongoDB database from the container or restore the data to database follow the steps below:
+- create backup:<br>
+  1\) use "mongodump" tool in MongoDB container <br>
+```docker exec -i <container_id> /usr/bin/mongodump --username <username> --password <password> --out /dump```<br>
+  2\) copy created data from container to host machine <br>
+  ```docker cp <container_id>:/dump /home/service/MongodbBackup/Maat```<br><br>
+- restore data:<br>
+  1\) copy data from host machine to MongoDB container<br>
+```docker cp ./dump <container_id>:/dump```<br>
+  2\) use "mongorestore" tool in MongoDB container<br>
+```docker exec -i <container_id> /usr/bin/mongorestore --username <password> --password <password> /dump```
+
+## MongoDB delete data
+To delete data from MongoDB for resources_db, services_db and listeners_db follow the steps below:
+- for resources:
+  ```docker exec -it <container_id> /usr/bin/mongosh --username <username> --password <password> --authenticationDatabase admin --eval "use resources_db;" --eval  "db.dropDatabase()"```
+- for services:
+```docker exec -it <container_id> /usr/bin/mongosh --username <username> --password <password> --authenticationDatabase admin --eval "use services_db;" --eval  "db.dropDatabase()"```
+- for listeners:
+```docker exec -it <container_id> /usr/bin/mongosh --username <username> --password <password> --authenticationDatabase admin --eval "use listeners_db;" --eval  "db.dropDatabase()"```
+- for all of these databases:
+```docker exec -it <container_id> /usr/bin/mongosh --username <username> --password <password> --authenticationDatabase admin --eval "use resources_db;" --eval  "db.dropDatabase()" --eval "use services_db;" --eval  "db.dropDatabase()" --eval "use listeners_db;" --eval  "db.dropDatabase()"```
