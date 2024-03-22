@@ -6,10 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import io.vavr.control.Either;
 
 import java.time.Instant;
-import java.time.OffsetDateTime;
 
-
-import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 import java.util.UUID;
 
@@ -37,7 +34,6 @@ public class ServiceCreator {
         objectNode.put("id", id);
         objectNode.put("href", hrefBuilder.id(id));
         objectNode.put("serviceDate", date);
-        objectNode.put("lastUpdateDate", date);
         return objectNode;
     }
 

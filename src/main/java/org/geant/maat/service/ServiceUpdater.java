@@ -22,6 +22,7 @@ public class ServiceUpdater {
     }
 
     Either<DomainError, JsonNode> update(String id, JsonNode updateJson) {
+
         var forbiddenProps = listForbiddenProps(updateJson);
         if (!forbiddenProps.isEmpty()) {
             return Either.left(new DomainError(String.format("Found forbidden props: %s", forbiddenProps),
@@ -49,7 +50,7 @@ public class ServiceUpdater {
     }
 
     private Collection<String> listForbiddenProps(JsonNode json) {
-        var forbiddenProps = Arrays.asList("id", "href", "@schemaLocation", "@type", "serviceDate", "lastUpdateDate");
+        var forbiddenProps = Arrays.asList("id", "href", "@schemaLocation", "@type", "serviceDate");
         var fieldNames = json.fieldNames();
         var result = new ArrayList<String>();
         while (fieldNames.hasNext()) {

@@ -6,8 +6,9 @@ enum Error implements DomainErrorMapper {
     VALIDATION_ERROR,
     SCHEMA_ERROR,
     SERVICE_MISSING,
-    FORBIDDEN_PROPERTIES;
-
+    FORBIDDEN_PROPERTIES,
+    BAD_CATEGORY,
+    RELATIONSHIP_ERROR;
     public int toHttpStatus() {
         return switch (this) {
             case SERVICE_MISSING -> 404;

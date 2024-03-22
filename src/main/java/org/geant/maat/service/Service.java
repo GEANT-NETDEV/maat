@@ -39,6 +39,9 @@ public class Service {
         return state.get("href").asText();
     }
 
+    public String getCategory() {
+        return state.get("category").asText();
+    }
     public JsonNode toJson() {
         return state.deepCopy();
     }

@@ -44,7 +44,6 @@ public class ServiceConfiguration {
 
 
 
-    // @ConditionalOnProperty(name = "serviceService.type", havingValue = "base", matchIfMissing = true)
     @Bean
     @ConditionalOnProperty(name = "serviceService.type", havingValue = "base", matchIfMissing = true)
     ServiceService baseServiceService(
@@ -52,6 +51,15 @@ public class ServiceConfiguration {
             NotificationService notificationService,
             ServiceHrefBuilder hrefBuilder) {
         return new BaseServiceService(serviceRepository, notificationService, new ServiceCreator(hrefBuilder));
+    }
+
+    @Bean
+    @ConditionalOnProperty(name = "serviceService.type", havingValue = "extended")
+    ServiceService extendedServiceService(
+            ServiceRepository serviceRepository,
+            NotificationService notificationService,
+            ServiceHrefBuilder hrefBuilder) {
+        return new ExtendedServiceService(serviceRepository, notificationService, new ServiceCreator(hrefBuilder));
     }
 
 }
