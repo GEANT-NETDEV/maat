@@ -42,6 +42,12 @@ public class Service {
     public String getCategory() {
         return state.get("category").asText();
     }
+    public String getName() {
+        if (state.has("name")){
+            return state.get("name").asText();
+        }
+        return "";
+    }
     public JsonNode toJson() {
         return state.deepCopy();
     }

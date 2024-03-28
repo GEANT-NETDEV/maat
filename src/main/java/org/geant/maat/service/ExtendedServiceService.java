@@ -83,6 +83,7 @@ public class ExtendedServiceService implements ServiceService {
         List<String> servicesNoExists = new ArrayList<>();
         Map<String, JsonNode> mapRelationshipsType = new HashMap<>();
         Map<String, String> mapServicesExists = new HashMap<>();
+        Map<String, String> mapServicesExistsName=new HashMap<>();
 
         ObjectMapper mapper = new ObjectMapper();
         ArrayNode arrayWithBref = mapper.createArrayNode();
@@ -104,9 +105,11 @@ public class ExtendedServiceService implements ServiceService {
             }
             mapRelationshipsType.forEach((key, value) -> checkServiceExisting(key)
                     .peek(res -> mapServicesExists.put(key, res.getCategory()))
+                    .peek(res -> mapServicesExistsName.put(key, res.getName()))
                     .peekLeft(er -> servicesNoExists.add(key))
                     .peekLeft(error -> ExtendedServiceLogger.info("Could not create service, because: " + error.message())));
         }
+        Map<String, String> mapServicesExistsSetName=new HashMap<>();
 
         for (JsonNode js : arrayWithBref) {
             String href_js = js.get("service").get("href").textValue();
@@ -114,6 +117,7 @@ public class ExtendedServiceService implements ServiceService {
                 return Either.left(new DomainError("Some services referenced by relationships do not exist: " + href_js, Error.SERVICE_MISSING));
             }
             String category = mapServicesExists.get(href_js);
+            String name=mapServicesExistsName.get(href_js);
             String category_js = js.get("relationshipType").textValue();
             category_js = category_js.replaceFirst("bref:", "");
             if (!category_js.equals(category))
@@ -121,6 +125,14 @@ public class ExtendedServiceService implements ServiceService {
                         " category in the database: href=" + js.get("service").get("href").textValue() + ", category in " +
                         "query=" + category_js + ", category in database=" + category, Error.BAD_CATEGORY));
             ((ObjectNode) js).put("relationshipType", "bref:" + category);
+            if(js.get("service").has("name")){
+                String name_pom=js.get("service").get("name").asText();
+                if(name_pom.equals("set-name")){
+                    ((ObjectNode) js.get("service")).put("name", name);
+                    String hrefPom=js.get("service").get("href").asText();
+                    mapServicesExistsSetName.put(hrefPom, mapServicesExistsName.get(hrefPom));
+                }
+            }
         }
         ((ObjectNode) json).putArray("serviceRelationship").addAll(arrayWithBref);
         if (Objects.requireNonNull(environment.getProperty("serviceService.checkExistingService")).equalsIgnoreCase("true") && !servicesNoExists.isEmpty()) {
@@ -137,15 +149,30 @@ public class ExtendedServiceService implements ServiceService {
             service.peek(r -> notifications.registerNewEvent(new EventDto(EventType.ServiceCreateEvent, r.toJson())));
 
         service.peek(r -> ExtendedServiceLogger.infoJson("Service created: ", r.toJson()))
-                .peek(r -> innerUpdateService(mapServicesExists, serviceCategory, r))
+                .peek(r -> innerUpdateService(mapServicesExists, serviceCategory, r, mapServicesExistsSetName.keySet()))
                 .peekLeft(error -> ExtendedServiceLogger.info("Could not create service, because: " + error.message()));
 
         return service.map(Service::toJson);
     }
 
-    public void innerUpdateService(Map<String, String> map, String serviceCategory, Service newService) {
+    public void innerUpdateService(Map<String, String> map, String serviceCategory, Service newService, Set<String> set) {
         String finalServiceCategory = "bref:" + serviceCategory;
-        map.forEach((key, val) -> addRelationsToService(key, finalServiceCategory, newService.getHref()));
+        Map<String, String> mapWithSetName=new HashMap<>();
+        Map<String, String> mapNoSetName=new HashMap<>();
+        for(String s : map.keySet()){
+            if(set.contains(s)){
+                mapWithSetName.put(s, newService.getName());
+            }
+            else{
+                mapNoSetName.put(s, newService.getName());
+            }
+        }
+        mapNoSetName.forEach((key, val) -> addRelationsToService(key, finalServiceCategory, newService.getHref()));
+        for(String key : mapWithSetName.keySet()){
+            Map<String, String> mapPom = new HashMap<>();
+            mapPom.put(key, mapWithSetName.get(key));
+            addRelationsToService(key, finalServiceCategory, newService.getHref(), mapPom);
+        }
     }
 
     private JsonNode deletePropertiesForbiddenToUpdate(JsonNode toJson) {
@@ -154,6 +181,7 @@ public class ExtendedServiceService implements ServiceService {
         ((ObjectNode) toJson).remove("href");
         ((ObjectNode) toJson).remove("id");
         ((ObjectNode) toJson).remove("category");
+        ((ObjectNode) toJson).remove("name");
         ((ObjectNode) toJson).remove("serviceDate");
         return toJson;
     }
@@ -167,6 +195,21 @@ public class ExtendedServiceService implements ServiceService {
         relationshipType.put("relationshipType", relationName);
         service.put("id", id);
         service.put("href", href);
+        relationshipType.put("service", service);
+        relationshipType.put("@type", "ServiceRelationship");
+        return relationshipType;
+    }
+
+    private JsonNode createRelationshipTypeJson(String relationName, String href, String name){
+        String[] hrefTab=href.split("/service/");
+        String id=hrefTab[1];
+        ObjectMapper mapper = new ObjectMapper();
+        ObjectNode relationshipType=mapper.createObjectNode();
+        ObjectNode service=mapper.createObjectNode();
+        relationshipType.put("relationshipType", relationName);
+        service.put("id", id);
+        service.put("href", href);
+        service.put("name", name);
         relationshipType.put("service", service);
         relationshipType.put("@type", "ServiceRelationship");
         return relationshipType;
@@ -356,6 +399,23 @@ public class ExtendedServiceService implements ServiceService {
         return map;
     }
 
+    private Map<String, String> getMapOfSetNameServices(JsonNode serviceJson, String baseName){
+        JsonNode serviceRelationship=serviceJson.get("serviceRelationship");
+        Service service=new Service(serviceJson);
+        Map<String, String> map = new HashMap<>();
+        if(serviceRelationship!=null) {
+            for (JsonNode j:serviceRelationship) {
+                String href=j.get("service").get("href").textValue();
+                if(j.get("service").has("name")){
+                    if(j.get("service").get("name").asText().equals("set-name")){
+                        map.put(href, baseName);
+                    }
+                }
+            }
+        }
+        return map;
+    }
+
     @Override
     public Either<DomainError, JsonNode> updateService(String id, JsonNode updateJson, Boolean registerNewEventFlag) {
         ExtendedServiceLogger.infoJson(String.format("Updating service %s, update json:", id), updateJson);
@@ -385,10 +445,17 @@ public class ExtendedServiceService implements ServiceService {
         ExtendedServiceLogger.info(baseServiceJson.toPrettyString());
         if (!updateJson.get("serviceRelationship").toString().equals(baseServiceJson.get("serviceRelationship").toString())) {
             var difUpdate = updateDifferences(baseServiceJson, updateJson)
-                    .peek(ExtendedServiceLogger::info)
                     .peekLeft(error -> ExtendedServiceLogger.info(String.format("Update failed: %s", error.message())));
             if(difUpdate.isLeft()){
                 return Either.left(difUpdate.getLeft());
+            }
+            else{
+                ExtendedServiceLogger.info("Differences Update Completed");
+                Map<String, String> mapReturnWithNamesToAdd=difUpdate.get();
+                for( JsonNode j : updateJson.get("serviceRelationship")){
+                    if(mapReturnWithNamesToAdd.containsKey(j.get("service").get("href").asText())){
+                        ((ObjectNode) j.get("service")).put("name", mapReturnWithNamesToAdd.get(j.get("service").get("href").asText()));}
+                }
             }
 
         }
@@ -402,11 +469,12 @@ public class ExtendedServiceService implements ServiceService {
         return result;
     }
 
-    private Either<DomainError, String> updateDifferences(JsonNode baseService, JsonNode updateService) {
+    private Either<DomainError, Map<String, String>> updateDifferences(JsonNode baseService, JsonNode updateService) {
         if(checkMultiRelationsAndnoBrefRef(updateService).isLeft()){
             return Either.left(checkMultiRelationsAndnoBrefRef(updateService).getLeft());}
         Map<String, ArrayList<String>>mapBaseService=getServicesWithRelations(baseService);
         Map<String, ArrayList<String>>mapUpdateService=getServicesWithRelations(updateService);
+        Map<String, String> mapReturnWithNamesToAdd=new HashMap<>();
 
         HashSet<String> differentKeysToDelete = new HashSet<>(mapBaseService.keySet());
         differentKeysToDelete.removeAll(mapUpdateService.keySet());
@@ -414,8 +482,16 @@ public class ExtendedServiceService implements ServiceService {
         HashSet<String> differentKeysToAdd = new HashSet<>(mapUpdateService.keySet());
         differentKeysToAdd.removeAll(mapBaseService.keySet());
 
+        Service service = new Service(baseService);
+
         String href=baseService.get("href").textValue();
-        String categoryBase=baseService.get("category").textValue();
+        String categoryBase=service.getCategory();
+
+        ((ObjectNode) updateService).put("id", baseService.get("id"));
+        ((ObjectNode) updateService).put("href", baseService.get("href"));
+
+        Map<String, String> mapRelationsHrefWithSetName=getMapOfSetNameServices(updateService, service.getName());
+
         Map<String, String> relationNames=new HashMap<>();
         for( String add : differentKeysToAdd ){
             String relation=mapUpdateService.get(add).get(0);
@@ -433,15 +509,20 @@ public class ExtendedServiceService implements ServiceService {
                         " category in the database: href=" + href + ", category in query=" + relation +
                         ", category in database=" + category, Error.BAD_CATEGORY));
             }
-            else {relationNames.put(add,returnPrefix(relation)+categoryBase);}
+            else {
+                relationNames.put(add,returnPrefix(relation)+categoryBase);
+                if(mapRelationsHrefWithSetName.containsKey(add)){
+                    mapReturnWithNamesToAdd.put(add, ifServiceExists.getName());
+                }
+            }
         }
         for( String add : differentKeysToAdd ){
-            addRelationsToService(add, relationNames.get(add), href);
+            addRelationsToService(add, relationNames.get(add), href, mapRelationsHrefWithSetName);
         }
         for( String del : differentKeysToDelete ){
             deleteRelationsFromService(del, href);
         }
-        return Either.right("Differences Update Completed");
+        return Either.right(mapReturnWithNamesToAdd);
     }
 
     private Either<DomainError, Boolean> checkMultiRelationsAndnoBrefRef(JsonNode serviceJson) {
@@ -492,6 +573,40 @@ public class ExtendedServiceService implements ServiceService {
 
             if (!exist) {
                 ((ArrayNode) service.withArray("serviceRelationship")).add(createRelationshipTypeJson(changePrefix(relationName), baseHref));
+            }
+            updater.update(ifServiceExists.getId(), deletePropertiesForbiddenToUpdate(service));
+        }
+    }
+
+    private void addRelationsToService(String serviceHref, String relationName, String baseHref, Map<String, String> mapRelationsHrefWithSetName) {
+        Service ifServiceExists = checkServiceExisting(serviceHref).getOrNull();
+
+        if (ifServiceExists == null) {
+            return;
+        }
+        JsonNode service = ifServiceExists.toJson();
+
+        String updateDate = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString();
+        ((ObjectNode) service).put("lastUpdateDate", updateDate);
+
+        JsonNode serviceRelationship = service.get("serviceRelationship");
+
+        boolean exist = false;
+        if (serviceRelationship != null) {
+            Iterator<JsonNode> nodes = serviceRelationship.elements();
+            while (nodes.hasNext()) {
+                JsonNode next = nodes.next();
+                if (next.get("service").get("href").textValue().equals(baseHref)) {
+                    if (relationName.equals(next.get("relationshipType").textValue())) exist = true;
+
+                }
+            }
+
+            if (!exist) {
+                if(mapRelationsHrefWithSetName.containsKey(serviceHref)){
+                    ((ArrayNode) service.withArray("serviceRelationship")).add(createRelationshipTypeJson(changePrefix(relationName), baseHref, mapRelationsHrefWithSetName.get(serviceHref)));
+                }
+                else ((ArrayNode) service.withArray("serviceRelationship")).add(createRelationshipTypeJson(changePrefix(relationName), baseHref));
             }
             updater.update(ifServiceExists.getId(), deletePropertiesForbiddenToUpdate(service));
         }
