@@ -4,6 +4,7 @@ import org.geant.maat.notification.NotificationConfiguration;
 import org.geant.maat.notification.NotificationService;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoClients;
+import org.geant.maat.service.ServiceRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.context.annotation.Bean;
@@ -39,9 +40,8 @@ public class ResourceConfiguration {
 
     @Bean
     ResourceRepository mongoRepository(MongoClient mongoClient) {
-        return new MongoRepository(mongoClient);
+        return new MongoRepository(mongoClient, "resources_db", "resources");
     }
-
 
    // @ConditionalOnProperty(name = "resourceService.type", havingValue = "base", matchIfMissing = true)
     @Bean

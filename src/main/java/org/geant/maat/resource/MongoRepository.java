@@ -22,14 +22,12 @@ import static com.mongodb.client.model.Projections.excludeId;
 class MongoRepository implements ResourceRepository {
     private final MongoCollection<BaseResource> collection;
 
-    public MongoRepository(MongoClient client) {
-        String database_name = "resources_db";
-        String collection_name = "resources";
+    public MongoRepository(MongoClient client, String database_name, String collection_name) {
         CodecRegistry codecRegistry = CodecRegistries.fromProviders(
                 CodecRegistries.fromProviders(new BaseResourceCodecProvider()),
                 MongoClientSettings.getDefaultCodecRegistry());
-        collection = client.getDatabase("resources_db")
-                .getCollection("resources", BaseResource.class)
+        collection = client.getDatabase(database_name)
+                .getCollection(collection_name, BaseResource.class)
                 .withCodecRegistry(codecRegistry);
     }
 

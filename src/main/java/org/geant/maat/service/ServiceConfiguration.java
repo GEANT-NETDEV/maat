@@ -38,7 +38,7 @@ public class ServiceConfiguration {
 
     @Bean
     ServiceRepository mongoRepositoryService(MongoClient mongoClientService) {
-        return new org.geant.maat.service.MongoRepository(mongoClientService);
+        return new org.geant.maat.service.MongoRepository(mongoClientService, "services_db", "services");
     }
 
 

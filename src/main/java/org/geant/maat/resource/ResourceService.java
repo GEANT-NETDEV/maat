@@ -25,6 +25,7 @@ public interface ResourceService {
 
     Collection<JsonNode> getResources(
             List<String> fields, Map<String, String> filtering, int offset, int limit);
+    Either<DomainError, JsonNode> updateResourceNC(String id, JsonNode updateJson);
 
 
 }
