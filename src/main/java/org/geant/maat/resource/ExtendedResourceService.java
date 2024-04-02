@@ -166,7 +166,7 @@ public class ExtendedResourceService implements ResourceService {
             ((ObjectNode) js).put("relationshipType", "bref:"+category);
             if(js.get("resource").has("name")){
                 String name_pom=js.get("resource").get("name").asText();
-              if(name_pom.equals("set-name")){
+                if(name_pom.equals("set-name")){
                   ((ObjectNode) js.get("resource")).put("name", name);
                   String hrefPom=js.get("resource").get("href").asText();
                   mapResourcesExistsSetName.put(hrefPom, mapResourcesExistsName.get(hrefPom));
@@ -755,9 +755,6 @@ public class ExtendedResourceService implements ResourceService {
         HashSet<String> differentServiceKeysToAdd = new HashSet<>(mapServiceUpdateResource.keySet());
         differentServiceKeysToAdd.removeAll(mapServiceBaseResource.keySet());
 
-        System.out.println("+++++++++++++++-----------------");
-        System.out.println(differentServiceKeysToAdd.size());
-
         Resource resource = new Resource(baseResource);
 
         String href=baseResource.get("href").textValue();
@@ -1044,7 +1041,7 @@ public class ExtendedResourceService implements ResourceService {
                 }
             }
         }
-        updateService(ifServiceExists.getId(), deletePropertiesForbiddenToUpdate(service));
+        updateService(serviceHref, deletePropertiesForbiddenToUpdate(service));
     }
 
 

@@ -18,7 +18,7 @@ import java.util.*;
 import static com.mongodb.client.model.Filters.and;
 import static com.mongodb.client.model.Filters.eq;
 import static com.mongodb.client.model.Projections.excludeId;
-public class MongoRepository implements ServiceRepository {
+class MongoRepository implements ServiceRepository {
 
     private final MongoCollection<BaseService> collection;
 
