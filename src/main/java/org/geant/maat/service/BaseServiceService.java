@@ -113,6 +113,18 @@ public class BaseServiceService implements ServiceService {
         return services;
     }
 
+    @Override
+    public Either<DomainError, JsonNode> updateServiceNC(String id, JsonNode updateJson) {
+        BaseServiceService.BaseServiceLogger.infoJson(String.format("Updating service %s, update json:", id), updateJson);
+
+        var result = updater.update(id, updateJson)
+                .peek(json -> BaseServiceService.BaseServiceLogger.infoJson(String.format("Service %s updated successfully", id), json))
+                .peekLeft(error -> BaseServiceService.BaseServiceLogger.info(String.format("Update of %s failed: %s", id, error.message())));
+
+
+        return result;
+    }
+
     private static class BaseServiceLogger {
         private static final Logger logger = LoggerFactory.getLogger(ServiceService.class);
 

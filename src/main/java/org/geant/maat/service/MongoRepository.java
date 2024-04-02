@@ -22,12 +22,12 @@ class MongoRepository implements ServiceRepository {
 
     private final MongoCollection<BaseService> collection;
 
-    public MongoRepository(MongoClient client) {
+    public MongoRepository(MongoClient client, String database_name, String collection_name) {
         CodecRegistry codecRegistry = CodecRegistries.fromProviders(
                 CodecRegistries.fromProviders(new BaseServiceCodecProvider()),
                 MongoClientSettings.getDefaultCodecRegistry());
-        collection = client.getDatabase("services_db")
-                .getCollection("services", BaseService.class)
+        collection = client.getDatabase(database_name)
+                .getCollection(collection_name, BaseService.class)
                 .withCodecRegistry(codecRegistry);
     }
 

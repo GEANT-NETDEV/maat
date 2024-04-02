@@ -167,5 +167,11 @@ class ResourceController implements ResultMapper {
             return foldResultWithStatus(resource, HttpStatus.OK);
         }
     }
+
+    @PatchMapping(value = "/${api.resource.version}/resourceNC/{id}")
+    ResponseEntity<?> updateResourceNC(@PathVariable String id, @RequestBody JsonNode requestBody) {
+        var resource = resourceService.updateResourceNC(id, requestBody);
+        return foldResultWithStatus(resource, HttpStatus.OK);
+    }
 }
 
