@@ -943,7 +943,7 @@ public class ExtendedServiceService implements ServiceService {
 
         }
         else ((ArrayNode) resource.withArray("serviceRelationship")).add(createRelationshipTypeJson(changePrefix(relationName), baseHref));
-        updateResource(ifResourceExists.getId(), deletePropertiesForbiddenToUpdate(resource));
+        updateResource(resourceHref, deletePropertiesForbiddenToUpdate(resource));
     }
 
     private void addRelationsToResource(String resourceHref, String relationName, String baseHref, Map<String, String> mapRelationsHrefWithSetName) {
