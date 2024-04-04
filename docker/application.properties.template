@@ -41,12 +41,14 @@ resourceService.checkExistingResource=true
 notification.sendNotificationToListeners=true
 
 #base=BaseServiceService
-serviceService.type=base
+serviceService.type=extended
+serviceService.checkExistingService=true
 
 ###Swagger UI ####
-openapi.dev-url=http://localhost:8080
-openapi.prod-url=https://maat:8080.com
 springdoc.swagger-ui.path=/
 
+###Validator
 validator.resource.schema=true
 validator.service.schema=true
+validator.resource.additional-props-restrict=false
+validator.service.additional-props-restrict=false
