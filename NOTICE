@@ -1,3 +1,5 @@
+This project includes third-party software components subject to open source licences. Please read and comply with the licensing terms and attribution requirements of these components, as listed:
+
 spring-boot-starter-data-mongodb
    - Version: 3.2.3
    - URL: https://spring.io/projects/spring-boot
