@@ -1,0 +1,736 @@
+spring-boot-starter-data-mongodb
+   - Version: 3.2.3
+   - URL: https://spring.io/projects/spring-boot
+   - Licence: Apache 2.0
+   - Copyright (c) 2012-2024 VMware, Inc.
+
+spring-boot-starter
+   - Version: 3.2.3
+   - URL: https://spring.io/projects/spring-boot
+   - Licence: Apache 2.0
+   - Copyright (c) 2012-2024 VMware, Inc.
+
+spring-boot
+   - Version: 3.2.3
+   - URL: https://spring.io/projects/spring-boot
+   - Licence: Apache 2.0
+   - Copyright (c) 2012-2024 VMware, Inc.
+
+spring-boot-autoconfigure
+   - Version: 3.2.3
+   - URL: https://spring.io/projects/spring-boot
+   - Licence: Apache 2.0
+   - Copyright (c) 2012-2024 VMware, Inc.
+
+spring-boot-starter-logging
+   - Version: 3.2.3
+   - URL: https://spring.io/projects/spring-boot
+   - Licence: Apache 2.0
+   - Copyright (c) 2012-2024 VMware, Inc.
+
+logback-classic
+   - Version: 1.4.14
+   - URL: http://logback.qos.ch/
+   - Licence: LGPL 2.1, Eclipse 1.0
+   - N/A
+
+logback-core
+   - Version: 1.4.14
+   - URL: http://logback.qos.ch/
+   - Licence: LGPL 2.1, Eclipse 1.0
+   - N/A
+
+log4j-to-slf4j
+   - Version: 2.21.1
+   - URL: https://logging.apache.org/log4j/2.x/
+   - Licence: Apache 2.0
+   - Copyright 1999-2023 The Apache Software Foundation
+
+jul-to-slf4j
+   - Version: 2.0.12
+   - URL: http://www.slf4j.org/
+   - Licence: MIT
+   - Copyright (c) 2004-2022 QOS.ch Sarl (Switzerland)
+
+snakeyaml
+   - Version: 2.2
+   - URL: https://bitbucket.org/snakeyaml/snakeyaml
+   - Licence: Apache 2.0
+   - N/A
+
+spring-data-mongodb
+   - Version: 4.2.3
+   - URL: https://spring.io/projects/spring-data-mongodb
+   - Licence: Apache 2.0
+   - Copyright (c) 2010
+
+spring-tx
+   - Version: 6.1.4
+   - URL:  https://github.com/spring-projects/spring-framework
+   - Licence: Apache 2.0
+   - Copyright 2000-2011 INRIA, Copyright 1999-2009 OW2 Consortium, Copyright 2002-2024 Pivotal, Inc, Copyright 2006-2019 Joe Walnes
+
+spring-expression
+   - Version: 6.1.4
+   - URL:  https://github.com/spring-projects/spring-framework
+   - Licence: Apache 2.0
+   - Copyright 2000-2011 INRIA, Copyright 1999-2009 OW2 Consortium, Copyright 2002-2024 Pivotal, Inc, Copyright 2006-2019 Joe Walnes
+
+spring-data-commons
+   - Version: 3.2.3
+   - URL: https://spring.io/projects/spring-data
+   - Licence: Eclipse 1.0, Apache 2.0
+   - N/A
+
+slf4j-api
+   - Version: 2.0.12 
+   - URL: http://www.slf4j.org
+   - Licence: MIT
+   - Copyright (c) 2004-2022 QOS.ch Sarl
+
+jakarta.xml.bind-api
+   - Version: 4.0.1
+   - URL: https://github.com/eclipse-ee4j/jaxb-api
+   - Licence: BSD 3
+   - Copyright 2017-2018 Oracle and/or its affiliates, Copyright 2018-2023 Oracle and/or its affiliates 
+
+jakarta.activation-api
+   - Version: 2.1.2
+   - URL: https://github.com/jakartaee/jaf-api
+   - Licence: BSD 3
+   - Copyright 2018 Oracle and/or its affiliates, Copyright 1997-2023 Oracle and/or its affiliates, Copyright 2018 Oracle and/or its affiliates
+
+json-smart
+   - Version: 2.5.0
+   - URL: https://urielch.github.io/
+   - Licence: Apache 2.0
+   - Copyright (c) 2011-2023 JSON
+
+accessors-smart
+   - Version: 2.5.0
+   - URL: https://urielch.github.io/
+   - Licence: Apache 2.0
+   - Copyright (c) 2011-2023 JSON
+
+springdoc-openapi-starter-webmvc-ui
+   - Version: 2.2.0
+   - URL: https://springdoc.org/
+   - Licence: Apache 2.0
+   - Copyright (c) 2019-2023 the original author or authors
+
+springdoc-openapi-starter-webmvc-api
+   - Version: 2.2.0
+   - URL: https://springdoc.org/
+   - Licence: Apache 2.0
+   - Copyright (c) 2019-2023 the original author or authors
+
+swagger-ui
+   - Version: 5.2.0
+   - URL: http://webjars.org/
+   - Licence: Apache 2.0
+   - Copyright (c) 2020-2021 SmartBear Software Inc.
+
+jackson-module-kotlin
+   - Version: 2.16.1
+   - URL: https://github.com/FasterXML/jackson-module-kotlin
+   - Licence: Apache 2.0
+   - Copyright 2007 Tatu Saloranta (tatu.saloranta@iki.fi)
+
+jackson-annotations
+   - Version: 2.15.4
+   - URL: https://github.com/FasterXML/jackson
+   - Licence: Apache 2.0
+   - Copyright 2007 Tatu Saloranta (tatu.saloranta@iki.fi)
+
+kotlin-reflect
+   - Version: 1.9.0
+   - URL: https://kotlinlang.org/
+   - Licence: Apache 2.0
+   - N/A
+
+jackson-databind
+   - Version: 2.16.1
+   - URL: https://github.com/FasterXML/jackson
+   - Licence: Apache 2.0
+   - Copyright 2007 Tatu Saloranta (tatu.saloranta@iki.fi)
+
+jackson-core
+   - Version: 2.16.1
+   - URL: https://github.com/FasterXML/jackson-core
+   - Licence: Apache 2.0
+   - Copyright 2023 Werner Randelshofer, Switzerland, Copyright 2021 The fast_float authors, Copyright 2023 Werner Randelshofer, Switzerland, Copyright 2022 Daniel Lemire, Copyright 2020 Tim Buktu. 2-clause BSD License, Copyright 2007 Tatu Saloranta (tatu.saloranta@iki.fi)
+
+jackson-datatype-jsr310
+   - Version: 2.16.1
+   - URL: https://github.com/FasterXML/jackson
+   - Licence: Apache 2.0
+   - N/A
+
+vavr
+   - Version: 0.10.4
+   - URL: http://vavr.io/
+   - Licence: Apache 2.0
+   - Copyright 2014-2021 Vavr, http://vavr.io
+
+vavr-match
+   - Version: 0.10.4
+   - URL: http://vavr.io/
+   - Licence: Apache 2.0
+   - Copyright 2014-2021 Vavr, http://vavr.io
+
+openapi-schema-validator
+   - Version: 1.0.7
+   - URL: https://github.com/openapi4j/openapi4j
+   - Licence: Apache 2.0
+   - N/A
+
+openapi-core
+   - Version: 1.0.7
+   - URL: https://github.com/openapi4j/openapi4j
+   - Licence: Apache 2.0
+   - N/A
+
+jackson-dataformat-yaml
+   - Version: 2.15.4
+   - URL: https://github.com/FasterXML/jackson-dataformats-text
+   - Licence: Apache 2.0
+   - Copyright 2007 Tatu Saloranta (tatu.saloranta@iki.fi)
+
+spring-boot-starter-validation
+   - Version: 3.2.3
+   - URL: https://spring.io/projects/spring-boot
+   - Licence: Apache 2.0
+   - Copyright 2012-2024 VMware, Inc
+
+tomcat-embed-el
+   - Version: 10.1.19
+   - URL: https://tomcat.apache.org/
+   - Licence: Apache 2.0
+   - Copyright 1999-2024 The Apache Software Foundation
+
+hibernate-validator
+   - Version: 8.0.1.Final
+   - URL: http://hibernate.org/validator
+   - Licence: Apache 2.0
+   - N/A
+
+jboss-logging
+   - Version: 3.5.3.Final
+   - URL: https://github.com/jboss-logging/jboss-logging
+   - Licence: Apache 2.0
+   - N/A
+
+classmate
+   - Version: 1.6.0
+   - URL: https://github.com/FasterXML/java-classmate
+   - Licence: Apache 2.0
+   - Copyright 2007 Tatu Saloranta (tatu.saloranta@iki.fi)
+
+mongodb-driver-sync
+   - Version: 4.11.1
+   - URL: https://www.mongodb.com/
+   - Licence: Apache 2.0
+   - N/A
+
+bson
+   - Version: 4.11.1
+   - URL: https://bsonspec.org/
+   - Licence: Apache 2.0
+   - N/A
+
+mongodb-driver-core
+   - Version: 4.11.1
+   - URL: https://www.mongodb.com/
+   - Licence: Apache 2.0
+   - N/A
+
+bson-record-codec
+   - Version: 4.11.1
+   - URL: https://www.mongodb.com/
+   - Licence: Apache 2.0
+   - N/A
+
+mongojack
+   - Version: 4.8.1
+   - URL: http://mongojack.org/
+   - Licence: Apache 2.0
+   - N/A
+
+threetenbp
+   - Version: 1.6.8
+   - URL: https://www.threeten.org/threetenbp
+   - Licence: BSD 3
+   - Copyright 2007 Stephen Colebourne &amp; Michael Nascimento Santos, Copyright 2007 Stephen Colebourne & Michael Nascimento Santos
+
+nimbus-jose-jwt
+   - Version: 9.37.3
+   - URL: https://bitbucket.org/connect2id/nimbus-jose-jwt
+   - Licence: Apache 2.0
+   - Copyright 2012 - 2024, Connect2id Ltd.
+
+jcip-annotations
+   - Version: 1.0-1
+   - URL: https://github.com/stephenc/jcip-annotations
+   - Licence: Apache 2.0
+   - N/A
+
+content-type
+   - Version: 2.3
+   - URL: https://bitbucket.org/connect2id/nimbus-content-type
+   - Licence: Apache 2.0
+   - Copyright 2020, Connect2id Ltd.
+
+modelmapper
+   - Version: 3.2.0
+   - URL: http://modelmapper.org/
+   - Licence: Apache 2.0
+   - Copyright 2006-2021 Joe Walnes
+
+modelmapper-jackson
+   - Version: 3.2.0
+   - URL: http://modelmapper.org/
+   - Licence: Apache 2.0
+   - N/A
+
+kotlin-stdlib-jdk8
+   - Version: 1.9.0
+   - URL: https://kotlinlang.org/
+   - Licence: Apache 2.0
+   - N/A
+
+kotlin-stdlib
+   - Version: 1.9.0
+   - URL: https://kotlinlang.org/
+   - Licence: Apache 2.0
+   - N/A
+
+kotlin-stdlib-common
+   - Version: 1.9.0
+   - URL: https://kotlinlang.org/
+   - Licence: Apache 2.0
+   - N/A
+
+annotations
+   - Version: 13.0
+   - URL: http://www.jetbrains.org/
+   - Licence: Apache 2.0
+   - N/A
+
+kotlin-stdlib-jdk7
+   - Version: 1.9.0
+   - URL: https://kotlinlang.org/
+   - Licence: Apache 2.0
+   - N/A
+
+spring-security-config
+   - Version: 6.2.2
+   - URL: https://spring.io/projects/spring-security
+   - Licence: Apache 2.0
+   - N/A
+
+spring-aop
+   - Version: 6.1.4
+   - URL: https://github.com/spring-projects/spring-framework
+   - Licence: Apache 2.0
+   - Copyright 2002-2024 Pivotal, Inc, Copyright 2000-2011 INRIA, Copyright 1999-2009 OW2 Consortium, Copyright 2006-2019 Joe Walnes
+
+spring-beans
+   - Version: 6.1.4
+   - URL: https://github.com/spring-projects/spring-framework
+   - Licence: Apache 2.0
+   - Copyright 2000-2011 INRIA, Copyright 2002-2024 Pivotal, Inc, Copyright 2006-2019 Joe Walnes, Copyright 1999-2009 OW2 Consortium
+
+spring-context
+   - Version: 6.1.4
+   - URL: https://github.com/spring-projects/spring-framework
+   - Licence: Apache 2.0
+   - Copyright 2000-2011 INRIA, Copyright 2006-2019 Joe Walnes, Copyright 1999-2009 OW2 Consortium, Copyright 2002-2024 Pivotal, Inc
+
+spring-boot-starter-oauth2-client
+   - Version: 3.2.3
+   - URL: https://spring.io/projects/spring-boot
+   - Licence: Apache 2.0
+   - Copyright (c) 2012-2024 VMware, Inc.
+
+spring-security-oauth2-client
+   - Version: 6.2.2
+   - URL: https://spring.io/projects/spring-security
+   - Licence: Apache 2.0
+   - N/A
+
+spring-security-oauth2-core
+   - Version: 6.2.2
+   - URL: https://spring.io/projects/spring-security
+   - Licence: Apache 2.0
+   - N/A
+
+oauth2-oidc-sdk
+   - Version: 9.43.3
+   - URL: https://bitbucket.org/connect2id/oauth-2.0-sdk-with-openid-connect-extensions
+   - Licence: Apache 2.0
+   - Copyright 2012-2024, Connect2id Ltd and contributors.
+
+lang-tag
+   - Version: 1.7
+   - URL: https://bitbucket.org/connect2id/nimbus-language-tags
+   - Licence: Apache 2.0
+   - Copyright 2022, Connect2id Ltd.
+
+spring-security-oauth2-jose
+   - Version: 6.2.2
+   - URL: https://spring.io/projects/spring-security
+   - Licence: Apache 2.0
+   - N/A
+
+log4j-api
+   - Version:  2.23.0
+   - URL: https://logging.apache.org/log4j/2.x/
+   - Licence: Apache 2.0
+   - Copyright 1999-2024 The Apache Software Foundation
+
+spring-boot-starter-oauth2-resource-server
+   - Version: 3.2.3
+   - URL: https://logging.apache.org/log4j/2.x/
+   - Licence: Apache 2.0
+   - Copyright 1999-2024 The Apache Software Foundation
+
+spring-security-oauth2-resource-server
+   - Version: 6.2.2
+   - URL: https://spring.io/projects/spring-security
+   - Licence: Apache 2.0
+   - N/A
+
+jakarta.annotation-api
+   - Version: 2.1.1
+   - URL: https://projects.eclipse.org/projects/ee4j.ca
+   - Licence: GPL 2.0 Classpath, Eclipse 2.0
+   - Copyright 2012-2022 Oracle
+
+jakarta.validation-api
+   - Version: 3.0.2
+   - URL: https://beanvalidation.org/
+   - Licence: Apache 2.0
+   - N/A
+
+spring-boot-starter-security
+   - Version: 3.2.3
+   - URL: https://spring.io/projects/spring-boot
+   - Licence: Apache 2.0
+   - Copyright (c) 2012-2024 VMware, Inc.
+
+spring-boot-starter-web
+   - Version: 3.2.3
+   - URL: https://spring.io/projects/spring-boot
+   - Licence: Apache 2.0
+   - Copyright (c) 2012-2024 VMware, Inc.
+
+spring-boot-starter-json
+   - Version: 3.2.3
+   - URL: https://spring.io/projects/spring-boot
+   - Licence: Apache 2.0
+   - Copyright (c) 2012-2024 VMware, Inc.
+
+jackson-datatype-jdk8
+   - Version: 2.15.4
+   - URL: https://github.com/FasterXML/jackson-datatype-jdk8
+   - Licence: Apache 2.0
+   - N/A
+
+jackson-module-parameter-names
+   - Version: 2.15.4
+   - URL: https://github.com/FasterXML/jackson-module-parameter-names
+   - Licence: Apache 2.0
+   - N/A
+
+spring-boot-starter-tomcat
+   - Version: 3.2.3
+   - URL: https://spring.io/projects/spring-boot
+   - Licence: Apache 2.0
+   - Copyright (c) 2012-2024 VMware, Inc.
+
+tomcat-embed-core
+   - Version: 10.1.19
+   - URL: https://tomcat.apache.org/
+   - Licence: Apache 2.0
+   - Copyright 1999-2024 The Apache Software Foundation
+
+tomcat-embed-websocket
+   - Version: 10.1.19
+   - URL: https://tomcat.apache.org/
+   - Licence: Apache 2.0
+   - Copyright 1999-2024 The Apache Software Foundation
+
+spring-web
+   - Version: 6.1.4
+   - URL: https://github.com/spring-projects/spring-framework
+   - Licence: Apache 2.0
+   - Copyright 1999-2009 OW2 Consortium, Copyright 2000-2011 INRIA, Copyright 2002-2024 Pivotal, Inc, Copyright 2006-2019 Joe Walnes
+
+spring-webmvc
+   - Version: 6.1.4
+   - URL: https://github.com/spring-projects/spring-framework
+   - Licence: Apache 2.0
+   - Copyright 2002-2024 Pivotal, Inc, Copyright 1999-2009 OW2 Consortium, Copyright 2006-2019 Joe Walnes, Copyright 2000-2011 INRIA
+
+jna
+   - Version: 5.14.0
+   - URL: https://github.com/java-native-access/jna
+   - Licence: Apache 2.0,  LGPL 2.1
+   - N/A
+
+asm
+   - Version: 9.6
+   - URL: http://asm.ow2.io/
+   - Licence: Apache 2.0
+   - Copyright (c) 2012-2024 VMware, Inc.
+
+spring-boot-starter-test
+   - Version: 3.2.3
+   - URL: https://spring.io/projects/spring-boot
+   - Licence: Apache 2.0
+   - Copyright (c) 2012-2024 VMware, Inc.
+
+spring-boot-test
+   - Version: 3.2.3
+   - URL: https://spring.io/projects/spring-boot
+   - Licence: Apache 2.0
+   - Copyright (c) 2012-2024 VMware, Inc.
+
+spring-boot-test-autoconfigure
+   - Version: 3.2.3
+   - URL: https://spring.io/projects/spring-boot
+   - Licence: Apache 2.0
+   - Copyright (c) 2012-2024 VMware, Inc.
+
+json-path
+   - Version: 2.9.0
+   - URL: https://github.com/json-path/JsonPath
+   - Licence: Apache 2.0
+   - N/A
+
+jakarta.xml.bind-api
+   - Version: 4.0.1
+   - URL: https://github.com/eclipse-ee4j/jaxb-api
+   - Licence: BSD 3
+   - Copyright 2017-2023 Oracle
+
+jakarta.activation-api
+   - Version: 2.1.2
+   - URL: https://github.com/jakartaee/jaf-api
+   - Licence: BSD 3
+   - Copyright 1997-2023 Oracle
+
+assertj-core
+   - Version: 3.24.2
+   - URL: https://github.com/assertj/assertj
+   - Licence: Apache 2.0
+   - N/A
+
+byte-buddy
+   - Version: 1.14.12
+   - URL: https://bytebuddy.net/
+   - Licence: Apache 2.0
+   - Copyright 2014 Present Rafael Winterhalter
+
+awaitility
+   - Version: 4.2.0
+   - URL: http://awaitility.org/
+   - Licence: Apache 2.0
+   - N/A
+
+hamcrest
+   - Version: 2.2
+   - URL: https://github.com/hamcrest/JavaHamcrest
+   - Licence: BSD
+   - Copyright (c) 2000-2015 www.hamcrest.org
+
+junit-jupiter
+   - Version: 5.10.2
+   - URL: https://junit.org/junit5/
+   - Licence: EPL 2.0
+   - N/A
+
+junit-jupiter-api
+   - Version: 5.10.2
+   - URL: https://junit.org/junit5/
+   - Licence: EPL 2.0
+   - N/A
+
+opentest4j
+   - Version: 1.3.0
+   - URL: https://github.com/ota4j-team/opentest4j
+   - Licence: Apache 2.0
+   - Copyright 2015-2023
+
+junit-platform-commons
+   - Version: 1.10.2
+   - URL: https://junit.org/junit5/
+   - Licence: EPL 2.0
+   - Copyright 2015-2024
+
+apiguardian-api
+   - Version: 1.1.2
+   - URL: https://github.com/apiguardian-team/apiguardian
+   - Licence: Apache 2.0
+   - N/A
+
+junit-jupiter-params
+   - Version: 5.10.2
+   - URL: https://junit.org/junit5/
+   - Licence: EPL 2.0
+   - N/A
+
+junit-jupiter-engine
+   - Version: 5.10.2
+   - URL: https://junit.org/junit5/
+   - Licence: EPL 2.0
+   - N/A
+
+junit-platform-engine
+   - Version: 1.10.2
+   - URL: https://junit.org/junit5/
+   - Licence: EPL 2.0
+   - N/A
+
+mockito-core
+   - Version: 5.7.0
+   - URL: https://github.com/mockito/mockito
+   - Licence: MIT
+   - Copyright (c) 2007 Mockito contributors
+
+byte-buddy-agent
+   - Version: 1.14.12
+   - URL: https://github.com/raphw/byte-buddy
+   - Licence: Apache 2.0
+   - N/A
+
+objenesis
+   - Version: 3.3
+   - URL: http://objenesis.org/
+   - Licence: Apache 2.0 
+   - Copyright 2006-2021 Joe Walnes, Henri Tremblay, Leonardo Mesquita
+
+mockito-junit-jupiter
+   - Version: 5.7.0
+   - URL: https://github.com/mockito/mockito
+   - Licence: MIT
+   - Copyright (c) 2007 Mockito contributors
+
+jsonassert
+   - Version: 1.5.1
+   - URL: https://github.com/skyscreamer/JSONassert
+   - Licence: Apache 2.0
+   - N/A
+
+android-json
+   - Version: 0.0.20131108.vaadin1
+   - URL: N/A
+   - Licence: Apache 2.0
+   - N/A
+
+spring-test
+   - Version: 6.1.4
+   - URL: https://github.com/spring-projects/spring-framework
+   - Licence: Apache 2.0
+   - N/A
+
+xmlunit-core
+   - Version: 2.9.1
+   - URL: https://www.xmlunit.org/
+   - Licence: Apache 2.0
+   - N/A
+
+spring-security-test
+   - Version: 6.2.2
+   - URL: https://spring.io/projects/spring-security
+   - Licence: Apache 2.0
+   - N/A
+
+spring-security-core
+   - Version: 6.2.2
+   - URL: https://spring.io/projects/spring-security
+   - Licence: Apache 2.0
+   - N/A
+
+spring-security-crypto
+   - Version: 6.2.2
+   - URL: https://spring.io/projects/spring-security
+   - Licence: Apache 2.0
+   - N/A
+
+micrometer-observation
+   - Version: 1.12.3
+   - URL: https://github.com/micrometer-metrics/micrometer
+   - Licence: Apache 2.0
+   - Copyright (c) 2017-2024 VMware, Inc.
+
+micrometer-commons
+   - Version: 1.12.3
+   - URL: https://github.com/micrometer-metrics/micrometer
+   - Licence: Apache 2.0
+   - Copyright (c) 2017-2024 VMware, Inc.
+
+spring-security-web
+   - Version: 6.2.2
+   - URL: https://spring.io/projects/spring-security
+   - Licence: Apache 2.0
+   - N/A
+
+kotlin-test
+   - Version: 1.9.0
+   - URL: https://kotlinlang.org/
+   - Licence: Apache 2.0 
+   - N/A
+
+testcontainers
+   - Version: 1.19.2
+   - URL: https://github.com/testcontainers/testcontainers-java
+   - Licence: MIT
+   - Copyright (c) 2015-2019 Richard North
+
+junit
+   - Version: 4.13.2
+   - URL: https://github.com/junit-team/junit4
+   - Licence: EPL-1.0
+   - N/A
+
+hamcrest-core
+   - Version: 2.2
+   - URL: http://hamcrest.org/JavaHamcrest/
+   - Licence: BSD 3
+   - Copyright (c) 2000-2015 www.hamcrest.org
+
+commons-compress
+   - Version: 1.24.0
+   - URL: https://commons.apache.org/proper/commons-compress/
+   - Licence: Apache 2.0
+   - Copyright 2002-2024 The Apache Software Foundation
+
+duct-tape
+   - Version: 1.0.8
+   - URL: https://github.com/rnorth/duct-tape
+   - Licence: MIT
+   - Copyright (c) 2014-2015 Richard North.
+
+docker-java-api
+   - Version: 3.3.4
+   - URL: https://github.com/docker-java/docker-java
+   - Licence: Apache 2.0
+   - N/A
+docker-java-transport-zerodep
+   - Version: 3.3.4
+   - URL: https://github.com/docker-java/docker-java
+   - Licence: Apache 2.0
+   - N/A
+
+docker-java-transport
+   - Version: 3.3.4
+   - URL: https://github.com/docker-java/docker-java
+   - Licence: Apache 2.0
+   - N/A
+
+mongodb
+   - Version: 1.19.2
+   - URL: https://java.testcontainers.org/
+   - Licence: MIT
+   - N/A
