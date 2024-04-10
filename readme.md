@@ -156,6 +156,96 @@ Attribute "@schemaLocation" must have the correct local path/url of schema file 
 
 ```<ID>``` is identifier of a resource
 
+## Backward Relationships
+Maat provides the feature to automatically add relationships in both objects (services or resources) to which the relationship applies. These are so-called backward relationships. To create such a relationship the "relationshipType" attribute must be created as follows: "bref:category" for the POST method and "bref:category" or "ref:category", for the PATCH method. Where "bref/ref" is the required prefix, and "category" is the category name of the object the relationship references.
+- Example: 
+<br>Create new resource with backward relationship to resource "76368b0e-080b-47a6-be56-09269a27059c"
+<br>
+```
+{
+    "name": "testName2",
+    "description": "Resource's description",
+    "category": "testCategory2",
+    "@type": "LogicalResource",
+    "@schemaLocation": "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+    "resourceRelationship": [
+      {
+        "relationshipType": "bref:testCategory1",
+        "resource": {
+          "id": "76368b0e-080b-47a6-be56-09269a27059c",
+          "href": "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/76368b0e-080b-47a6-be56-09269a27059c"
+        },
+        "@type": "ResourceRelationship"
+      }
+    ]
+}
+```
+When such a POST request is executed, in the resource "76368b0e-080b-47a6-be56-09269a27059c" a backward relationship to the newly created resource will be added.
+```
+"resourceRelationship": [
+            {
+                "relationshipType": "ref:testCategory2",
+                "resource": {
+                    "id": "ee9c43c1-8ae3-42a3-8006-89d07da271de",
+                    "href": "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/ee9c43c1-8ae3-42a3-8006-89d07da271de"
+                },
+                "@type": "ResourceRelationship"
+            }
+        ],
+```
+Relationships can occur in the following configurations resource-resource, service-service, resource-service, service-resource. Relationships relating to resource are added to "resourceRelationship", while those relating to service are added to "serviceRelationship". However, two objects can only have one relationship to each other.
+<br><br>Additionally, it is possible to automatically assign the name of the object to which the relationship refers to. For this purpose, the "name" field in the relationship must have the value "set-name".
+- Example:
+  <br>Create a new resource with a backward relation to the service "5565f90d-567e-4ba9-9af1-b33095ec4055" and with the value "set-name" in the "name" field.
+```
+{
+    "name": "testResourceName1",
+    "description": "Resource's description",
+    "category": "testResourceCategory1",
+    "@type": "LogicalResource",
+    "@schemaLocation": "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+    "serviceRelationship": [
+      {
+        "relationshipType": "bref:testServiceCategory1",
+        "service": {
+          "id": "5565f90d-567e-4ba9-9af1-b33095ec4055",
+          "href": "http://localhost:8080/serviceInventoryManagement/v4.0.0/service/5565f90d-567e-4ba9-9af1-b33095ec4055",
+          "name":"set-name"
+        },
+        "@type": "ServiceRelationship"
+      }
+    ]
+}
+```
+When such a POST request is executed, in the service "5565f90d-567e-4ba9-9af1-b33095ec4055" a backward relationship to the newly created resource, with its name, will be added.
+```
+"resourceRelationship": [
+            {
+                "relationshipType": "ref:testResourceCategory1",
+                "resource": {
+                    "id": "e30a5f74-4d65-4c4d-abca-8bbbb7a56c3b",
+                    "href": "http://localhost:8080/resourceInventoryManagement/v4.0.0/resource/e30a5f74-4d65-4c4d-abca-8bbbb7a56c3b",
+                    "name": "testResourceName1"
+                },
+                "@type": "ResourceRelationship"
+            }
+        ]
+```
+The relationship in the newly created resource in such a case looks as follows:
+```
+ "serviceRelationship": [
+        {
+            "relationshipType": "bref:testServiceCategory1",
+            "service": {
+                "id": "5565f90d-567e-4ba9-9af1-b33095ec4055",
+                "href": "http://localhost:8080/serviceInventoryManagement/v4.0.0/service/5565f90d-567e-4ba9-9af1-b33095ec4055",
+                "name": "testServiceName1"
+            },
+            "@type": "ServiceRelationship"
+        }
+    ]
+```
+<br>The above functionalities cause that updating the "name" and "category" fields in objects is not allowed.
 ## POSTMAN
 
 Postman collection ([Maat-Test.postman_collection](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat/browse/src/main/resources/Maat_Test.postman_collection.json))
