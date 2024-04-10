@@ -159,8 +159,7 @@ Attribute "@schemaLocation" must have the correct local path/url of schema file 
 ## Backward Relationships
 Maat provides the feature to automatically add relationships in both objects (services or resources) to which the relationship applies. These are so-called backward relationships. To create such a relationship the "relationshipType" attribute must be created as follows: "bref:category" for the POST method and "bref:category" or "ref:category", for the PATCH method. Where "bref/ref" is the required prefix, and "category" is the category name of the object the relationship references.
 - Example:
-Create new resource with backward relationship to resource "76368b0e-080b-47a6-be56-09269a27059c"
-<br>
+  <br>Create new resource with backward relationship to resource "76368b0e-080b-47a6-be56-09269a27059c"
 
 ```
 {
