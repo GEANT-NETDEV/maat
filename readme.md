@@ -54,18 +54,18 @@ Environment variables are key-value pairs that are used to configure application
 <br>The most important options for Maat service that may need to be changed when running the application by docker-compose:
 
 
-|        Property         |      Example Values      |                                         Description                                          |
-|:-----------------------:|:------------------------:|:--------------------------------------------------------------------------------------------:|
-|        MAAT_HOST        |         maathost         |    Hostname used in the Maat container to communicate with the EventListener application     |
-|        MAAT_PORT        |           8080           |      Port used in the Maat container to communicate with the EventListener application       |
-| MAAT_RESOURCE_PROTOCOL  |        http/https        | Protocol (for resources) used to communicate with Maat (also used to create href addresses)  |
-|  MAAT_RESOURCE_ADDRESS  | localhost or 192.168.5.1 |  Address (for resources) used to communicate with Maat (also used to create href addresses)  |
-|   MAAT_RESOURCE_PORT    |           8080           |   Port (for resources) used to communicate with Maat (also used to create href addresses)    |
-| MAAT_SERVICE_PROTOCOL   |        http/https        |  Protocol (for services) used to communicate with Maat (also used to create href addresses)  |
-|  MAAT_SERVICE_ADDRESS   | localhost or 192.168.5.1 |  Address (for services) used to communicate with Maat (also used to create href addresses)   |
-|    MAAT_SERVICE_PORT    |           8080           |    Port (for services) used to communicate with Maat (also used to create href addresses)    |
+|        Property         |                  Values                   |                                         Description                                          |
+|:-----------------------:|:-----------------------------------------:|:--------------------------------------------------------------------------------------------:|
+|        MAAT_HOST        |             &lt;hostname&gt;              |    Hostname used in the Maat container to communicate with the EventListener application     |
+|        MAAT_PORT        |            &lt;port number&gt;            |      Port used in the Maat container to communicate with the EventListener application       |
+| MAAT_RESOURCE_PROTOCOL  |               http or https               | Protocol (for resources) used to communicate with Maat (also used to create href addresses)  |
+|  MAAT_RESOURCE_ADDRESS  |  &lt;domain name&gt;  or <ip address&gt;  |  Address (for resources) used to communicate with Maat (also used to create href addresses)  |
+|   MAAT_RESOURCE_PORT    |            &lt;port number&gt;            |   Port (for resources) used to communicate with Maat (also used to create href addresses)    |
+| MAAT_SERVICE_PROTOCOL   |               http or https               |  Protocol (for services) used to communicate with Maat (also used to create href addresses)  |
+|  MAAT_SERVICE_ADDRESS   | &lt;domain name&gt; or &lt;ip address&gt; |  Address (for services) used to communicate with Maat (also used to create href addresses)   |
+|    MAAT_SERVICE_PORT    |            &lt;port number&gt;            |    Port (for services) used to communicate with Maat (also used to create href addresses)    |
 
-## Installation Maat
+## Installation of Maat
 
 An alternative installation procedure using docker containers.
 
@@ -76,7 +76,7 @@ Go to **docker/** folder and run:
 ```docker-compose up -d```
 
 
-## Installation Maat with EventListener
+## Installation of Maat with EventListener
 
 [EventListener](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-eventlistener) is a suporting application for storing notifications from Maat. Notifications inform about any events (add/update/delete resources/services) in Maat.
 EventListener automatically registers to Maat when starting (address and port of Maat are located in the properties maat-host and maat-port).
@@ -86,7 +86,7 @@ Go to **docker/** folder and run:
 
 ```docker-compose -f docker-compose-2.yml up```
 
-## Installation Maat (with EventListener) with Keycloak and SSL
+## Installation of Maat (with EventListener) with Keycloak and SSL
 
 Go to **docker/** folder and run:
 
@@ -113,7 +113,7 @@ Warning! When Maat works with Keycloak and SSL you must manually register EventL
 }
 ```
 
-## Installation Maat (with EventListener) with HTTPS access (for Maat) by NGINX
+## Installation of Maat (with EventListener) with HTTPS access (for Maat) by NGINX
 
 An alternative way to configure SSL (https) for the Maat application is to run nginx, which takes over handling secure communication.
 In this case, SSL configuration in Maat is no longer needed. An example of installation of Maat with nginx can be seen using the docker-compose-4.yml file.
@@ -124,7 +124,7 @@ Go to **docker/** folder and run:
 
 ```docker-compose -f docker-compose-4.yml up```
 
-<br> <b>Warning!</b><br>All of the above options for running Maat applications using Docker use Volumes. Each MongoDB database has its own volume assigned in the docker-compose file. 
+<br> <b>Warning!</b><br>All of the above options for running Maat application with Docker use Volumes. Each MongoDB database has its own volume assigned in the docker-compose file. 
 When you delete a database container, the volume still exists and when you restart the service, the old data will be included.
 To remove all data, when you delete the containers, you must also delete the volumes.
 
@@ -305,29 +305,28 @@ Swagger UI for Maat is available at http://localhost:8080/swagger-ui/index.html.
 
 Basic Configuration:
 
-|                 Property                 |       Example Values       |                                        Description                                        |
-|:----------------------------------------:|:--------------------------:|:-----------------------------------------------------------------------------------------:|
-|                mongo-host                |   localhost or 127.0.0.1   |                 Hostname for Maat database in the form of name or address                 |
-|                mongo-user                |            user            |                                   Username for MongoDB                                    |
-|              mongo-password              |          password          |                                   Password for MongoDB                                    |
-|            resource.protocol             |            http            |                   Remote application server protocol for resource part                    |
-|             resource.address             |         10.27.1.10         |                    Remote application server address for resource part                    |
-|              resource.port               |            8080            |                     Remote application server port for resource part                      |
-|             service.protocol             |            http            |                    Remote application server protocol for service part                    |
-|             service.address              |         10.27.1.10         |                    Remote application server address for service part                     |
-|               service.port               |            8080            |                      Remote application server port for service part                      |
-|            server.ssl.enabled            |         true/false         |                          Enable/Disable https protocol for Maat                           |
-|             keycloak.enabled             |         true/false         |                       Enable/Disable Keycloak application for Maat                        |
-|         keycloak.auth-server-url         | http://127.0.0.1:8090/auth |                                  Keycloak server address                                  |
-|           resourceService.type           |       base/extended        | Select 'base' version for resource part or 'extended'<br/> Extended version used for PSNC |
-|  resourceService.checkExistingResource   |         true/false         |         Enable/Disable check existing resource functionality for extended version         |
-| notification.sendNotificationToListeners |         true/false         |                     Enable/Disable sending notifications to listeners                     |
-|             openapi.dev-url              |   http://localhost:8080    |                      Base URL development environment for Swagger UI                      |
-|             openapi.prod-url             |     https://maat:8080      |                      Base URL production environment for Swagger UI                       |
+|                 Property                 |                       Values                        |                                        Description                                        |
+|:----------------------------------------:|:---------------------------------------------------:|:-----------------------------------------------------------------------------------------:|
+|                mongo-host                |               localhost or 127.0.0.1                |                 Hostname for Maat database in the form of name or address                 |
+|                mongo-user                |                    &lt;user&gt;                     |                                   Username for MongoDB                                    |
+|              mongo-password              |                  &lt;password&gt;                   |                                   Password for MongoDB                                    |
+|            resource.protocol             |                  &lt;protocol&gt;                   |                   Remote application server protocol for resource part                    |
+|             resource.address             |       &lt;domain name> or &lt;ip address&gt;        |                    Remote application server address for resource part                    |
+|              resource.port               |                 &lt;port number&gt;                 |                     Remote application server port for resource part                      |
+|             service.protocol             |                  &lt;protocol&gt;                   |                    Remote application server protocol for service part                    |
+|             service.address              |      &lt;domain name&gt; or &lt;ip address&gt;      |                    Remote application server address for service part                     |
+|               service.port               |                 &lt;port number&gt;                 |                      Remote application server port for service part                      |
+|            server.ssl.enabled            |                     true/false                      |                          Enable/Disable https protocol for Maat                           |
+|             keycloak.enabled             |                     true/false                      |                       Enable/Disable Keycloak application for Maat                        |
+|         keycloak.auth-server-url         | http://&lt;domain name&gt;:&lt;port number&gt;/auth |                                  Keycloak server address                                  |
+|           resourceService.type           |                    base/extended                    | Select 'base' version for resource part or 'extended'<br/> Extended version used for PSNC |
+|  resourceService.checkExistingResource   |                     true/false                      |         Enable/Disable check existing resource functionality for extended version         |
+| notification.sendNotificationToListeners |                     true/false                      |                     Enable/Disable sending notifications to listeners                     |
+
 
 ### SSL Configuration
 
-|                 Property                 |  Example Values  |                            Description                            |
+|                 Property                 |      Values      |                            Description                            |
 |:----------------------------------------:|:----------------:|:-----------------------------------------------------------------:|
 |            server.ssl.enabled            |    true/false    |              Enable/Disable https protocol for Maat               |
 |        server.ssl.key-store-type         |      PKCS12      |                           Keystore type                           |
@@ -338,13 +337,13 @@ Basic Configuration:
 
 ### API Authentication - Keycloak
 
-|                       Property                        |                                     Example Values                                     |                                              Description                                               |
-|:-----------------------------------------------------:|:--------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------:|
-|                   keycloak.enabled                    |                                       true/false                                       |                              Enable/Disable Keycloak application for Maat                              |
-| spring.security.oauth2.resourceserver.jwt.issuer-uri  |                    http://keycloakhost:8090/realms/MaatRealm                     |                                       The URL to Keycloak realm                                        |
-| spring.security.oauth2.resourceserver.jwt.jwk-set-uri | ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs  |                            JSON Web Key URI to use to verify the JWT token                             |
-|          token.converter.principal-attribute          |                                   preferred_username                                   | Parameter that allows to extract the Keycloak user name from a token available on the Spring Boot side |
-|              token.converter.resource-id              |                                          inv3                                          |                        The name of the client that Spring Boot application uses                        |
+|                       Property                        |                                        Values                                         |                                              Description                                               |
+|:-----------------------------------------------------:|:-------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------:|
+|                   keycloak.enabled                    |                                      true/false                                       |                              Enable/Disable Keycloak application for Maat                              |
+| spring.security.oauth2.resourceserver.jwt.issuer-uri  |                  http://<domain name&gt;:<port number&gt;/realms/MaatRealm                  |                                       The URL to Keycloak realm                                        |
+| spring.security.oauth2.resourceserver.jwt.jwk-set-uri | ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs |                            JSON Web Key URI to use to verify the JWT token                             |
+|          token.converter.principal-attribute          |                                  preferred_username                                   | Parameter that allows to extract the Keycloak user name from a token available on the Spring Boot side |
+|              token.converter.resource-id              |                                         inv3                                          |                        The name of the client that Spring Boot application uses                        |
 
 
 # REST API
