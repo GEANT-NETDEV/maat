@@ -25,6 +25,8 @@ services:
       - "27017:27017"
     expose:
       - "27017"
+    volumes:
+      - mongodb:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_USER
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
@@ -56,6 +58,12 @@ services:
       - "27022:27017"
     expose:
       - "27022"
+    volumes:
+      - mongodb2:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_EL_USER
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_EL_PASSWORD
+
+volumes:
+  mongodb:
+  mongodb2:

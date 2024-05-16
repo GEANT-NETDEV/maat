@@ -20,14 +20,15 @@ services:
       - MAAT_SERVICE_ADDRESS=$MAAT_SERVICE_ADDRESS
       - MAAT_SERVICE_PORT=$MAAT_SERVICE_PORT
 
-
   mongodb:
-    image: mongo:latest
+    image: mongo:7.0.4
     hostname: $MONGODB_HOST
     ports:
       - "27017:27017"
     expose:
       - "27017"
+    volumes:
+      - mongodb:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_USER
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
@@ -53,12 +54,14 @@ services:
       - EVENT_LISTENER_PORT=$EVENT_LISTENER_PORT
 
   mongodb2:
-    image: mongo:latest
+    image: mongo:7.0.4
     hostname: $MONGODB_EL_HOST
     ports:
       - "27022:27017"
     expose:
       - "27022"
+    volumes:
+      - mongodb2:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_EL_USER
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_EL_PASSWORD
@@ -88,3 +91,7 @@ services:
       && /opt/keycloak/bin/kcadm.sh create roles -r MaatRealm -s name=inv3user
       && /opt/keycloak/bin/kcadm.sh create clients -r MaatRealm -s clientId=inv3 -s enabled=true -s clientAuthenticatorType=client-secret -s secret=d0b8122f-8dfb-46b7-b68a-f5cc4e25d123 -s directAccessGrantsEnabled=true
       && /opt/keycloak/bin/kcadm.sh add-roles --uusername test --rolename inv3user -r MaatRealm"
+
+volumes:
+  mongodb:
+  mongodb2:

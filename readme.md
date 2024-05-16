@@ -46,6 +46,27 @@ Go to **target/** folder and run jar file with created name for Maat.
 
 # Installation using Docker
 
+## Configuration (.env) file
+
+Environment variables are key-value pairs that are used to configure application settings and other parameters that may vary between environments.
+<br><br>The ```.env``` file is located in the ```docker/``` folder.
+
+<br>The most important options for Maat service that may need to be changed when running the application by docker-compose:
+
+
+|        Property         |      Example Values      |                                         Description                                          |
+|:-----------------------:|:------------------------:|:--------------------------------------------------------------------------------------------:|
+|        MAAT_HOST        |         maathost         |    Hostname used in the Maat container to communicate with the EventListener application     |
+|        MAAT_PORT        |           8080           |      Port used in the Maat container to communicate with the EventListener application       |
+| MAAT_RESOURCE_PROTOCOL  |        http/https        | Protocol (for resources) used to communicate with Maat (also used to create href addresses)  |
+|  MAAT_RESOURCE_ADDRESS  | localhost or 192.168.5.1 |  Address (for resources) used to communicate with Maat (also used to create href addresses)  |
+|   MAAT_RESOURCE_PORT    |           8080           |   Port (for resources) used to communicate with Maat (also used to create href addresses)    |
+| MAAT_SERVICE_PROTOCOL   |        http/https        |  Protocol (for services) used to communicate with Maat (also used to create href addresses)  |
+|  MAAT_SERVICE_ADDRESS   | localhost or 192.168.5.1 |  Address (for services) used to communicate with Maat (also used to create href addresses)   |
+|    MAAT_SERVICE_PORT    |           8080           |    Port (for services) used to communicate with Maat (also used to create href addresses)    |
+
+## Installation Maat
+
 An alternative installation procedure using docker containers.
 
 
@@ -55,7 +76,7 @@ Go to **docker/** folder and run:
 ```docker-compose up -d```
 
 
-# Installation Maat with EventListener
+## Installation Maat with EventListener
 
 [EventListener](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-eventlistener) is a suporting application for storing notifications from Maat. Notifications inform about any events (add/update/delete resources/services) in Maat.
 EventListener automatically registers to Maat when starting (address and port of Maat are located in the properties maat-host and maat-port).
@@ -65,7 +86,7 @@ Go to **docker/** folder and run:
 
 ```docker-compose -f docker-compose-2.yml up```
 
-# Installation Maat (with EventListener) with Keycloak and SSL
+## Installation Maat (with EventListener) with Keycloak and SSL
 
 Go to **docker/** folder and run:
 
@@ -91,6 +112,21 @@ Warning! When Maat works with Keycloak and SSL you must manually register EventL
     "query" : null
 }
 ```
+
+## Installation Maat (with EventListener) with HTTPS access (for Maat) by NGINX
+
+An alternative way to configure SSL (https) for the Maat application is to run nginx, which takes over handling secure communication.
+In this case, SSL configuration in Maat is no longer needed. An example of installation of Maat with nginx can be seen using the docker-compose-4.yml file.
+
+The default port used by nginx is 8082
+
+Go to **docker/** folder and run:
+
+```docker-compose -f docker-compose-4.yml up```
+
+<br> <b>Warning!</b><br>All of the above options for running Maat applications using Docker use Volumes. Each MongoDB database has its own volume assigned in the docker-compose file. 
+When you delete a database container, the volume still exists and when you restart the service, the old data will be included.
+To remove all data, when you delete the containers, you must also delete the volumes.
 
 
 # Example API requests
@@ -380,7 +416,7 @@ To create a copy of the MongoDB database from the container or restore the data 
   1\) copy data from host machine to MongoDB container<br>
 ```docker cp ./dump <container_id>:/dump```<br>
   2\) use "mongorestore" tool in MongoDB container<br>
-```docker exec -i <container_id> /usr/bin/mongorestore --username <password> --password <password> /dump```
+```docker exec -i <container_id> /usr/bin/mongorestore --username <username> --password <password> /dump```
 
 ## MongoDB delete data
 To delete data from MongoDB for resources_db, services_db and listeners_db follow the steps below:

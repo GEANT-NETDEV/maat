@@ -38,13 +38,13 @@ services:
     ports:
       - 8082:443
 
-  share:
-    build:
-      context: .
-      dockerfile: Dockerfile_nginx_share
-    hostname: tmfscheme
-    ports:
-      - 8083:8083
+#  share:
+#    build:
+#      context: .
+#      dockerfile: Dockerfile_nginx_share
+#    hostname: tmfscheme
+#    ports:
+#      - 8083:8083
 
   eventListener:
     image: artifactory.software.geant.org/spa-docker/eventlistener:0.5
