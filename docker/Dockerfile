@@ -1,4 +1,4 @@
-FROM maven:3.8.3-openjdk-17 as builder
+FROM maven:3.9.6-amazoncorretto-21 as builder
 
 WORKDIR /home/maat
 
@@ -10,7 +10,7 @@ COPY src/ src/
 RUN mvn install -Dmaven.test.failure.ignore=true -Dmaven.test.skip=true
 
 # base image to build a JRE
-FROM amazoncorretto:17.0.7-alpine as corretto-jdk
+FROM amazoncorretto:21.0.3-alpine as corretto-jdk
 #FROM openjdk:17-alpine as alpine-jdk
 
 # required for strip-debug to work
