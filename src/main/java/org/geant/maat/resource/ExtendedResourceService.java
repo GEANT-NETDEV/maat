@@ -1069,15 +1069,6 @@ public class ExtendedResourceService implements ResourceService {
         return resources;
     }
 
-    public Either<DomainError, JsonNode> updateResourceNC(String id, JsonNode updateJson) {
-        ExtendedResourceLogger.infoJson(String.format("Updating resource %s, update json:", id), updateJson);
-
-        var result = updater.update(id, updateJson)
-                .peek(json -> ExtendedResourceLogger.infoJson(String.format("Resource %s updated successfully", id), json))
-                .peekLeft(error -> ExtendedResourceLogger.info(String.format("Update of %s failed: %s", id, error.message())));
-        return result;
-    }
-
     private static class ExtendedResourceLogger {
         private static final Logger logger = LoggerFactory.getLogger(ResourceService.class);
 

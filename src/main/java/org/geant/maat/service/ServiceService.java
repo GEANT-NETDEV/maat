@@ -25,5 +25,4 @@ public interface ServiceService {
 
     Collection<JsonNode> getServices(List<String> fields, Map<String, String> filtering, int offset, int limit);
 
-    Either<DomainError, JsonNode> updateServiceNC(String id, JsonNode updateJson);
 }

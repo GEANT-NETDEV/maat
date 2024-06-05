@@ -1059,18 +1059,6 @@ public class ExtendedServiceService implements ServiceService {
         return services;
     }
 
-    @Override
-    public Either<DomainError, JsonNode> updateServiceNC(String id, JsonNode updateJson) {
-        ExtendedServiceLogger.infoJson(String.format("Updating service %s, update json:", id), updateJson);
-
-        var result = updater.update(id, updateJson)
-                .peek(json -> ExtendedServiceLogger.infoJson(String.format("Service %s updated successfully", id), json))
-                .peekLeft(error -> ExtendedServiceLogger.info(String.format("Update of %s failed: %s", id, error.message())));
-
-
-        return result;
-    }
-
     private static class ExtendedServiceLogger {
         private static final Logger logger = LoggerFactory.getLogger(ServiceService.class);
 

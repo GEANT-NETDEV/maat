@@ -112,16 +112,6 @@ public class BaseResourceService implements ResourceService {
         return resources;
     }
 
-    @Override
-    public Either<DomainError, JsonNode> updateResourceNC(String id, JsonNode updateJson) {
-        BaseResourceLogger.infoJson(String.format("Updating resource %s, update json:", id), updateJson);
-
-        var result = updater.update(id, updateJson)
-                .peek(json -> BaseResourceLogger.infoJson(String.format("Resource %s updated successfully", id), json))
-                .peekLeft(error -> BaseResourceLogger.info(String.format("Update of %s failed: %s", id, error.message())));
-
-        return result;
-    }
 
     private static class BaseResourceLogger {
         private static final Logger logger = LoggerFactory.getLogger(ResourceService.class);

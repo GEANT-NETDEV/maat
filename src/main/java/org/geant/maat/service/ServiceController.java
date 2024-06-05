@@ -166,12 +166,4 @@ public class ServiceController implements ResultMapper{
         }
     }
 
-    @PatchMapping(value = "/${api.service.version}/serviceNC/{id}")
-    ResponseEntity<?> updateServiceNC(@PathVariable String id, @RequestBody JsonNode requestBody) {
-        var service = serviceService.updateServiceNC(id, requestBody);
-        return foldResultWithStatus(service, HttpStatus.OK);
-    }
-
-
-
 }
