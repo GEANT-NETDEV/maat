@@ -695,8 +695,8 @@ public class ExtendedServiceService implements ServiceService {
         }
         ExtendedServiceLogger.info(updateJson.toPrettyString());
 
-        if(updateJson.get("serviceRelationship")==null){((ObjectNode) updateJson).putArray("serviceRelationship");}
-        else if(updateJson.get("resourceRelationship")==null){((ObjectNode) updateJson).putArray("resourceRelationship");}
+        if(updateJson.get("serviceRelationship")==null && baseServiceJson.get("serviceRelationship")==null){((ObjectNode) updateJson).putArray("serviceRelationship");}
+        else if(updateJson.get("resourceRelationship")==null && baseServiceJson.get("resourceRelationship")==null){((ObjectNode) updateJson).putArray("resourceRelationship");}
 
         ExtendedServiceLogger.info(baseServiceJson.toPrettyString());
         if (!updateJson.get("serviceRelationship").toString().equals(baseServiceJson.get("serviceRelationship").toString()) || !updateJson.get("resourceRelationship").toString().equals(baseServiceJson.get("resourceRelationship").toString())) {
