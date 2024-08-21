@@ -698,8 +698,8 @@ public class ExtendedResourceService implements ResourceService {
         }
         ExtendedResourceLogger.info(updateJson.toPrettyString());
 
-        if(updateJson.get("resourceRelationship")==null){((ObjectNode) updateJson).putArray("resourceRelationship");}
-        else if(updateJson.get("serviceRelationship")==null){((ObjectNode) updateJson).putArray("serviceRelationship");}
+        if(updateJson.get("resourceRelationship")==null && baseResourceJson.get("resourceRelationship")==null){((ObjectNode) updateJson).putArray("resourceRelationship");}
+        else if(updateJson.get("serviceRelationship")==null && baseResourceJson.get("serviceRelationship")==null){((ObjectNode) updateJson).putArray("serviceRelationship");}
 
         ExtendedResourceLogger.info(baseResourceJson.toPrettyString());
         if (!updateJson.get("resourceRelationship").toString().equals(baseResourceJson.get("resourceRelationship").toString()) || !updateJson.get("serviceRelationship").toString().equals(baseResourceJson.get("serviceRelationship").toString())) {
