@@ -2,7 +2,7 @@ version: '3'
 
 services:
   maat:
-    image: artifactory.software.geant.org/spa-docker/maat:1.0.2
+    image: artifactory.software.geant.org/spa-docker/maat:1.0.3
     hostname: $MAAT_HOST
     ports:
       - "8080:8080"
