@@ -8,6 +8,10 @@ services:
     ports:
       - "8080:8080"
     environment:
+      - spring.security.role.get_only=get
+      - spring.security.role.post_only=post
+      - spring.security.role.delete_only=delete
+      - spring.security.role.patch_only=patch
       - server.ssl.enabled=true
       - keycloak.enabled=true
       - MONGO_HOST=$MONGODB_HOST
