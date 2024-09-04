@@ -432,7 +432,6 @@ public class ExtendedResourceService implements ResourceService {
     }
 
     private Either<DomainError, Service> updateService(String href, JsonNode service) {
-        href=href.replace("/service/", "/serviceNC/");
         var trustManager = new X509ExtendedTrustManager() {
             @Override
             public X509Certificate[] getAcceptedIssuers() {
@@ -698,42 +697,34 @@ public class ExtendedResourceService implements ResourceService {
         }
         ExtendedResourceLogger.info(updateJson.toPrettyString());
 
-        if(updateJson.get("resourceRelationship")==null && baseResourceJson.get("resourceRelationship")==null){((ObjectNode) updateJson).putArray("resourceRelationship");}
-        else if(updateJson.get("serviceRelationship")==null && baseResourceJson.get("serviceRelationship")==null){((ObjectNode) updateJson).putArray("serviceRelationship");}
+        if(updateJson.get("resourceRelationship")==null){((ObjectNode) updateJson).set("resourceRelationship", baseResourceJson.get("resourceRelationship").deepCopy());}
+        else if(updateJson.get("serviceRelationship")==null){((ObjectNode) updateJson).set("serviceRelationship", baseResourceJson.get("serviceRelationship").deepCopy());}
 
         ExtendedResourceLogger.info(baseResourceJson.toPrettyString());
         if (!updateJson.get("resourceRelationship").toString().equals(baseResourceJson.get("resourceRelationship").toString()) || !updateJson.get("serviceRelationship").toString().equals(baseResourceJson.get("serviceRelationship").toString())) {
-            var difUpdate = updateDifferences(baseResourceJson, updateJson)
+            var difUpdate = updateDifferences(baseResourceJson, updateJson, id, registerNewEventFlag)
                     .peekLeft(error -> ExtendedResourceLogger.info(String.format("Update failed: %s", error.message())));
             if(difUpdate.isLeft()){
                 return Either.left(difUpdate.getLeft());
             }
             else{
-                ExtendedResourceLogger.info("Differences Update Completed");
-                Map<String, String> mapReturnWithNamesToAdd=difUpdate.get();
-                for( JsonNode j : updateJson.get("resourceRelationship")){
-                    if(mapReturnWithNamesToAdd.containsKey(j.get("resource").get("href").asText())){
-                        ((ObjectNode) j.get("resource")).put("name", mapReturnWithNamesToAdd.get(j.get("resource").get("href").asText()));}
-                }
-                for( JsonNode j : updateJson.get("serviceRelationship")){
-                    if(mapReturnWithNamesToAdd.containsKey(j.get("service").get("href").asText())){
-                        ((ObjectNode) j.get("service")).put("name", mapReturnWithNamesToAdd.get(j.get("service").get("href").asText()));}
-                }
+                var result = difUpdate.get();
+                return Either.right(result);
             }
 
         }
+        else{
+            var result = updater.update(id, deletePropertiesForbiddenToUpdate(updateJson))
+                    .peek(json -> ExtendedResourceLogger.infoJson(String.format("Resource %s updated successfully", id), json))
+                    .peekLeft(error -> ExtendedResourceLogger.info(String.format("Update of %s failed: %s", id, error.message())));
 
-        var result = updater.update(id, deletePropertiesForbiddenToUpdate(updateJson))
-                .peek(json -> ExtendedResourceLogger.infoJson(String.format("Resource %s updated successfully", id), json))
-                .peekLeft(error -> ExtendedResourceLogger.info(String.format("Update of %s failed: %s", id, error.message())));
-
-        if (registerNewEventFlag) result.peek(json -> notifications.registerNewEvent(new EventDto(EventType.ResourceAttributeValueChangeEvent, json)));
-
-        return result;
+            if (registerNewEventFlag) result.peek(json -> notifications.registerNewEvent(new EventDto(EventType.ResourceAttributeValueChangeEvent, json)));
+            return result;
+        }
     }
 
 
-    private Either<DomainError, Map<String, String>> updateDifferences(JsonNode baseResource, JsonNode updateResource) {
+    private Either<DomainError, JsonNode> updateDifferences(JsonNode baseResource, JsonNode updateResource, String id, Boolean registerNewEventFlag) {
         if(checkMultiRelationsAndnoBrefRef(updateResource).isLeft()){
             return Either.left(checkMultiRelationsAndnoBrefRef(updateResource).getLeft());}
         Map<String, ArrayList<String>>mapBaseResource=getResourcesWithRelations(baseResource);
@@ -814,6 +805,23 @@ public class ExtendedResourceService implements ResourceService {
                 }
             }
         }
+
+        ExtendedResourceLogger.info("Differences Update Completed");
+        for( JsonNode j : updateResource.get("resourceRelationship")){
+            if(mapReturnWithNamesToAdd.containsKey(j.get("resource").get("href").asText())){
+                ((ObjectNode) j.get("resource")).put("name", mapReturnWithNamesToAdd.get(j.get("resource").get("href").asText()));}
+        }
+        for( JsonNode j : updateResource.get("serviceRelationship")){
+            if(mapReturnWithNamesToAdd.containsKey(j.get("service").get("href").asText())){
+                ((ObjectNode) j.get("service")).put("name", mapReturnWithNamesToAdd.get(j.get("service").get("href").asText()));}
+        }
+
+        var result = updater.update(id, deletePropertiesForbiddenToUpdate(updateResource))
+                .peek(json -> ExtendedResourceLogger.infoJson(String.format("Resource %s updated successfully", id), json))
+                .peekLeft(error -> ExtendedResourceLogger.info(String.format("Update of %s failed: %s", id, error.message())));
+
+        if (registerNewEventFlag) result.peek(json -> notifications.registerNewEvent(new EventDto(EventType.ResourceAttributeValueChangeEvent, json)));
+
         for( String add : differentKeysToAdd ){
             addRelationsToResource(add, relationNames.get(add), href, mapRelationsHrefWithSetName);
         }
@@ -826,7 +834,7 @@ public class ExtendedResourceService implements ResourceService {
         for( String del : differentKeysServiceToDelete){
             deleteRelationsFromService(del, href);
         }
-        return Either.right(mapReturnWithNamesToAdd);
+        return result;
     }
 
     private Either<DomainError, Boolean> checkMultiRelationsAndnoBrefRef(JsonNode resourceJson) {
@@ -871,7 +879,7 @@ public class ExtendedResourceService implements ResourceService {
             while (nodes.hasNext()) {
                 JsonNode next = nodes.next();
                 if (next.get("resource").get("href").textValue().equals(baseHref)) {
-                    if (relationName.equals(next.get("relationshipType").textValue())) exist = true;
+                    if (changePrefix(relationName).equals(next.get("relationshipType").textValue())) exist = true;
 
                 }
             }
@@ -902,7 +910,7 @@ public class ExtendedResourceService implements ResourceService {
             while (nodes.hasNext()) {
                 JsonNode next = nodes.next();
                 if (next.get("resource").get("href").textValue().equals(baseHref)) {
-                    if (relationName.equals(next.get("relationshipType").textValue())) exist = true;
+                    if (changePrefix(relationName).equals(next.get("relationshipType").textValue())) exist = true;
 
                 }
             }
@@ -936,7 +944,7 @@ public class ExtendedResourceService implements ResourceService {
             while (nodes.hasNext()) {
                 JsonNode next = nodes.next();
                 if (next.get("resource").get("href").textValue().equals(baseHref)) {
-                    if (relationName.equals(next.get("relationshipType").textValue())) exist = true;
+                    if (changePrefix(relationName).equals(next.get("relationshipType").textValue())) exist = true;
 
                 }
             }
@@ -970,7 +978,7 @@ public class ExtendedResourceService implements ResourceService {
             while (nodes.hasNext()) {
                 JsonNode next = nodes.next();
                 if (next.get("resource").get("href").textValue().equals(baseHref)) {
-                    if (relationName.equals(next.get("relationshipType").textValue())) exist = true;
+                    if (changePrefix(relationName).equals(next.get("relationshipType").textValue())) exist = true;
 
                 }
             }
