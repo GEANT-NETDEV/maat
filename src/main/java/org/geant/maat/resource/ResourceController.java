@@ -1,17 +1,26 @@
 package org.geant.maat.resource;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import jakarta.servlet.http.HttpServletRequest;
+import org.geant.maat.common.UserDataFilters;
 import org.geant.maat.infrastructure.ResultMapper;
+import org.keycloak.KeycloakSecurityContext;
+import org.keycloak.representations.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import org.keycloak.KeycloakPrincipal;
 
 import java.util.Collection;
 import java.util.List;
@@ -24,6 +33,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "API Resource Inventory Management")
 class ResourceController implements ResultMapper {
     private final ResourceService resourceService;
+
+    @Value("${keycloak.enabled}")
+    private String keycloakStatus;
 
     @Autowired
     public Environment environment;
@@ -47,24 +59,37 @@ class ResourceController implements ResultMapper {
             @ApiResponse(responseCode = "409", content = { @Content(schema = @Schema()) }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
 
-    //@CrossOrigin(allowCredentials = "true")
     @GetMapping("/${api.resource.version}/resource")
     ResponseEntity<Collection<JsonNode>> getResources(
             @RequestParam(required = false, defaultValue = "") List<String> fields,
             @RequestParam Map<String, String> allRequestParams,
             @RequestParam(required = false, defaultValue = "0") int offset,
-            @RequestParam(required = false, defaultValue = "0") int limit
+            @RequestParam(required = false, defaultValue = "0") int limit,
+            @RequestHeader("Authorization") String token
     ) {
         allRequestParams.remove("fields");
         allRequestParams.remove("offset");
         allRequestParams.remove("limit");
 
-        var allResources = resourceService.getResources(fields, allRequestParams);
-        if (offset == 0 && limit == 0) {
-            return toResponseEntity(allResources, allResources.size());
+
+        if (Objects.equals(keycloakStatus, "true")) {
+            UserDataFilters userFilters = new UserDataFilters(resourceService);
+            if (offset == 0 && limit == 0) {
+                var allResourcesWithFilters = userFilters.getFilter(token, fields, allRequestParams);
+                return toResponseEntity(allResourcesWithFilters, allResourcesWithFilters.size());
+            } else {
+                var allResourcesWithFilters = userFilters.getFilter(token, fields, allRequestParams, offset, limit);
+                return toResponseEntity(allResourcesWithFilters, allResourcesWithFilters.size());
+            }
+        } else {
+            var allResources = resourceService.getResources(fields, allRequestParams);
+            if (offset == 0 && limit == 0) {
+                return toResponseEntity(allResources, allResources.size());
+            }
+            return toResponseEntity(resourceService.getResources(fields, allRequestParams, offset, limit),
+                    allResources.size());
         }
-        return toResponseEntity(resourceService.getResources(fields, allRequestParams, offset, limit),
-                                allResources.size());
+
     }
 
     private ResponseEntity<Collection<JsonNode>> toResponseEntity(Collection<JsonNode> services, long totalCount) {

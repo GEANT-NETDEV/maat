@@ -3,7 +3,7 @@ version: '3'
 services:
 
   maat:
-    image: artifactory.software.geant.org/spa-docker/maat:1.0.3
+    image: maat_keycloak_test3
     hostname: $MAAT_HOST
     ports:
       - "8080:8080"
@@ -71,18 +71,20 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_EL_PASSWORD
 
   keycloak-dev:
-    image: quay.io/keycloak/keycloak:19.0.1
+    image: quay.io/keycloak/keycloak:25.0.4
     hostname: $KEYCLOAK_HOST
     ports:
       - "8090:8090"
     expose:
       - "8090"
+    volumes:
+      - keycloak_data:/opt/keycloak/data
     environment:
       - KEYCLOAK_ADMIN=$KEYCLOAK_USER
       - KEYCLOAK_ADMIN_PASSWORD=$KEYCLOAK_PASS
     command: start-dev --http-port 8090
   keycloak-dev-setup:
-    image: quay.io/keycloak/keycloak:19.0.1
+    image: quay.io/keycloak/keycloak:25.0.4
     depends_on:
       - keycloak-dev
     profiles:
@@ -94,8 +96,9 @@ services:
       && /opt/keycloak/bin/kcadm.sh set-password -r MaatRealm --username test --new-password test
       && /opt/keycloak/bin/kcadm.sh create roles -r MaatRealm -s name=inv3user
       && /opt/keycloak/bin/kcadm.sh create clients -r MaatRealm -s clientId=inv3 -s enabled=true -s clientAuthenticatorType=client-secret -s secret=d0b8122f-8dfb-46b7-b68a-f5cc4e25d123 -s directAccessGrantsEnabled=true
-      && /opt/keycloak/bin/kcadm.sh add-roles --uusername test --rolename inv3user -r MaatRealm"
+      && /opt/keycloak/bin/kcadm.sh add-roles --username test --rolename inv3user -r MaatRealm"
 
 volumes:
   mongodb:
   mongodb2:
+  keycloak_data:
