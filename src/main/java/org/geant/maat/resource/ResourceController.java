@@ -8,8 +8,10 @@ import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.vavr.control.Either;
 import jakarta.servlet.http.HttpServletRequest;
 import org.geant.maat.common.UserDataFilters;
+import org.geant.maat.infrastructure.DomainError;
 import org.geant.maat.infrastructure.ResultMapper;
 import org.keycloak.KeycloakSecurityContext;
 import org.keycloak.representations.AccessToken;
@@ -135,13 +137,26 @@ class ResourceController implements ResultMapper {
             @ApiResponse(responseCode = "409", content = { @Content(schema = @Schema()) }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @PostMapping(value = "/${api.resource.version}/resource")
-    ResponseEntity<?> addResource(@RequestBody JsonNode requestBody) {
+    ResponseEntity<?> addResource(@RequestBody JsonNode requestBody,
+                                  @RequestHeader("Authorization") String token) {
+        UserDataFilters userFilters = new UserDataFilters(resourceService);
         if(Objects.requireNonNull(environment.getProperty("notification.sendNotificationToListeners")).equalsIgnoreCase("true")) {
-            var resource = resourceService.createResource(requestBody, true);
-            return foldResultWithStatus(resource, HttpStatus.CREATED);
+            if (Objects.equals(keycloakStatus, "true")) {
+                Either<DomainError, JsonNode> resource = userFilters.postFilter(token, requestBody);
+                //var resource = resourceService.createResource(requestBody, true);
+                return foldResultWithStatus(resource, HttpStatus.CREATED);
+            } else {
+                var resource = resourceService.createResource(requestBody, true);
+                return foldResultWithStatus(resource, HttpStatus.CREATED);
+            }
         } else {
-            var resource = resourceService.createResource(requestBody, false);
-            return foldResultWithStatus(resource, HttpStatus.CREATED);
+            if (Objects.equals(keycloakStatus, "true")) {
+                var resource = resourceService.createResource(requestBody, false);
+                return foldResultWithStatus(resource, HttpStatus.CREATED);
+            } else {
+                var resource = resourceService.createResource(requestBody, false);
+                return foldResultWithStatus(resource, HttpStatus.CREATED);
+            }
         }
     }
 
