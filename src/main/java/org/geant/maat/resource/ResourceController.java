@@ -117,11 +117,19 @@ class ResourceController implements ResultMapper {
     ResponseEntity<?> getResource(
             @PathVariable String id,
             @RequestParam(required = false, defaultValue = "") List<String> fields,
-            @RequestParam Map<String, String> allRequestParams
+            @RequestParam Map<String, String> allRequestParams,
+            @RequestHeader("Authorization") String token
     ) {
         allRequestParams.remove("fields");
-        var resource = resourceService.getResource(id, fields);
-        return foldResultWithStatus(resource, HttpStatus.OK);
+
+        if (Objects.equals(keycloakStatus, "true")) {
+            UserDataFilters userFilters = new UserDataFilters(resourceService);
+            var resourceByIdWithFilters = userFilters.getFilterById(token, id, fields);
+            return foldResultWithStatus(resourceByIdWithFilters, HttpStatus.OK);
+        } else {
+            var resource = resourceService.getResource(id, fields);
+            return foldResultWithStatus(resource, HttpStatus.OK);
+        }
     }
 
     @Operation(

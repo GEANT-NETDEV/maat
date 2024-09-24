@@ -94,6 +94,39 @@ public class UserDataFilters {
 
     }
 
+    public Either<DomainError, JsonNode> getFilterById(String token, String id, List<String> fields) {
+        String cleanedToken = token.replace("Bearer ", "");
+        DecodedJWT jwt = JWT.decode(cleanedToken);
+        Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
+
+        List<Map<String, String>> orFilters = new ArrayList<>();
+
+        if (userAccessFilters != null) {
+            List<Map<String, String>> getFilterList = (List<Map<String, String>>) userAccessFilters.get("get_filter");
+
+            if (getFilterList != null) {
+                orFilters.addAll(getFilterList);
+            }
+        } else {
+            return resourceService.getResource(id, fields);
+        }
+
+        Collection<String> collection = List.of();
+        Either<DomainError, JsonNode> resourceById = resourceService.getResource(id, collection);
+
+        System.out.println("orFilters:" + orFilters);
+        for (Map<String, String> filter : orFilters) {
+            if (matchesFilter(filter, resourceById.get())) {
+                System.out.println("Match to: " + filter);
+                return resourceService.getResource(id, fields);
+            }
+        }
+
+        System.out.println("Doesn't match");
+        return Either.left(new DomainError("User filter does not match", Error.FILTER_ERROR));
+
+    }
+
     public Either<DomainError, JsonNode> postFilter(String token, JsonNode requestBody) {
         String cleanedToken = token.replace("Bearer ", "");
         DecodedJWT jwt = JWT.decode(cleanedToken);
