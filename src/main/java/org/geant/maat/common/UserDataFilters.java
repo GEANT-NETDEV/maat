@@ -6,15 +6,22 @@ import com.fasterxml.jackson.databind.JsonNode;
 import io.vavr.control.Either;
 import org.geant.maat.infrastructure.DomainError;
 import org.geant.maat.infrastructure.ErrorEntity;
+import org.geant.maat.resource.Resource;
 import org.geant.maat.resource.ResourceService;
 
 import java.util.*;
 
 public class UserDataFilters {
     private final ResourceService resourceService;
+    private Boolean notificationStatus;
 
     public UserDataFilters(ResourceService resourceService) {
         this.resourceService = resourceService;
+    }
+
+    public UserDataFilters(ResourceService resourceService, Boolean notificationStatus) {
+        this.resourceService = resourceService;
+        this.notificationStatus = notificationStatus;
     }
 
     public Collection<JsonNode> getFilter(String token, List<String> fields, Map<String, String> oldRequestsParams) {
@@ -27,6 +34,7 @@ public class UserDataFilters {
             List<Map<String, String>> getFilterList = (List<Map<String, String>>) userAccessFilters.get("get_filter");
 
             if (getFilterList != null) {
+                System.out.println("GET_FILTER jest !null");
                 orFilters.addAll(getFilterList);
             }
         }
@@ -39,7 +47,9 @@ public class UserDataFilters {
 
         for (Map<String, String> filter : orFilters) {
             Map<String, String> combinedParams = new HashMap<>(oldRequestsParams);
+            System.out.println(combinedParams);
             combinedParams.putAll(filter);
+            System.out.println(combinedParams);
             Collection<JsonNode> currentResult = resourceService.getResources(fields, combinedParams);
             finalResult.addAll(currentResult);
         }
@@ -92,18 +102,52 @@ public class UserDataFilters {
         List<Map<String, String>> orFilters = new ArrayList<>();
 
         if (userAccessFilters != null) {
-            List<Map<String, String>> getFilterList = (List<Map<String, String>>) userAccessFilters.get("post_filter");
+            List<Map<String, String>> postFilterList = (List<Map<String, String>>) userAccessFilters.get("post_filter");
 
-            if (getFilterList != null) {
-                orFilters.addAll(getFilterList);
+            if (postFilterList != null) {
+                orFilters.addAll(postFilterList);
             }
+        } else {
+            return resourceService.createResource(requestBody, notificationStatus);
         }
 
         System.out.println("orFilters:" + orFilters);
         for (Map<String, String> filter : orFilters) {
             if (matchesFilter(filter, requestBody)) {
                 System.out.println("Match to: " + filter);
-                return resourceService.createResource(requestBody, true);
+                return resourceService.createResource(requestBody, notificationStatus);
+            }
+        }
+
+        System.out.println("Doesn't match");
+        return Either.left(new DomainError("User filter does not match", Error.FILTER_ERROR));
+    }
+
+    public Either<DomainError, String> deleteFilter(String token, String id) {
+        String cleanedToken = token.replace("Bearer ", "");
+        DecodedJWT jwt = JWT.decode(cleanedToken);
+        Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
+
+        List<Map<String, String>> orFilters = new ArrayList<>();
+
+        if (userAccessFilters != null) {
+            List<Map<String, String>> deleteFilterList = (List<Map<String, String>>) userAccessFilters.get("delete_filter");
+
+            if (deleteFilterList != null) {
+                orFilters.addAll(deleteFilterList);
+            }
+        } else {
+            return resourceService.deleteResource(id, notificationStatus);
+        }
+
+        Collection<String> collection = List.of();
+        Either<DomainError, JsonNode> resourceForRemoval = resourceService.getResource(id, collection);
+
+        System.out.println("orFilters:" + orFilters);
+        for (Map<String, String> filter : orFilters) {
+            if (matchesFilter(filter, resourceForRemoval.get())) {
+                System.out.println("Match to: " + filter);
+                return resourceService.deleteResource(id, notificationStatus);
             }
         }
 

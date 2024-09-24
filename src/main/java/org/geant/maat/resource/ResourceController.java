@@ -139,11 +139,11 @@ class ResourceController implements ResultMapper {
     @PostMapping(value = "/${api.resource.version}/resource")
     ResponseEntity<?> addResource(@RequestBody JsonNode requestBody,
                                   @RequestHeader("Authorization") String token) {
-        UserDataFilters userFilters = new UserDataFilters(resourceService);
+
         if(Objects.requireNonNull(environment.getProperty("notification.sendNotificationToListeners")).equalsIgnoreCase("true")) {
             if (Objects.equals(keycloakStatus, "true")) {
+                UserDataFilters userFilters = new UserDataFilters(resourceService, true);
                 Either<DomainError, JsonNode> resource = userFilters.postFilter(token, requestBody);
-                //var resource = resourceService.createResource(requestBody, true);
                 return foldResultWithStatus(resource, HttpStatus.CREATED);
             } else {
                 var resource = resourceService.createResource(requestBody, true);
@@ -151,7 +151,8 @@ class ResourceController implements ResultMapper {
             }
         } else {
             if (Objects.equals(keycloakStatus, "true")) {
-                var resource = resourceService.createResource(requestBody, false);
+                UserDataFilters userFilters = new UserDataFilters(resourceService, false);
+                Either<DomainError, JsonNode> resource = userFilters.postFilter(token, requestBody);
                 return foldResultWithStatus(resource, HttpStatus.CREATED);
             } else {
                 var resource = resourceService.createResource(requestBody, false);
@@ -174,13 +175,26 @@ class ResourceController implements ResultMapper {
             @ApiResponse(responseCode = "409", content = { @Content(schema = @Schema()) }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @DeleteMapping(value = "/${api.resource.version}/resource/{id}")
-    ResponseEntity<?> deleteResource(@PathVariable String id) {
+    ResponseEntity<?> deleteResource(@PathVariable String id,
+                                     @RequestHeader("Authorization") String token) {
         if(Objects.requireNonNull(environment.getProperty("notification.sendNotificationToListeners")).equalsIgnoreCase("true")) {
-            var resource = resourceService.deleteResource(id, true);
-            return foldResultWithStatus(resource, HttpStatus.NO_CONTENT);
+            if (Objects.equals(keycloakStatus, "true")) {
+                UserDataFilters userFilters = new UserDataFilters(resourceService, true);
+                Either<DomainError, String> resource = userFilters.deleteFilter(token, id);
+                return foldResultWithStatus(resource, HttpStatus.NO_CONTENT);
+            } else {
+                var resource = resourceService.deleteResource(id, true);
+                return foldResultWithStatus(resource, HttpStatus.NO_CONTENT);
+            }
         } else {
-            var resource = resourceService.deleteResource(id, false);
-            return foldResultWithStatus(resource, HttpStatus.NO_CONTENT);
+            if (Objects.equals(keycloakStatus, "true")) {
+                UserDataFilters userFilters = new UserDataFilters(resourceService, false);
+                Either<DomainError, String> resource = userFilters.deleteFilter(token, id);
+                return foldResultWithStatus(resource, HttpStatus.NO_CONTENT);
+            } else {
+                var resource = resourceService.deleteResource(id, false);
+                return foldResultWithStatus(resource, HttpStatus.NO_CONTENT);
+            }
         }
     }
 
