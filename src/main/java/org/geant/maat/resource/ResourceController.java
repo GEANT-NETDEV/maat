@@ -220,13 +220,28 @@ class ResourceController implements ResultMapper {
             @ApiResponse(responseCode = "409", content = { @Content(schema = @Schema()) }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @PatchMapping(value = "/${api.resource.version}/resource/{id}")
-    ResponseEntity<?> updateResource(@PathVariable String id, @RequestBody JsonNode requestBody) {
+    ResponseEntity<?> updateResource(@PathVariable String id,
+                                     @RequestBody JsonNode requestBody,
+                                     @RequestHeader("Authorization") String token) {
+
         if(Objects.requireNonNull(environment.getProperty("notification.sendNotificationToListeners")).equalsIgnoreCase("true")) {
-            var resource = resourceService.updateResource(id, requestBody, true);
-            return foldResultWithStatus(resource, HttpStatus.OK);
+            if (Objects.equals(keycloakStatus, "true")) {
+                UserDataFilters userFilters = new UserDataFilters(resourceService, true);
+                Either<DomainError, JsonNode> resource = userFilters.patchFilter(token, id, requestBody);
+                return foldResultWithStatus(resource, HttpStatus.OK);
+            } else {
+                var resource = resourceService.updateResource(id, requestBody, true);
+                return foldResultWithStatus(resource, HttpStatus.OK);
+            }
         } else {
-            var resource = resourceService.updateResource(id, requestBody, false);
-            return foldResultWithStatus(resource, HttpStatus.OK);
+            if (Objects.equals(keycloakStatus, "true")) {
+                UserDataFilters userFilters = new UserDataFilters(resourceService, false);
+                Either<DomainError, JsonNode> resource = userFilters.patchFilter(token, id, requestBody);
+                return foldResultWithStatus(resource, HttpStatus.OK);
+            } else {
+                var resource = resourceService.updateResource(id, requestBody, false);
+                return foldResultWithStatus(resource, HttpStatus.OK);
+            }
         }
     }
 }

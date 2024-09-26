@@ -70,14 +70,14 @@ public class UserDataFilters {
 
             if (getFilterList != null) {
                 orFilters.addAll(getFilterList);
+            } else {
+                return resourceService.getResources(fields, oldRequestsParams);
             }
+        } else {
+            return resourceService.getResources(fields, oldRequestsParams);
         }
 
         Collection<JsonNode> finalResult = new ArrayList<>();
-
-        if (orFilters.isEmpty()) {
-            return resourceService.getResources(fields, oldRequestsParams);
-        }
 
         for (Map<String, String> filter : orFilters) {
             Map<String, String> combinedParams = new HashMap<>(oldRequestsParams);
@@ -106,6 +106,8 @@ public class UserDataFilters {
 
             if (getFilterList != null) {
                 orFilters.addAll(getFilterList);
+            } else {
+                return resourceService.getResource(id, fields);
             }
         } else {
             return resourceService.getResource(id, fields);
@@ -139,6 +141,8 @@ public class UserDataFilters {
 
             if (postFilterList != null) {
                 orFilters.addAll(postFilterList);
+            } else {
+                return resourceService.createResource(requestBody, notificationStatus);
             }
         } else {
             return resourceService.createResource(requestBody, notificationStatus);
@@ -168,6 +172,8 @@ public class UserDataFilters {
 
             if (deleteFilterList != null) {
                 orFilters.addAll(deleteFilterList);
+            } else {
+                return resourceService.deleteResource(id, notificationStatus);
             }
         } else {
             return resourceService.deleteResource(id, notificationStatus);
@@ -181,6 +187,40 @@ public class UserDataFilters {
             if (matchesFilter(filter, resourceForRemoval.get())) {
                 System.out.println("Match to: " + filter);
                 return resourceService.deleteResource(id, notificationStatus);
+            }
+        }
+
+        System.out.println("Doesn't match");
+        return Either.left(new DomainError("User filter does not match", Error.FILTER_ERROR));
+    }
+
+    public Either<DomainError, JsonNode> patchFilter(String token, String id, JsonNode requestBody) {
+        String cleanedToken = token.replace("Bearer ", "");
+        DecodedJWT jwt = JWT.decode(cleanedToken);
+        Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
+
+        List<Map<String, String>> orFilters = new ArrayList<>();
+
+        if (userAccessFilters != null) {
+            List<Map<String, String>> patchFilterList = (List<Map<String, String>>) userAccessFilters.get("patch_filter");
+
+            if (patchFilterList != null) {
+                orFilters.addAll(patchFilterList);
+            } else {
+                return resourceService.updateResource(id, requestBody, notificationStatus);
+            }
+        } else {
+            return resourceService.updateResource(id, requestBody, notificationStatus);
+        }
+
+        Collection<String> collection = List.of();
+        Either<DomainError, JsonNode> resourceById = resourceService.getResource(id, collection);
+
+        System.out.println("orFilters:" + orFilters);
+        for (Map<String, String> filter : orFilters) {
+            if (matchesFilter(filter, resourceById.get())) {
+                System.out.println("Match to: " + filter);
+                return resourceService.updateResource(id, requestBody, notificationStatus);
             }
         }
 
