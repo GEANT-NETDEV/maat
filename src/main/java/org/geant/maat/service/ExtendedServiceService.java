@@ -9,6 +9,7 @@ import org.geant.maat.infrastructure.DomainError;
 import org.geant.maat.notification.EventType;
 import org.geant.maat.notification.NotificationService;
 import org.geant.maat.notification.dto.EventDto;
+import org.geant.maat.resource.ExtendedResourceService;
 import org.geant.maat.resource.Resource;
 import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
@@ -429,7 +430,6 @@ public class ExtendedServiceService implements ServiceService {
     }
 
     private Either<DomainError, Resource> updateResource(String href, JsonNode resource) {
-        href=href.replace("/resource/", "/resourceNC/");
         var trustManager = new X509ExtendedTrustManager() {
             @Override
             public X509Certificate[] getAcceptedIssuers() {
@@ -695,41 +695,32 @@ public class ExtendedServiceService implements ServiceService {
         }
         ExtendedServiceLogger.info(updateJson.toPrettyString());
 
-        if(updateJson.get("serviceRelationship")==null && baseServiceJson.get("serviceRelationship")==null){((ObjectNode) updateJson).putArray("serviceRelationship");}
-        else if(updateJson.get("resourceRelationship")==null && baseServiceJson.get("resourceRelationship")==null){((ObjectNode) updateJson).putArray("resourceRelationship");}
+        if(updateJson.get("serviceRelationship")==null){((ObjectNode) updateJson).set("serviceRelationship", baseServiceJson.get("serviceRelationship").deepCopy());}
+        else if(updateJson.get("resourceRelationship")==null){ ((ObjectNode) updateJson).set("resourceRelationship", baseServiceJson.get("resourceRelationship").deepCopy());}
 
         ExtendedServiceLogger.info(baseServiceJson.toPrettyString());
         if (!updateJson.get("serviceRelationship").toString().equals(baseServiceJson.get("serviceRelationship").toString()) || !updateJson.get("resourceRelationship").toString().equals(baseServiceJson.get("resourceRelationship").toString())) {
-            var difUpdate = updateDifferences(baseServiceJson, updateJson)
+            var difUpdate = updateDifferences(baseServiceJson, updateJson, id, registerNewEventFlag)
                     .peekLeft(error -> ExtendedServiceLogger.info(String.format("Update failed: %s", error.message())));
             if(difUpdate.isLeft()){
                 return Either.left(difUpdate.getLeft());
             }
             else{
-                ExtendedServiceLogger.info("Differences Update Completed");
-                Map<String, String> mapReturnWithNamesToAdd=difUpdate.get();
-                for( JsonNode j : updateJson.get("serviceRelationship")){
-                    if(mapReturnWithNamesToAdd.containsKey(j.get("service").get("href").asText())){
-                        ((ObjectNode) j.get("service")).put("name", mapReturnWithNamesToAdd.get(j.get("service").get("href").asText()));}
-                }
-                for( JsonNode j : updateJson.get("resourceRelationship")){
-                    if(mapReturnWithNamesToAdd.containsKey(j.get("resource").get("href").asText())){
-                        ((ObjectNode) j.get("resource")).put("name", mapReturnWithNamesToAdd.get(j.get("resource").get("href").asText()));}
-                }
+                var result = difUpdate.get();
+                return Either.right(result);
             }
 
         }
-
-        var result = updater.update(id, deletePropertiesForbiddenToUpdate(updateJson))
-                .peek(json -> ExtendedServiceLogger.infoJson(String.format("Service %s updated successfully", id), json))
-                .peekLeft(error -> ExtendedServiceLogger.info(String.format("Update of %s failed: %s", id, error.message())));
-
-        if (registerNewEventFlag) result.peek(json -> notifications.registerNewEvent(new EventDto(EventType.ServiceAttributeValueChangeEvent, json)));
-
-        return result;
+        else{
+            var result =  updater.update(id, deletePropertiesForbiddenToUpdate(updateJson))
+                    .peek(json -> ExtendedServiceLogger.infoJson(String.format("Service %s updated successfully", id), json))
+                    .peekLeft(error -> ExtendedServiceLogger.info(String.format("Update of %s failed: %s", id, error.message())));
+            if (registerNewEventFlag) result.peek(json -> notifications.registerNewEvent(new EventDto(EventType.ServiceAttributeValueChangeEvent, json)));
+            return result;
+        }
     }
 
-    private Either<DomainError, Map<String, String>> updateDifferences(JsonNode baseService, JsonNode updateService) {
+    private Either<DomainError, JsonNode> updateDifferences(JsonNode baseService, JsonNode updateService, String id, Boolean registerNewEventFlag) {
         if(checkMultiRelationsAndnoBrefRef(updateService).isLeft()){
             return Either.left(checkMultiRelationsAndnoBrefRef(updateService).getLeft());}
         Map<String, ArrayList<String>>mapBaseService=getServicesWithRelations(baseService);
@@ -811,6 +802,22 @@ public class ExtendedServiceService implements ServiceService {
             }
         }
 
+        ExtendedServiceLogger.info("Differences Update Completed");
+        for( JsonNode j : updateService.get("serviceRelationship")){
+            if(mapReturnWithNamesToAdd.containsKey(j.get("service").get("href").asText())){
+                ((ObjectNode) j.get("service")).put("name", mapReturnWithNamesToAdd.get(j.get("service").get("href").asText()));}
+        }
+        for( JsonNode j : updateService.get("resourceRelationship")){
+            if(mapReturnWithNamesToAdd.containsKey(j.get("resource").get("href").asText())){
+                ((ObjectNode) j.get("resource")).put("name", mapReturnWithNamesToAdd.get(j.get("resource").get("href").asText()));}
+        }
+
+        var result = updater.update(id, deletePropertiesForbiddenToUpdate(updateService))
+                .peek(json -> ExtendedServiceLogger.infoJson(String.format("Service %s updated successfully", id), json))
+                .peekLeft(error -> ExtendedServiceLogger.info(String.format("Update of %s failed: %s", id, error.message())));
+
+        if (registerNewEventFlag) result.peek(json -> notifications.registerNewEvent(new EventDto(EventType.ServiceAttributeValueChangeEvent, json)));
+
         for( String add : differentKeysToAdd ){
             addRelationsToService(add, relationNames.get(add), href, mapRelationsHrefWithSetName);
         }
@@ -823,7 +830,7 @@ public class ExtendedServiceService implements ServiceService {
         for( String del : differentKeysResourceToDelete ){
             deleteRelationsFromResource(del, href);
         }
-        return Either.right(mapReturnWithNamesToAdd);
+        return result;
     }
 
     private Either<DomainError, Boolean> checkMultiRelationsAndnoBrefRef(JsonNode serviceJson) {
@@ -867,7 +874,7 @@ public class ExtendedServiceService implements ServiceService {
             while (nodes.hasNext()) {
                 JsonNode next = nodes.next();
                 if (next.get("service").get("href").textValue().equals(baseHref)) {
-                    if (relationName.equals(next.get("relationshipType").textValue())) exist = true;
+                    if (changePrefix(relationName).equals(next.get("relationshipType").textValue())) exist = true;
 
                 }
             }
@@ -898,7 +905,7 @@ public class ExtendedServiceService implements ServiceService {
             while (nodes.hasNext()) {
                 JsonNode next = nodes.next();
                 if (next.get("service").get("href").textValue().equals(baseHref)) {
-                    if (relationName.equals(next.get("relationshipType").textValue())) exist = true;
+                    if (changePrefix(relationName).equals(next.get("relationshipType").textValue())) exist = true;
 
                 }
             }
@@ -932,7 +939,7 @@ public class ExtendedServiceService implements ServiceService {
             while (nodes.hasNext()) {
                 JsonNode next = nodes.next();
                 if (next.get("service").get("href").textValue().equals(baseHref)) {
-                    if (relationName.equals(next.get("relationshipType").textValue())) exist = true;
+                    if (changePrefix(relationName).equals(next.get("relationshipType").textValue())) exist = true;
 
                 }
             }
@@ -952,6 +959,7 @@ public class ExtendedServiceService implements ServiceService {
         if (ifResourceExists == null) {
             return;
         }
+        System.out.print("addRelationsToResource");
         JsonNode resource = ifResourceExists.toJson();
 
         String updateDate = Instant.now().truncatedTo(ChronoUnit.SECONDS).toString();
@@ -965,7 +973,7 @@ public class ExtendedServiceService implements ServiceService {
             while (nodes.hasNext()) {
                 JsonNode next = nodes.next();
                 if (next.get("service").get("href").textValue().equals(baseHref)) {
-                    if (relationName.equals(next.get("relationshipType").textValue())) exist = true;
+                    if (changePrefix(relationName).equals(next.get("relationshipType").textValue())) exist = true;
 
                 }
             }
@@ -983,6 +991,7 @@ public class ExtendedServiceService implements ServiceService {
             }
             else ((ArrayNode) resource.withArray("serviceRelationship")).add(createRelationshipTypeJson(changePrefix(relationName), baseHref));
         }
+        System.out.println(resource);
         updateResource(resourceHref, deletePropertiesForbiddenToUpdate(resource));
     }
 
