@@ -4,7 +4,7 @@
 
 <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
 
-<appender name="GELF" class="de.siegmar.logbackgelf.GelfUdpAppender">
+<appender name="GRAYLOG" class="de.siegmar.logbackgelf.GelfUdpAppender">
     <graylogHost>${graylogHost}</graylogHost>
     <graylogPort>${graylogPort}</graylogPort>
     <encoder class="de.siegmar.logbackgelf.GelfEncoder">
@@ -14,7 +14,7 @@
 </appender>
 
 <root level="info">
-    <appender-ref ref="GELF" />
+    <appender-ref ref="GRAYLOG" />
 </root>
 
 </configuration>
