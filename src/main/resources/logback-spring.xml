@@ -1,0 +1,20 @@
+<configuration>
+<springProperty name="graylogHost" source="logging.gelf.host" />
+<springProperty name="graylogPort" source="logging.gelf.port" />
+
+<statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
+
+<appender name="GELF" class="de.siegmar.logbackgelf.GelfUdpAppender">
+    <graylogHost>${graylogHost}</graylogHost>
+    <graylogPort>${graylogPort}</graylogPort>
+    <encoder class="de.siegmar.logbackgelf.GelfEncoder">
+        <originHost>localhost</originHost>
+        <staticField>app_name:Maat</staticField>
+    </encoder>
+</appender>
+
+<root level="info">
+    <appender-ref ref="GELF" />
+</root>
+
+</configuration>

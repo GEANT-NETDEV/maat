@@ -1,0 +1,173 @@
+version: '3'
+
+services:
+
+  maat:
+    image: artifactory.software.geant.org/spa-docker/maat:1.0.4
+    hostname: $MAAT_HOST
+    ports:
+      - "8080:8080"
+    environment:
+      - MONGO_HOST=$MONGODB_HOST
+      - MONGO_USER=$MONGO_USER
+      - MONGO_PASSWORD=$MONGO_PASSWORD
+      - MAAT_RESOURCE_PROTOCOL=$MAAT_RESOURCE_PROTOCOL
+      - MAAT_RESOURCE_ADDRESS=$MAAT_RESOURCE_ADDRESS
+      - MAAT_RESOURCE_PORT=$MAAT_RESOURCE_PORT
+      - MAAT_SERVICE_PROTOCOL=$MAAT_SERVICE_PROTOCOL
+      - MAAT_SERVICE_ADDRESS=$MAAT_SERVICE_ADDRESS
+      - MAAT_SERVICE_PORT=$MAAT_SERVICE_PORT
+      - GRAYLOG_HOST=$GRAYLOG_HOST
+      - GRAYLOG_PORT=$GRAYLOG_PORT
+
+  mongodb:
+    image: mongo:latest
+    hostname: $MONGODB_HOST
+    ports:
+      - "27017:27017"
+    expose:
+      - "27017"
+    volumes:
+      - mongodb:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGO_USER
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
+
+  gateway:
+    build:
+      context: .
+      dockerfile: Dockerfile_nginx_ssl
+    ports:
+      - 8082:443
+
+  eventListener:
+    image: artifactory.software.geant.org/spa-docker/eventlistener:0.5
+    hostname: $EVENT_LISTENER_HOST
+    ports:
+      - "8081:8081"
+    depends_on:
+      - maat
+    restart: on-failure
+    environment:
+      - MONGO_HOST=$MONGODB_EL_HOST
+      - MONGO_USER=$MONGO_EL_USER
+      - MONGO_PASSWORD=$MONGO_EL_PASSWORD
+      - MONGO_PORT=$MONGO_EL_PORT
+      - MONGO_TIMEOUT=$MONGO_EL_TIMEOUT
+      - AUTO_REGISTER=$AUTO_REGISTER
+      - MAAT_HOST=$MAAT_HOST
+      - MAAT_PORT=$MAAT_PORT
+      - EVENT_LISTENER_HOST=$EVENT_LISTENER_HOST
+      - EVENT_LISTENER_PORT=$EVENT_LISTENER_PORT
+      - GRAYLOG_HOST=$GRAYLOG_HOST
+      - GRAYLOG_PORT=$GRAYLOG_PORT
+
+  mongodb2:
+    image: mongo:latest
+    hostname: $MONGODB_EL_HOST
+    ports:
+      - "27022:27017"
+    expose:
+      - "27022"
+    volumes:
+      - mongodb2:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGO_EL_USER
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_EL_PASSWORD
+
+  keycloak-dev:
+    image: quay.io/keycloak/keycloak:25.0.4
+    hostname: $KEYCLOAK_HOST
+    ports:
+      - "8090:8090"
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+    expose:
+      - "8090"
+    environment:
+      - KEYCLOAK_ADMIN=$KEYCLOAK_USER
+      - KEYCLOAK_ADMIN_PASSWORD=$KEYCLOAK_PASS
+    command: start-dev --http-port 8090
+
+
+  keycloak-dev-setup:
+    image: quay.io/keycloak/keycloak:25.0.4
+    depends_on:
+      - keycloak-dev
+    profiles:
+      - keycloak_setup
+    entrypoint: sh -c "sleep 1
+      && /opt/keycloak/bin/kcadm.sh config credentials --server http://keycloak-dev:8090 --realm master --user admin --password admin
+      && /opt/keycloak/bin/kcadm.sh create realms -s realm=MaatRealm -s enabled=true
+      && /opt/keycloak/bin/kcadm.sh create users -r MaatRealm -s username=test -s enabled=true
+      && /opt/keycloak/bin/kcadm.sh set-password -r MaatRealm --username test --new-password test
+      && /opt/keycloak/bin/kcadm.sh create roles -r MaatRealm -s name=inv3user
+      && /opt/keycloak/bin/kcadm.sh create clients -r MaatRealm -s clientId=inv3 -s enabled=true -s clientAuthenticatorType=client-secret -s secret=d0b8122f-8dfb-46b7-b68a-f5cc4e25d123 -s directAccessGrantsEnabled=true
+      && /opt/keycloak/bin/kcadm.sh add-roles --uusername test --rolename inv3user -r MaatRealm"
+
+  mongodb-graylog:
+    image: mongo:latest
+    ports:
+      - "27018:27018"
+    volumes:
+      - mongodb-graylog_data:/data/db
+    restart: on-failure
+    command: --port 27018
+
+  opensearch:
+    image: opensearchproject/opensearch:2.12.0
+    environment:
+      - OPENSEARCH_JAVA_OPTS=-Xms1g -Xmx1g
+      - bootstrap.memory_lock=true
+      - discovery.type=single-node
+      - action.auto_create_index=false
+      - plugins.security.ssl.http.enabled=false
+      - plugins.security.disabled=true
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=+_8r#wliY3Pv5-HMIf4qzXImYzZf-M=M
+    ulimits:
+      memlock:
+        hard: -1
+        soft: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    restart: on-failure
+
+  graylog:
+    hostname: $GRAYLOG_HOST
+    image: graylog/graylog:6.0
+    depends_on:
+      mongodb-graylog:
+        condition: service_started
+      opensearch:
+        condition: service_started
+    entrypoint: /usr/bin/tini -- wait-for-it opensearch:9200 -- /docker-entrypoint.sh
+    environment:
+      - GRAYLOG_HTTP_BIND_ADDRESS=0.0.0.0:9000
+      - GRAYLOG_ELASTICSEARCH_HOSTS=http://opensearch:9200
+      - GRAYLOG_MONGODB_URI=mongodb://mongodb-graylog:27018/graylog
+      - GRAYLOG_REPORT_DISABLE_SANDBOX=true
+      - GRAYLOG_PASSWORD_SECRET=somepasswordpepper
+      - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+      - GRAYLOG_HTTP_EXTERNAL_URI=http://127.0.0.1:9000/
+    ports:
+      - 9000:9000/tcp
+      - 5044:5044/tcp
+      - 5140:5140/tcp
+      - 5140:5140/udp
+      - 12201:12201/tcp
+      - 12201:12201/udp
+      - 13301:13301/tcp
+      - 13302:13302/tcp
+    volumes:
+      - graylog_data:/usr/share/graylog/data/data
+      - graylog_journal:/usr/share/graylog/data/journal
+    restart: on-failure
+
+volumes:
+  mongodb:
+  mongodb2:
+  mongodb-graylog_data:
+  graylog_data:
+  graylog_journal:
+  keycloak_data:
