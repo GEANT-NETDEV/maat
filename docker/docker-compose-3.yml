@@ -83,6 +83,7 @@ services:
       - KEYCLOAK_ADMIN=$KEYCLOAK_USER
       - KEYCLOAK_ADMIN_PASSWORD=$KEYCLOAK_PASS
     command: start-dev --http-port 8090
+
   keycloak-dev-setup:
     image: quay.io/keycloak/keycloak:25.0.4
     depends_on:
@@ -101,3 +102,4 @@ services:
 volumes:
   mongodb:
   mongodb2:
+  keycloak_data:

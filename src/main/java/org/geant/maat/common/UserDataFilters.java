@@ -8,11 +8,13 @@ import org.geant.maat.infrastructure.DomainError;
 import org.geant.maat.infrastructure.ErrorEntity;
 import org.geant.maat.resource.Resource;
 import org.geant.maat.resource.ResourceService;
+import org.geant.maat.service.ServiceService;
 
 import java.util.*;
 
 public class UserDataFilters {
-    private final ResourceService resourceService;
+    private ResourceService resourceService;
+    private ServiceService serviceService;
     private Boolean notificationStatus;
 
     public UserDataFilters(ResourceService resourceService) {
@@ -24,7 +26,14 @@ public class UserDataFilters {
         this.notificationStatus = notificationStatus;
     }
 
-    public Collection<JsonNode> getFilter(String token, List<String> fields, Map<String, String> oldRequestsParams) {
+    public UserDataFilters(ServiceService serviceService, Boolean notificationStatus) {
+        this.serviceService = serviceService;
+        this.notificationStatus = notificationStatus;
+    }
+
+
+    public Collection<JsonNode> getFilter(String token, List<String> fields, Map<String, String> oldRequestsParams,
+                                          String type) {
         String cleanedToken = token.replace("Bearer ", "");
         DecodedJWT jwt = JWT.decode(cleanedToken);
         Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
@@ -36,6 +45,20 @@ public class UserDataFilters {
             if (getFilterList != null) {
                 System.out.println("GET_FILTER jest !null");
                 orFilters.addAll(getFilterList);
+            } else {
+                if (type.equals("resource")){
+                    return resourceService.getResources(fields, oldRequestsParams);
+                }
+                else {
+                    return serviceService.getServices(fields, oldRequestsParams);
+                }
+            }
+        } else {
+            if (type.equals("resource")){
+                return resourceService.getResources(fields, oldRequestsParams);
+            }
+            else {
+                return serviceService.getServices(fields, oldRequestsParams);
             }
         }
 
@@ -50,7 +73,13 @@ public class UserDataFilters {
             System.out.println(combinedParams);
             combinedParams.putAll(filter);
             System.out.println(combinedParams);
-            Collection<JsonNode> currentResult = resourceService.getResources(fields, combinedParams);
+            Collection<JsonNode> currentResult;
+            if (type.equals("resource")){
+                currentResult = resourceService.getResources(fields, combinedParams);
+            }
+            else {
+                currentResult = serviceService.getServices(fields, combinedParams);
+            }
             finalResult.addAll(currentResult);
         }
 
@@ -59,7 +88,7 @@ public class UserDataFilters {
     }
 
     public Collection<JsonNode> getFilter(String token, List<String> fields, Map<String, String> oldRequestsParams,
-                                          int offset, int limit) {
+                                          int offset, int limit, String type) {
         String cleanedToken = token.replace("Bearer ", "");
         DecodedJWT jwt = JWT.decode(cleanedToken);
         Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
@@ -71,10 +100,20 @@ public class UserDataFilters {
             if (getFilterList != null) {
                 orFilters.addAll(getFilterList);
             } else {
-                return resourceService.getResources(fields, oldRequestsParams);
+                if (type.equals("resource")){
+                    return resourceService.getResources(fields, oldRequestsParams, offset, limit);
+                }
+                else {
+                    return serviceService.getServices(fields, oldRequestsParams, offset, limit);
+                }
             }
         } else {
-            return resourceService.getResources(fields, oldRequestsParams);
+            if (type.equals("resource")){
+                return resourceService.getResources(fields, oldRequestsParams, offset, limit);
+            }
+            else {
+                return serviceService.getServices(fields, oldRequestsParams, offset, limit);
+            }
         }
 
         Collection<JsonNode> finalResult = new ArrayList<>();
@@ -82,7 +121,15 @@ public class UserDataFilters {
         for (Map<String, String> filter : orFilters) {
             Map<String, String> combinedParams = new HashMap<>(oldRequestsParams);
             combinedParams.putAll(filter);
-            Collection<JsonNode> currentResult = resourceService.getResources(fields, combinedParams);
+            Collection<JsonNode> currentResult;
+
+            if (type.equals("resource")){
+                currentResult = resourceService.getResources(fields, combinedParams);
+            }
+            else {
+                currentResult = serviceService.getServices(fields, combinedParams);
+            }
+
             finalResult.addAll(currentResult);
 
             if (limit > 0 && finalResult.size() >= limit + offset) {
@@ -94,7 +141,7 @@ public class UserDataFilters {
 
     }
 
-    public Either<DomainError, JsonNode> getFilterById(String token, String id, List<String> fields) {
+    public Either<DomainError, JsonNode> getFilterById(String token, String id, List<String> fields, String type) {
         String cleanedToken = token.replace("Bearer ", "");
         DecodedJWT jwt = JWT.decode(cleanedToken);
         Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
@@ -107,20 +154,49 @@ public class UserDataFilters {
             if (getFilterList != null) {
                 orFilters.addAll(getFilterList);
             } else {
-                return resourceService.getResource(id, fields);
+                if (type.equals("resource")){
+                    return resourceService.getResource(id, fields);
+                }
+                else {
+                    return serviceService.getService(id, fields);
+                }
             }
         } else {
-            return resourceService.getResource(id, fields);
+            if (type.equals("resource")){
+                return resourceService.getResource(id, fields);
+            }
+            else {
+                return serviceService.getService(id, fields);
+            }
         }
 
         Collection<String> collection = List.of();
-        Either<DomainError, JsonNode> resourceById = resourceService.getResource(id, collection);
+        Either<DomainError, JsonNode> resourceById = null;
+        Either<DomainError, JsonNode> serviceById = null;
+
+        if (type.equals("resource")){
+            resourceById = resourceService.getResource(id, collection);
+        }
+        else {
+            serviceById = serviceService.getService(id, collection);
+        }
 
         System.out.println("orFilters:" + orFilters);
-        for (Map<String, String> filter : orFilters) {
-            if (matchesFilter(filter, resourceById.get())) {
-                System.out.println("Match to: " + filter);
-                return resourceService.getResource(id, fields);
+
+        if (type.equals("resource")){
+            for (Map<String, String> filter : orFilters) {
+                if (matchesFilter(filter, resourceById.get())) {
+                    System.out.println("Match to: " + filter);
+                    return resourceService.getResource(id, fields);
+                }
+            }
+        }
+        else {
+            for (Map<String, String> filter : orFilters) {
+                if (matchesFilter(filter, serviceById.get())) {
+                    System.out.println("Match to: " + filter);
+                    return serviceService.getService(id, fields);
+                }
             }
         }
 
@@ -129,7 +205,7 @@ public class UserDataFilters {
 
     }
 
-    public Either<DomainError, JsonNode> postFilter(String token, JsonNode requestBody) {
+    public Either<DomainError, JsonNode> postFilter(String token, JsonNode requestBody, String type) {
         String cleanedToken = token.replace("Bearer ", "");
         DecodedJWT jwt = JWT.decode(cleanedToken);
         Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
@@ -142,17 +218,38 @@ public class UserDataFilters {
             if (postFilterList != null) {
                 orFilters.addAll(postFilterList);
             } else {
-                return resourceService.createResource(requestBody, notificationStatus);
+                if (type.equals("resource")){
+                    return resourceService.createResource(requestBody, notificationStatus);
+                }
+                else {
+                    return serviceService.createService(requestBody, notificationStatus);
+                }
             }
         } else {
-            return resourceService.createResource(requestBody, notificationStatus);
+            if (type.equals("resource")){
+                return resourceService.createResource(requestBody, notificationStatus);
+            }
+            else {
+                return serviceService.createService(requestBody, notificationStatus);
+            }
         }
 
         System.out.println("orFilters:" + orFilters);
-        for (Map<String, String> filter : orFilters) {
-            if (matchesFilter(filter, requestBody)) {
-                System.out.println("Match to: " + filter);
-                return resourceService.createResource(requestBody, notificationStatus);
+
+        if (type.equals("resource")){
+            for (Map<String, String> filter : orFilters) {
+                if (matchesFilter(filter, requestBody)) {
+                    System.out.println("Match to: " + filter);
+                    return resourceService.createResource(requestBody, notificationStatus);
+                }
+            }
+        }
+        else {
+            for (Map<String, String> filter : orFilters) {
+                if (matchesFilter(filter, requestBody)) {
+                    System.out.println("Match to: " + filter);
+                    return serviceService.createService(requestBody, notificationStatus);
+                }
             }
         }
 
@@ -160,7 +257,7 @@ public class UserDataFilters {
         return Either.left(new DomainError("User filter does not match", Error.FILTER_ERROR));
     }
 
-    public Either<DomainError, String> deleteFilter(String token, String id) {
+    public Either<DomainError, String> deleteFilter(String token, String id, String type) {
         String cleanedToken = token.replace("Bearer ", "");
         DecodedJWT jwt = JWT.decode(cleanedToken);
         Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
@@ -173,20 +270,49 @@ public class UserDataFilters {
             if (deleteFilterList != null) {
                 orFilters.addAll(deleteFilterList);
             } else {
-                return resourceService.deleteResource(id, notificationStatus);
+                if (type.equals("resource")){
+                    return resourceService.deleteResource(id, notificationStatus);
+                }
+                else {
+                    return serviceService.deleteService(id, notificationStatus);
+                }
             }
         } else {
-            return resourceService.deleteResource(id, notificationStatus);
+            if (type.equals("resource")){
+                return resourceService.deleteResource(id, notificationStatus);
+            }
+            else {
+                return serviceService.deleteService(id, notificationStatus);
+            }
         }
 
         Collection<String> collection = List.of();
-        Either<DomainError, JsonNode> resourceForRemoval = resourceService.getResource(id, collection);
+        Either<DomainError, JsonNode> resourceForRemoval = null;
+        Either<DomainError, JsonNode> serviceForRemoval = null;
+
+        if (type.equals("resource")){
+            resourceForRemoval = resourceService.getResource(id, collection);
+        }
+        else {
+            serviceForRemoval = serviceService.getService(id, collection);
+        }
 
         System.out.println("orFilters:" + orFilters);
-        for (Map<String, String> filter : orFilters) {
-            if (matchesFilter(filter, resourceForRemoval.get())) {
-                System.out.println("Match to: " + filter);
-                return resourceService.deleteResource(id, notificationStatus);
+
+        if (type.equals("resource")){
+            for (Map<String, String> filter : orFilters) {
+                if (matchesFilter(filter, resourceForRemoval.get())) {
+                    System.out.println("Match to: " + filter);
+                    return resourceService.deleteResource(id, notificationStatus);
+                }
+            }
+        }
+        else {
+            for (Map<String, String> filter : orFilters) {
+                if (matchesFilter(filter, serviceForRemoval.get())) {
+                    System.out.println("Match to: " + filter);
+                    return serviceService.deleteService(id, notificationStatus);
+                }
             }
         }
 
@@ -194,7 +320,7 @@ public class UserDataFilters {
         return Either.left(new DomainError("User filter does not match", Error.FILTER_ERROR));
     }
 
-    public Either<DomainError, JsonNode> patchFilter(String token, String id, JsonNode requestBody) {
+    public Either<DomainError, JsonNode> patchFilter(String token, String id, JsonNode requestBody, String type) {
         String cleanedToken = token.replace("Bearer ", "");
         DecodedJWT jwt = JWT.decode(cleanedToken);
         Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
@@ -207,20 +333,49 @@ public class UserDataFilters {
             if (patchFilterList != null) {
                 orFilters.addAll(patchFilterList);
             } else {
-                return resourceService.updateResource(id, requestBody, notificationStatus);
+                if (type.equals("resource")){
+                    return resourceService.updateResource(id, requestBody, notificationStatus);
+                }
+                else {
+                    return serviceService.updateService(id, requestBody, notificationStatus);
+                }
             }
         } else {
-            return resourceService.updateResource(id, requestBody, notificationStatus);
+            if (type.equals("resource")){
+                return resourceService.updateResource(id, requestBody, notificationStatus);
+            }
+            else {
+                return serviceService.updateService(id, requestBody, notificationStatus);
+            }
         }
 
         Collection<String> collection = List.of();
-        Either<DomainError, JsonNode> resourceById = resourceService.getResource(id, collection);
+        Either<DomainError, JsonNode> resourceById = null;
+        Either<DomainError, JsonNode> serviceById = null;
+
+        if (type.equals("resource")){
+            resourceById = resourceService.getResource(id, collection);
+        }
+        else {
+            serviceById = serviceService.getService(id, collection);
+        }
 
         System.out.println("orFilters:" + orFilters);
-        for (Map<String, String> filter : orFilters) {
-            if (matchesFilter(filter, resourceById.get())) {
-                System.out.println("Match to: " + filter);
-                return resourceService.updateResource(id, requestBody, notificationStatus);
+
+        if (type.equals("resource")){
+            for (Map<String, String> filter : orFilters) {
+                if (matchesFilter(filter, resourceById.get())) {
+                    System.out.println("Match to: " + filter);
+                    return resourceService.updateResource(id, requestBody, notificationStatus);
+                }
+            }
+        }
+        else {
+            for (Map<String, String> filter : orFilters) {
+                if (matchesFilter(filter, serviceById.get())) {
+                    System.out.println("Match to: " + filter);
+                    return serviceService.updateService(id, requestBody, notificationStatus);
+                }
             }
         }
 

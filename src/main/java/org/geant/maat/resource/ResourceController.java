@@ -77,10 +77,10 @@ class ResourceController implements ResultMapper {
         if (Objects.equals(keycloakStatus, "true")) {
             UserDataFilters userFilters = new UserDataFilters(resourceService);
             if (offset == 0 && limit == 0) {
-                var allResourcesWithFilters = userFilters.getFilter(token, fields, allRequestParams);
+                var allResourcesWithFilters = userFilters.getFilter(token, fields, allRequestParams, "resource");
                 return toResponseEntity(allResourcesWithFilters, allResourcesWithFilters.size());
             } else {
-                var allResourcesWithFilters = userFilters.getFilter(token, fields, allRequestParams, offset, limit);
+                var allResourcesWithFilters = userFilters.getFilter(token, fields, allRequestParams, offset, limit, "resource");
                 return toResponseEntity(allResourcesWithFilters, allResourcesWithFilters.size());
             }
         } else {
@@ -124,7 +124,7 @@ class ResourceController implements ResultMapper {
 
         if (Objects.equals(keycloakStatus, "true")) {
             UserDataFilters userFilters = new UserDataFilters(resourceService);
-            var resourceByIdWithFilters = userFilters.getFilterById(token, id, fields);
+            var resourceByIdWithFilters = userFilters.getFilterById(token, id, fields, "resource");
             return foldResultWithStatus(resourceByIdWithFilters, HttpStatus.OK);
         } else {
             var resource = resourceService.getResource(id, fields);
@@ -151,7 +151,7 @@ class ResourceController implements ResultMapper {
         if(Objects.requireNonNull(environment.getProperty("notification.sendNotificationToListeners")).equalsIgnoreCase("true")) {
             if (Objects.equals(keycloakStatus, "true")) {
                 UserDataFilters userFilters = new UserDataFilters(resourceService, true);
-                Either<DomainError, JsonNode> resource = userFilters.postFilter(token, requestBody);
+                Either<DomainError, JsonNode> resource = userFilters.postFilter(token, requestBody, "resource");
                 return foldResultWithStatus(resource, HttpStatus.CREATED);
             } else {
                 var resource = resourceService.createResource(requestBody, true);
@@ -160,7 +160,7 @@ class ResourceController implements ResultMapper {
         } else {
             if (Objects.equals(keycloakStatus, "true")) {
                 UserDataFilters userFilters = new UserDataFilters(resourceService, false);
-                Either<DomainError, JsonNode> resource = userFilters.postFilter(token, requestBody);
+                Either<DomainError, JsonNode> resource = userFilters.postFilter(token, requestBody, "resource");
                 return foldResultWithStatus(resource, HttpStatus.CREATED);
             } else {
                 var resource = resourceService.createResource(requestBody, false);
@@ -188,7 +188,7 @@ class ResourceController implements ResultMapper {
         if(Objects.requireNonNull(environment.getProperty("notification.sendNotificationToListeners")).equalsIgnoreCase("true")) {
             if (Objects.equals(keycloakStatus, "true")) {
                 UserDataFilters userFilters = new UserDataFilters(resourceService, true);
-                Either<DomainError, String> resource = userFilters.deleteFilter(token, id);
+                Either<DomainError, String> resource = userFilters.deleteFilter(token, id, "resource");
                 return foldResultWithStatus(resource, HttpStatus.NO_CONTENT);
             } else {
                 var resource = resourceService.deleteResource(id, true);
@@ -197,7 +197,7 @@ class ResourceController implements ResultMapper {
         } else {
             if (Objects.equals(keycloakStatus, "true")) {
                 UserDataFilters userFilters = new UserDataFilters(resourceService, false);
-                Either<DomainError, String> resource = userFilters.deleteFilter(token, id);
+                Either<DomainError, String> resource = userFilters.deleteFilter(token, id, "resource");
                 return foldResultWithStatus(resource, HttpStatus.NO_CONTENT);
             } else {
                 var resource = resourceService.deleteResource(id, false);
@@ -227,7 +227,7 @@ class ResourceController implements ResultMapper {
         if(Objects.requireNonNull(environment.getProperty("notification.sendNotificationToListeners")).equalsIgnoreCase("true")) {
             if (Objects.equals(keycloakStatus, "true")) {
                 UserDataFilters userFilters = new UserDataFilters(resourceService, true);
-                Either<DomainError, JsonNode> resource = userFilters.patchFilter(token, id, requestBody);
+                Either<DomainError, JsonNode> resource = userFilters.patchFilter(token, id, requestBody, "resource");
                 return foldResultWithStatus(resource, HttpStatus.OK);
             } else {
                 var resource = resourceService.updateResource(id, requestBody, true);
@@ -236,7 +236,7 @@ class ResourceController implements ResultMapper {
         } else {
             if (Objects.equals(keycloakStatus, "true")) {
                 UserDataFilters userFilters = new UserDataFilters(resourceService, false);
-                Either<DomainError, JsonNode> resource = userFilters.patchFilter(token, id, requestBody);
+                Either<DomainError, JsonNode> resource = userFilters.patchFilter(token, id, requestBody, "resource");
                 return foldResultWithStatus(resource, HttpStatus.OK);
             } else {
                 var resource = resourceService.updateResource(id, requestBody, false);
