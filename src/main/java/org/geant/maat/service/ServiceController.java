@@ -32,6 +32,8 @@ public class ServiceController implements ResultMapper{
 
     @Value("${keycloak.enabled}")
     private String keycloakStatus;
+    @Value("${keycloak.authorization.l2.filters}")
+    private String keycloakAuthorizationL2Status;
 
     @Autowired
     public Environment environment;
@@ -59,20 +61,19 @@ public class ServiceController implements ResultMapper{
             @RequestParam(required = false, defaultValue = "") List<String> fields,
             @RequestParam Map<String, String> allRequestParams,
             @RequestParam(required = false, defaultValue = "0") int offset,
-            @RequestParam(required = false, defaultValue = "0") int limit,
-            @RequestHeader("Authorization") String token
+            @RequestParam(required = false, defaultValue = "0") int limit
     ) {
         allRequestParams.remove("fields");
         allRequestParams.remove("offset");
         allRequestParams.remove("limit");
 
-        if (Objects.equals(keycloakStatus, "true")) {
+        if (Objects.equals(keycloakStatus, "true") && Objects.equals(keycloakAuthorizationL2Status, "true")) {
             UserDataFilters userFilters = new UserDataFilters(serviceService, false);
             if (offset == 0 && limit == 0) {
-                var allServicesWithFilters = userFilters.getFilter(token, fields, allRequestParams, "service");
+                var allServicesWithFilters = userFilters.getFilter(fields, allRequestParams, "service");
                 return toResponseEntity(allServicesWithFilters, allServicesWithFilters.size());
             } else {
-                var allServicesWithFilters = userFilters.getFilter(token, fields, allRequestParams, offset, limit, "service");
+                var allServicesWithFilters = userFilters.getFilter(fields, allRequestParams, offset, limit, "service");
                 return toResponseEntity(allServicesWithFilters, allServicesWithFilters.size());
             }
         } else {
@@ -113,9 +114,9 @@ public class ServiceController implements ResultMapper{
     ) {
         allRequestParams.remove("fields");
 
-        if (Objects.equals(keycloakStatus, "true")) {
+        if (Objects.equals(keycloakStatus, "true") && Objects.equals(keycloakAuthorizationL2Status, "true")) {
             UserDataFilters userFilters = new UserDataFilters(serviceService, false);
-            var serviceByIdWithFilters = userFilters.getFilterById(token, id, fields, "service");
+            var serviceByIdWithFilters = userFilters.getFilterById(id, fields, "service");
             return foldResultWithStatus(serviceByIdWithFilters, HttpStatus.OK);
         } else {
             var service = serviceService.getService(id, fields);
@@ -140,18 +141,18 @@ public class ServiceController implements ResultMapper{
                                  @RequestHeader("Authorization") String token) {
 
         if(Objects.requireNonNull(environment.getProperty("notification.sendNotificationToListeners")).equalsIgnoreCase("true")) {
-            if (Objects.equals(keycloakStatus, "true")) {
+            if (Objects.equals(keycloakStatus, "true") && Objects.equals(keycloakAuthorizationL2Status, "true")) {
                 UserDataFilters userFilters = new UserDataFilters(serviceService, true);
-                Either<DomainError, JsonNode> service = userFilters.postFilter(token, requestBody, "service");
+                Either<DomainError, JsonNode> service = userFilters.postFilter(requestBody, "service");
                 return foldResultWithStatus(service, HttpStatus.CREATED);
             } else {
                 var service = serviceService.createService(requestBody, true);
                 return foldResultWithStatus(service, HttpStatus.CREATED);
             }
         } else {
-            if (Objects.equals(keycloakStatus, "true")) {
+            if (Objects.equals(keycloakStatus, "true") && Objects.equals(keycloakAuthorizationL2Status, "true")) {
                 UserDataFilters userFilters = new UserDataFilters(serviceService, false);
-                Either<DomainError, JsonNode> service = userFilters.postFilter(token, requestBody, "service");
+                Either<DomainError, JsonNode> service = userFilters.postFilter(requestBody, "service");
                 return foldResultWithStatus(service, HttpStatus.CREATED);
             } else {
                 var service = serviceService.createService(requestBody, false);
@@ -178,18 +179,18 @@ public class ServiceController implements ResultMapper{
                                     @RequestHeader("Authorization") String token) {
 
         if(Objects.requireNonNull(environment.getProperty("notification.sendNotificationToListeners")).equalsIgnoreCase("true")) {
-            if (Objects.equals(keycloakStatus, "true")) {
+            if (Objects.equals(keycloakStatus, "true") && Objects.equals(keycloakAuthorizationL2Status, "true")) {
                 UserDataFilters userFilters = new UserDataFilters(serviceService, true);
-                Either<DomainError, String> service = userFilters.deleteFilter(token, id, "service");
+                Either<DomainError, String> service = userFilters.deleteFilter(id, "service");
                 return foldResultWithStatus(service, HttpStatus.NO_CONTENT);
             } else {
                 var service = serviceService.deleteService(id, true);
                 return foldResultWithStatus(service, HttpStatus.NO_CONTENT);
             }
         } else {
-            if (Objects.equals(keycloakStatus, "true")) {
+            if (Objects.equals(keycloakStatus, "true") && Objects.equals(keycloakAuthorizationL2Status, "true")) {
                 UserDataFilters userFilters = new UserDataFilters(serviceService, false);
-                Either<DomainError, String> service = userFilters.deleteFilter(token, id, "service");
+                Either<DomainError, String> service = userFilters.deleteFilter(id, "service");
                 return foldResultWithStatus(service, HttpStatus.NO_CONTENT);
             } else {
                 var service = serviceService.deleteService(id, false);
@@ -217,18 +218,18 @@ public class ServiceController implements ResultMapper{
                                     @RequestHeader("Authorization") String token) {
 
         if(Objects.requireNonNull(environment.getProperty("notification.sendNotificationToListeners")).equalsIgnoreCase("true")) {
-            if (Objects.equals(keycloakStatus, "true")) {
+            if (Objects.equals(keycloakStatus, "true") && Objects.equals(keycloakAuthorizationL2Status, "true")) {
                 UserDataFilters userFilters = new UserDataFilters(serviceService, true);
-                Either<DomainError, JsonNode> service = userFilters.patchFilter(token, id, requestBody, "service");
+                Either<DomainError, JsonNode> service = userFilters.patchFilter(id, requestBody, "service");
                 return foldResultWithStatus(service, HttpStatus.OK);
             } else {
                 var service = serviceService.updateService(id, requestBody, true);
                 return foldResultWithStatus(service, HttpStatus.OK);
             }
         } else {
-            if (Objects.equals(keycloakStatus, "true")) {
+            if (Objects.equals(keycloakStatus, "true") && Objects.equals(keycloakAuthorizationL2Status, "true")) {
                 UserDataFilters userFilters = new UserDataFilters(serviceService, false);
-                Either<DomainError, JsonNode> service = userFilters.patchFilter(token, id, requestBody, "service");
+                Either<DomainError, JsonNode> service = userFilters.patchFilter(id, requestBody, "service");
                 return foldResultWithStatus(service, HttpStatus.OK);
             } else {
                 var service = serviceService.updateService(id, requestBody, false);

@@ -10,18 +10,23 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+
+import java.util.Objects;
+
 @Configuration
 @EnableWebSecurity
 @ConditionalOnProperty(name = "keycloak.enabled", havingValue = "true", matchIfMissing = true)
 public class KeycloakSecurityConfig {
-    @Value("${spring.security.role.get_only}")
+    @Value("${maat.role.get_only}")
     private String getOnlyRole;
-    @Value("${spring.security.role.post_only}")
+    @Value("${maat.role.post_only}")
     private String postOnlyRole;
-    @Value("${spring.security.role.delete_only}")
+    @Value("${maat.role.delete_only}")
     private String deleteOnlyRole;
-    @Value("${spring.security.role.patch_only}")
+    @Value("${maat.role.patch_only}")
     private String patchOnlyRole;
+    @Value("${keycloak.authorization.l1.roles}")
+    private String keycloakAuthorizationL1Status;
 
     private final KeycloakJwtTokenConverter keycloakJwtTokenConverter;
 
@@ -37,14 +42,22 @@ public class KeycloakSecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
-        http
-                .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(HttpMethod.GET).hasRole(getOnlyRole)
-                        .requestMatchers(HttpMethod.POST).hasRole(postOnlyRole)
-                        .requestMatchers(HttpMethod.DELETE).hasRole(deleteOnlyRole)
-                        .requestMatchers(HttpMethod.PATCH).hasRole(patchOnlyRole)
-                        .anyRequest()
-                        .authenticated());
+        if (Objects.equals(keycloakAuthorizationL1Status, "true")) {
+            http
+                    .authorizeHttpRequests(authorize -> authorize
+                            .requestMatchers(HttpMethod.GET).hasRole(getOnlyRole)
+                            .requestMatchers(HttpMethod.POST).hasRole(postOnlyRole)
+                            .requestMatchers(HttpMethod.DELETE).hasRole(deleteOnlyRole)
+                            .requestMatchers(HttpMethod.PATCH).hasRole(patchOnlyRole)
+                            .anyRequest()
+                            .authenticated());
+        } else {
+            http
+                    .authorizeHttpRequests(authorize -> authorize
+                            .anyRequest()
+                            .authenticated());
+        }
+
         http
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(keycloakJwtTokenConverter)));

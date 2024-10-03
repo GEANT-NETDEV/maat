@@ -2,13 +2,22 @@ package org.geant.maat.common;
 
 import com.auth0.jwt.JWT;
 import com.auth0.jwt.interfaces.DecodedJWT;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Either;
 import org.geant.maat.infrastructure.DomainError;
 import org.geant.maat.infrastructure.ErrorEntity;
+import org.geant.maat.notification.NotificationService;
 import org.geant.maat.resource.Resource;
 import org.geant.maat.resource.ResourceService;
 import org.geant.maat.service.ServiceService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 import java.util.*;
 
@@ -31,10 +40,19 @@ public class UserDataFilters {
         this.notificationStatus = notificationStatus;
     }
 
+    static Optional<JwtAuthenticationToken> getCurrentRequestAuthentication() {
+        if(SecurityContextHolder.getContext().getAuthentication() instanceof JwtAuthenticationToken jwtAuth) {
+            return Optional.of(jwtAuth);
+        }
+        return Optional.empty();
+    }
 
-    public Collection<JsonNode> getFilter(String token, List<String> fields, Map<String, String> oldRequestsParams,
-                                          String type) {
-        String cleanedToken = token.replace("Bearer ", "");
+    static Optional<String> getBearerToken() {
+        return getCurrentRequestAuthentication().map(JwtAuthenticationToken::getToken).map(Jwt::getTokenValue);
+    }
+
+    public Collection<JsonNode> getFilter(List<String> fields, Map<String, String> oldRequestsParams, String type) {
+        String cleanedToken = getBearerToken().get();
         DecodedJWT jwt = JWT.decode(cleanedToken);
         Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
 
@@ -43,7 +61,6 @@ public class UserDataFilters {
             List<Map<String, String>> getFilterList = (List<Map<String, String>>) userAccessFilters.get("get_filter");
 
             if (getFilterList != null) {
-                System.out.println("GET_FILTER jest !null");
                 orFilters.addAll(getFilterList);
             } else {
                 if (type.equals("resource")){
@@ -70,9 +87,7 @@ public class UserDataFilters {
 
         for (Map<String, String> filter : orFilters) {
             Map<String, String> combinedParams = new HashMap<>(oldRequestsParams);
-            System.out.println(combinedParams);
             combinedParams.putAll(filter);
-            System.out.println(combinedParams);
             Collection<JsonNode> currentResult;
             if (type.equals("resource")){
                 currentResult = resourceService.getResources(fields, combinedParams);
@@ -87,9 +102,9 @@ public class UserDataFilters {
 
     }
 
-    public Collection<JsonNode> getFilter(String token, List<String> fields, Map<String, String> oldRequestsParams,
-                                          int offset, int limit, String type) {
-        String cleanedToken = token.replace("Bearer ", "");
+    public Collection<JsonNode> getFilter(List<String> fields, Map<String, String> oldRequestsParams, int offset,
+                                          int limit, String type) {
+        String cleanedToken = getBearerToken().get();
         DecodedJWT jwt = JWT.decode(cleanedToken);
         Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
 
@@ -141,8 +156,8 @@ public class UserDataFilters {
 
     }
 
-    public Either<DomainError, JsonNode> getFilterById(String token, String id, List<String> fields, String type) {
-        String cleanedToken = token.replace("Bearer ", "");
+    public Either<DomainError, JsonNode> getFilterById(String id, List<String> fields, String type) {
+        String cleanedToken = getBearerToken().get();
         DecodedJWT jwt = JWT.decode(cleanedToken);
         Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
 
@@ -181,12 +196,12 @@ public class UserDataFilters {
             serviceById = serviceService.getService(id, collection);
         }
 
-        System.out.println("orFilters:" + orFilters);
+        UserDataFiltersLogger.info("Filters with OR logic" + orFilters);
 
         if (type.equals("resource")){
             for (Map<String, String> filter : orFilters) {
                 if (matchesFilter(filter, resourceById.get())) {
-                    System.out.println("Match to: " + filter);
+                    UserDataFiltersLogger.info("Resource matches to filter: " + filter);
                     return resourceService.getResource(id, fields);
                 }
             }
@@ -194,19 +209,19 @@ public class UserDataFilters {
         else {
             for (Map<String, String> filter : orFilters) {
                 if (matchesFilter(filter, serviceById.get())) {
-                    System.out.println("Match to: " + filter);
+                    UserDataFiltersLogger.info("Service matches to filter: " + filter);
                     return serviceService.getService(id, fields);
                 }
             }
         }
 
-        System.out.println("Doesn't match");
+        UserDataFiltersLogger.info("Filter does not match");
         return Either.left(new DomainError("User filter does not match", Error.FILTER_ERROR));
 
     }
 
-    public Either<DomainError, JsonNode> postFilter(String token, JsonNode requestBody, String type) {
-        String cleanedToken = token.replace("Bearer ", "");
+    public Either<DomainError, JsonNode> postFilter(JsonNode requestBody, String type) {
+        String cleanedToken = getBearerToken().get();
         DecodedJWT jwt = JWT.decode(cleanedToken);
         Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
 
@@ -234,12 +249,12 @@ public class UserDataFilters {
             }
         }
 
-        System.out.println("orFilters:" + orFilters);
+        UserDataFiltersLogger.info("Filters with OR logic " + orFilters);
 
         if (type.equals("resource")){
             for (Map<String, String> filter : orFilters) {
                 if (matchesFilter(filter, requestBody)) {
-                    System.out.println("Match to: " + filter);
+                    UserDataFiltersLogger.info("Resource matches to filter: " + filter);
                     return resourceService.createResource(requestBody, notificationStatus);
                 }
             }
@@ -247,18 +262,18 @@ public class UserDataFilters {
         else {
             for (Map<String, String> filter : orFilters) {
                 if (matchesFilter(filter, requestBody)) {
-                    System.out.println("Match to: " + filter);
+                    UserDataFiltersLogger.info("Service matches to filter: " + filter);
                     return serviceService.createService(requestBody, notificationStatus);
                 }
             }
         }
 
-        System.out.println("Doesn't match");
+        UserDataFiltersLogger.info("Filter does not match");
         return Either.left(new DomainError("User filter does not match", Error.FILTER_ERROR));
     }
 
-    public Either<DomainError, String> deleteFilter(String token, String id, String type) {
-        String cleanedToken = token.replace("Bearer ", "");
+    public Either<DomainError, String> deleteFilter(String id, String type) {
+        String cleanedToken = getBearerToken().get();
         DecodedJWT jwt = JWT.decode(cleanedToken);
         Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
 
@@ -297,12 +312,12 @@ public class UserDataFilters {
             serviceForRemoval = serviceService.getService(id, collection);
         }
 
-        System.out.println("orFilters:" + orFilters);
+        UserDataFiltersLogger.info("Filters with OR logic" + orFilters);
 
         if (type.equals("resource")){
             for (Map<String, String> filter : orFilters) {
                 if (matchesFilter(filter, resourceForRemoval.get())) {
-                    System.out.println("Match to: " + filter);
+                    UserDataFiltersLogger.info("Resource matches to filter: " + filter);
                     return resourceService.deleteResource(id, notificationStatus);
                 }
             }
@@ -310,18 +325,18 @@ public class UserDataFilters {
         else {
             for (Map<String, String> filter : orFilters) {
                 if (matchesFilter(filter, serviceForRemoval.get())) {
-                    System.out.println("Match to: " + filter);
+                    UserDataFiltersLogger.info("Service matches to filter: " + filter);
                     return serviceService.deleteService(id, notificationStatus);
                 }
             }
         }
 
-        System.out.println("Doesn't match");
+        UserDataFiltersLogger.info("Filter does not match");
         return Either.left(new DomainError("User filter does not match", Error.FILTER_ERROR));
     }
 
-    public Either<DomainError, JsonNode> patchFilter(String token, String id, JsonNode requestBody, String type) {
-        String cleanedToken = token.replace("Bearer ", "");
+    public Either<DomainError, JsonNode> patchFilter(String id, JsonNode requestBody, String type) {
+        String cleanedToken = getBearerToken().get();
         DecodedJWT jwt = JWT.decode(cleanedToken);
         Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
 
@@ -360,12 +375,12 @@ public class UserDataFilters {
             serviceById = serviceService.getService(id, collection);
         }
 
-        System.out.println("orFilters:" + orFilters);
+        UserDataFiltersLogger.info("Filters with OR logic" + orFilters);
 
         if (type.equals("resource")){
             for (Map<String, String> filter : orFilters) {
                 if (matchesFilter(filter, resourceById.get())) {
-                    System.out.println("Match to: " + filter);
+                    UserDataFiltersLogger.info("Resource matches to filter: " + filter);
                     return resourceService.updateResource(id, requestBody, notificationStatus);
                 }
             }
@@ -373,13 +388,13 @@ public class UserDataFilters {
         else {
             for (Map<String, String> filter : orFilters) {
                 if (matchesFilter(filter, serviceById.get())) {
-                    System.out.println("Match to: " + filter);
+                    UserDataFiltersLogger.info("Service matches to filter: " + filter);
                     return serviceService.updateService(id, requestBody, notificationStatus);
                 }
             }
         }
 
-        System.out.println("Doesn't match");
+        UserDataFiltersLogger.info("Filter does not match");
         return Either.left(new DomainError("User filter does not match", Error.FILTER_ERROR));
     }
 
@@ -444,6 +459,32 @@ public class UserDataFilters {
         }
 
         return resultList;
+    }
+
+    private static class UserDataFiltersLogger {
+        private static final Logger logger = LoggerFactory.getLogger(UserDataFilters.class);
+        private final static ObjectMapper mapper = new ObjectMapper().setSerializationInclusion(
+                JsonInclude.Include.NON_NULL);
+
+        private static String format(Object object) {
+            try {
+                return mapper.writerWithDefaultPrettyPrinter().writeValueAsString(object);
+            } catch (JsonProcessingException e) {
+                logger.debug(String.format("Could not parse object: %s. Do not use infoJson for this.", object));
+                return object.toString();
+            }
+        }
+
+
+        public static void infoJson(String prefix, Object object) {
+            logger.info(String.format("%s%s%s", prefix, System.lineSeparator(), format(object)));
+        }
+
+        public static void info(String message) {
+            logger.info(message);
+        }
+        public static void warning(String message) { logger.warn(message); }
+
     }
 
 }
