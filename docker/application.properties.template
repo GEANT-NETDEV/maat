@@ -2,8 +2,11 @@
 mongo-host=$MONGO_HOST
 mongo-user=$MONGO_USER
 mongo-password=$MONGO_PASSWORD
+
 spring.config.active.on-profile=test
+
 spring.main.banner-mode=off
+
 logging.group.all=org.apache.catalina, org.apache.coyote, org.apache.tomcat, org.hibernate, org.springframework, \
   com.intellij.rt.junit.JUnitStarter, org.mongodb, org.jboss
 logging.level.all=WARN
@@ -26,12 +29,19 @@ server.ssl.key-store-password=thisisInventory3
 server.ssl.key-alias=spa-inventory3
 
 # Keycloak properties
-keycloak.enabled=false
+keycloak.enabled=$KEYCLOAK_ENABLED
+keycloak.authorization.l1.roles=$KEYCLOAK_AUTHORIZATION_L1_ROLES
+keycloak.authorization.l2.filters=$KEYCLOAK_AUTHORIZATION_L2_FILTERS
 spring.security.oauth2.resourceserver.jwt.issuer-uri=http://keycloakhost:8090/realms/MaatRealm
 spring.security.oauth2.resourceserver.jwt.jwk-set-uri=${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
 
 token.converter.principal-attribute=preferred_username
 token.converter.resource-id=inv3
+
+maat.role.get_only=$MAAT_ROLE_GET_ONLY
+maat.role.post_only=$MAAT_ROLE_POST_ONLY
+maat.role.delete_only=$MAAT_ROLE_DELETE_ONLY
+maat.role.patch_only=$MAAT_ROLE_PATCH_ONLY
 
 #base=BaseResourceService, extended=ExtendedResourceService
 resourceService.type=extended

@@ -1,17 +1,28 @@
 package org.geant.maat.resource;
 
+import com.auth0.jwt.JWT;
+import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
+import io.vavr.control.Either;
+import jakarta.servlet.http.HttpServletRequest;
+import org.geant.maat.common.UserDataFilters;
+import org.geant.maat.infrastructure.DomainError;
 import org.geant.maat.infrastructure.ResultMapper;
+import org.keycloak.KeycloakSecurityContext;
+import org.keycloak.representations.AccessToken;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import org.keycloak.KeycloakPrincipal;
 
 import java.util.Collection;
 import java.util.List;
@@ -24,6 +35,11 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 @Tag(name = "API Resource Inventory Management")
 class ResourceController implements ResultMapper {
     private final ResourceService resourceService;
+
+    @Value("${keycloak.enabled}")
+    private String keycloakStatus;
+    @Value("${keycloak.authorization.l2.filters}")
+    private String keycloakAuthorizationL2Status;
 
     @Autowired
     public Environment environment;
@@ -47,7 +63,6 @@ class ResourceController implements ResultMapper {
             @ApiResponse(responseCode = "409", content = { @Content(schema = @Schema()) }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
 
-    //@CrossOrigin(allowCredentials = "true")
     @GetMapping("/${api.resource.version}/resource")
     ResponseEntity<Collection<JsonNode>> getResources(
             @RequestParam(required = false, defaultValue = "") List<String> fields,
@@ -59,12 +74,25 @@ class ResourceController implements ResultMapper {
         allRequestParams.remove("offset");
         allRequestParams.remove("limit");
 
-        var allResources = resourceService.getResources(fields, allRequestParams);
-        if (offset == 0 && limit == 0) {
-            return toResponseEntity(allResources, allResources.size());
+
+        if (Objects.equals(keycloakStatus, "true") && Objects.equals(keycloakAuthorizationL2Status, "true")) {
+            UserDataFilters userFilters = new UserDataFilters(resourceService);
+            if (offset == 0 && limit == 0) {
+                var allResourcesWithFilters = userFilters.getFilter(fields, allRequestParams, "resource");
+                return toResponseEntity(allResourcesWithFilters, allResourcesWithFilters.size());
+            } else {
+                var allResourcesWithFilters = userFilters.getFilter(fields, allRequestParams, offset, limit, "resource");
+                return toResponseEntity(allResourcesWithFilters, allResourcesWithFilters.size());
+            }
+        } else {
+            var allResources = resourceService.getResources(fields, allRequestParams);
+            if (offset == 0 && limit == 0) {
+                return toResponseEntity(allResources, allResources.size());
+            }
+            return toResponseEntity(resourceService.getResources(fields, allRequestParams, offset, limit),
+                    allResources.size());
         }
-        return toResponseEntity(resourceService.getResources(fields, allRequestParams, offset, limit),
-                                allResources.size());
+
     }
 
     private ResponseEntity<Collection<JsonNode>> toResponseEntity(Collection<JsonNode> services, long totalCount) {
@@ -93,8 +121,15 @@ class ResourceController implements ResultMapper {
             @RequestParam Map<String, String> allRequestParams
     ) {
         allRequestParams.remove("fields");
-        var resource = resourceService.getResource(id, fields);
-        return foldResultWithStatus(resource, HttpStatus.OK);
+
+        if (Objects.equals(keycloakStatus, "true") && Objects.equals(keycloakAuthorizationL2Status, "true")) {
+            UserDataFilters userFilters = new UserDataFilters(resourceService);
+            var resourceByIdWithFilters = userFilters.getFilterById(id, fields, "resource");
+            return foldResultWithStatus(resourceByIdWithFilters, HttpStatus.OK);
+        } else {
+            var resource = resourceService.getResource(id, fields);
+            return foldResultWithStatus(resource, HttpStatus.OK);
+        }
     }
 
     @Operation(
@@ -111,12 +146,25 @@ class ResourceController implements ResultMapper {
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @PostMapping(value = "/${api.resource.version}/resource")
     ResponseEntity<?> addResource(@RequestBody JsonNode requestBody) {
+
         if(Objects.requireNonNull(environment.getProperty("notification.sendNotificationToListeners")).equalsIgnoreCase("true")) {
-            var resource = resourceService.createResource(requestBody, true);
-            return foldResultWithStatus(resource, HttpStatus.CREATED);
+            if (Objects.equals(keycloakStatus, "true") && Objects.equals(keycloakAuthorizationL2Status, "true")) {
+                UserDataFilters userFilters = new UserDataFilters(resourceService, true);
+                Either<DomainError, JsonNode> resource = userFilters.postFilter(requestBody, "resource");
+                return foldResultWithStatus(resource, HttpStatus.CREATED);
+            } else {
+                var resource = resourceService.createResource(requestBody, true);
+                return foldResultWithStatus(resource, HttpStatus.CREATED);
+            }
         } else {
-            var resource = resourceService.createResource(requestBody, false);
-            return foldResultWithStatus(resource, HttpStatus.CREATED);
+            if (Objects.equals(keycloakStatus, "true") && Objects.equals(keycloakAuthorizationL2Status, "true")) {
+                UserDataFilters userFilters = new UserDataFilters(resourceService, false);
+                Either<DomainError, JsonNode> resource = userFilters.postFilter(requestBody, "resource");
+                return foldResultWithStatus(resource, HttpStatus.CREATED);
+            } else {
+                var resource = resourceService.createResource(requestBody, false);
+                return foldResultWithStatus(resource, HttpStatus.CREATED);
+            }
         }
     }
 
@@ -136,11 +184,23 @@ class ResourceController implements ResultMapper {
     @DeleteMapping(value = "/${api.resource.version}/resource/{id}")
     ResponseEntity<?> deleteResource(@PathVariable String id) {
         if(Objects.requireNonNull(environment.getProperty("notification.sendNotificationToListeners")).equalsIgnoreCase("true")) {
-            var resource = resourceService.deleteResource(id, true);
-            return foldResultWithStatus(resource, HttpStatus.NO_CONTENT);
+            if (Objects.equals(keycloakStatus, "true") && Objects.equals(keycloakAuthorizationL2Status, "true")) {
+                UserDataFilters userFilters = new UserDataFilters(resourceService, true);
+                Either<DomainError, String> resource = userFilters.deleteFilter(id, "resource");
+                return foldResultWithStatus(resource, HttpStatus.NO_CONTENT);
+            } else {
+                var resource = resourceService.deleteResource(id, true);
+                return foldResultWithStatus(resource, HttpStatus.NO_CONTENT);
+            }
         } else {
-            var resource = resourceService.deleteResource(id, false);
-            return foldResultWithStatus(resource, HttpStatus.NO_CONTENT);
+            if (Objects.equals(keycloakStatus, "true") && Objects.equals(keycloakAuthorizationL2Status, "true")) {
+                UserDataFilters userFilters = new UserDataFilters(resourceService, false);
+                Either<DomainError, String> resource = userFilters.deleteFilter(id, "resource");
+                return foldResultWithStatus(resource, HttpStatus.NO_CONTENT);
+            } else {
+                var resource = resourceService.deleteResource(id, false);
+                return foldResultWithStatus(resource, HttpStatus.NO_CONTENT);
+            }
         }
     }
 
@@ -158,13 +218,27 @@ class ResourceController implements ResultMapper {
             @ApiResponse(responseCode = "409", content = { @Content(schema = @Schema()) }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @PatchMapping(value = "/${api.resource.version}/resource/{id}")
-    ResponseEntity<?> updateResource(@PathVariable String id, @RequestBody JsonNode requestBody) {
+    ResponseEntity<?> updateResource(@PathVariable String id,
+                                     @RequestBody JsonNode requestBody) {
+
         if(Objects.requireNonNull(environment.getProperty("notification.sendNotificationToListeners")).equalsIgnoreCase("true")) {
-            var resource = resourceService.updateResource(id, requestBody, true);
-            return foldResultWithStatus(resource, HttpStatus.OK);
+            if (Objects.equals(keycloakStatus, "true") && Objects.equals(keycloakAuthorizationL2Status, "true")) {
+                UserDataFilters userFilters = new UserDataFilters(resourceService, true);
+                Either<DomainError, JsonNode> resource = userFilters.patchFilter(id, requestBody, "resource");
+                return foldResultWithStatus(resource, HttpStatus.OK);
+            } else {
+                var resource = resourceService.updateResource(id, requestBody, true);
+                return foldResultWithStatus(resource, HttpStatus.OK);
+            }
         } else {
-            var resource = resourceService.updateResource(id, requestBody, false);
-            return foldResultWithStatus(resource, HttpStatus.OK);
+            if (Objects.equals(keycloakStatus, "true") && Objects.equals(keycloakAuthorizationL2Status, "true")) {
+                UserDataFilters userFilters = new UserDataFilters(resourceService, false);
+                Either<DomainError, JsonNode> resource = userFilters.patchFilter(id, requestBody, "resource");
+                return foldResultWithStatus(resource, HttpStatus.OK);
+            } else {
+                var resource = resourceService.updateResource(id, requestBody, false);
+                return foldResultWithStatus(resource, HttpStatus.OK);
+            }
         }
     }
 }

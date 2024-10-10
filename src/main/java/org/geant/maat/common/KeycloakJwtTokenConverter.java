@@ -31,13 +31,16 @@ public class KeycloakJwtTokenConverter implements Converter<Jwt, JwtAuthenticati
 
     @Override
     public JwtAuthenticationToken convert(@NonNull Jwt jwt) {
-        Stream<SimpleGrantedAuthority> accesses = Optional.of(jwt)
+        List<Collection<String>> roleResources = Optional.of(jwt)
                 .map(token -> token.getClaimAsMap(RESOURCE_ACCESS))
                 .map(claimMap -> (Map<String, Object>) claimMap.get(properties.getResourceId()))
                 .map(resourceData -> (Collection<String>) resourceData.get(ROLES))
-                .stream()
-                .map(role -> new SimpleGrantedAuthority(ROLE_PREFIX + role))
-                .distinct();
+                .stream().collect(Collectors.toList());
+
+        List<SimpleGrantedAuthority> simpleGrantedAuthorities = new ArrayList<>();
+        roleResources.forEach(role -> role.forEach(roleValue -> simpleGrantedAuthorities.add(new SimpleGrantedAuthority(ROLE_PREFIX + roleValue))));
+
+        Stream<SimpleGrantedAuthority> accesses = simpleGrantedAuthorities.stream().distinct();
 
         Set<GrantedAuthority> authorities = Stream
                 .concat(jwtGrantedAuthoritiesConverter.convert(jwt).stream(), accesses)

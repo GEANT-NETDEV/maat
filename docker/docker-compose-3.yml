@@ -8,8 +8,14 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - server.ssl.enabled=true
-      - keycloak.enabled=true
+      - maat.role.get_only=$MAAT_ROLE_GET_ONLY
+      - maat.role.post_only=$MAAT_ROLE_POST_ONLY
+      - maat.role.delete_only=$MAAT_ROLE_DELETE_ONLY
+      - maat.role.patch_only=$MAAT_ROLE_PATCH_ONLY
+      - KEYCLOAK_ENABLED=$KEYCLOAK_ENABLED
+      - KEYCLOAK_AUTHORIZATION_L1_ROLES=$KEYCLOAK_AUTHORIZATION_L1_ROLES
+      - KEYCLOAK_AUTHORIZATION_L2_FILTERS=$KEYCLOAK_AUTHORIZATION_L2_FILTERS
+      - server.ssl.enabled=false
       - MONGO_HOST=$MONGODB_HOST
       - MONGO_USER=$MONGO_USER
       - MONGO_PASSWORD=$MONGO_PASSWORD
@@ -47,7 +53,7 @@ services:
       - MONGO_PASSWORD=$MONGO_EL_PASSWORD
       - MONGO_PORT=$MONGO_EL_PORT
       - MONGO_TIMEOUT=$MONGO_EL_TIMEOUT
-      - AUTO_REGISTER=off
+      - AUTO_REGISTER=$AUTO_REGISTER
       - MAAT_HOST=$MAAT_HOST
       - MAAT_PORT=$MAAT_PORT
       - EVENT_LISTENER_HOST=$EVENT_LISTENER_HOST
@@ -67,18 +73,22 @@ services:
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_EL_PASSWORD
 
   keycloak-dev:
-    image: quay.io/keycloak/keycloak:19.0.1
+    image: quay.io/keycloak/keycloak:25.0.4
     hostname: $KEYCLOAK_HOST
     ports:
       - "8090:8090"
     expose:
       - "8090"
+    volumes:
+      - keycloak_data:/opt/keycloak/data
     environment:
       - KEYCLOAK_ADMIN=$KEYCLOAK_USER
       - KEYCLOAK_ADMIN_PASSWORD=$KEYCLOAK_PASS
     command: start-dev --http-port 8090
+
   keycloak-dev-setup:
     image: quay.io/keycloak/keycloak:19.0.1
+    hostname: keycloaksetup
     depends_on:
       - keycloak-dev
     profiles:
@@ -89,9 +99,12 @@ services:
       && /opt/keycloak/bin/kcadm.sh create users -r MaatRealm -s username=test -s enabled=true
       && /opt/keycloak/bin/kcadm.sh set-password -r MaatRealm --username test --new-password test
       && /opt/keycloak/bin/kcadm.sh create roles -r MaatRealm -s name=inv3user
-      && /opt/keycloak/bin/kcadm.sh create clients -r MaatRealm -s clientId=inv3 -s enabled=true -s clientAuthenticatorType=client-secret -s secret=d0b8122f-8dfb-46b7-b68a-f5cc4e25d123 -s directAccessGrantsEnabled=true
-      && /opt/keycloak/bin/kcadm.sh add-roles --uusername test --rolename inv3user -r MaatRealm"
+      && /opt/keycloak/bin/kcadm.sh create clients -r MaatRealm -s clientId=inv3 -s enabled=true -s clientAuthenticatorType=client-secret -s secret=d0b8122f-8dfb-46b7-b68a-f5cc4e25d123 -s standardFlowEnabled=true -s 'redirectUris=["http://keycloakhost:8090"]'
+      && /opt/keycloak/bin/kcadm.sh create clients -r MaatRealm -s clientId=inv3-account -s enabled=true -s clientAuthenticatorType=client-secret -s secret=d0b8122f-9e0c-46b7-b68a-f5cc4e25d123 -s serviceAccountsEnabled=true -s standardFlowEnabled=false
+      && /opt/keycloak/bin/kcadm.sh add-roles -username test --rolename inv3user -r MaatRealm
+      && /opt/keycloak/bin/kcadm.sh add-roles -username service-account-inv3-account --rolename inv3user -r MaatRealm"
 
 volumes:
   mongodb:
   mongodb2:
+  keycloak_data:
