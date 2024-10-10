@@ -9,8 +9,8 @@
         <graylogHost>${graylogHost}</graylogHost>
         <graylogPort>${graylogPort}</graylogPort>
         <encoder class="de.siegmar.logbackgelf.GelfEncoder">
-            <originHost>localhost</originHost>
-            <staticField>app_name:Maat</staticField>
+            <originHost>maathost</originHost>
+            <staticField>application_name:Maat</staticField>
         </encoder>
         <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
             <level>INFO</level>
