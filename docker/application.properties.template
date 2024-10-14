@@ -10,6 +10,8 @@ spring.main.banner-mode=off
 logging.group.all=org.apache.catalina, org.apache.coyote, org.apache.tomcat, org.hibernate, org.springframework, \
   com.intellij.rt.junit.JUnitStarter, org.mongodb, org.jboss
 logging.level.all=WARN
+logging.file.name=./logs/logfile.log
+logging.level.org.springframework.security=DEBUG
 
 api.resource.version=v4.0.0
 api.service.version=v4.0.0
@@ -36,7 +38,7 @@ spring.security.oauth2.resourceserver.jwt.issuer-uri=http://keycloakhost:8090/re
 spring.security.oauth2.resourceserver.jwt.jwk-set-uri=${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
 
 token.converter.principal-attribute=preferred_username
-token.converter.resource-id=inv3
+token.converter.resource-id=$KEYCLOAK_CLIENT_ID
 
 maat.role.get_only=$MAAT_ROLE_GET_ONLY
 maat.role.post_only=$MAAT_ROLE_POST_ONLY

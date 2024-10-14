@@ -286,7 +286,6 @@ public class ExtendedResourceService implements ResourceService {
         resource.put("id", id);
         resource.put("href", href);
         relationshipType.put("resource", resource);
-        relationshipType.put("@type", "ResourceRelationship");
         return relationshipType;
     }
 
@@ -301,7 +300,6 @@ public class ExtendedResourceService implements ResourceService {
         resource.put("href", href);
         resource.put("name", name);
         relationshipType.put("resource", resource);
-        relationshipType.put("@type", "ResourceRelationship");
         return relationshipType;
     }
 

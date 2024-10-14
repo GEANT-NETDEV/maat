@@ -266,7 +266,6 @@ public class ExtendedServiceService implements ServiceService {
         service.put("id", id);
         service.put("href", href);
         relationshipType.put("service", service);
-        relationshipType.put("@type", "ServiceRelationship");
         return relationshipType;
     }
 
@@ -281,7 +280,6 @@ public class ExtendedServiceService implements ServiceService {
         service.put("href", href);
         service.put("name", name);
         relationshipType.put("service", service);
-        relationshipType.put("@type", "ServiceRelationship");
         return relationshipType;
     }
 
