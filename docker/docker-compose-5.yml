@@ -13,6 +13,7 @@ services:
       - MAAT_ROLE_DELETE_ONLY=$MAAT_ROLE_DELETE_ONLY
       - MAAT_ROLE_PATCH_ONLY=$MAAT_ROLE_PATCH_ONLY
       - KEYCLOAK_ENABLED=$KEYCLOAK_ENABLED
+      - KEYCLOAK_CLIENT_ID=$KEYCLOAK_CLIENT_ID
       - KEYCLOAK_AUTHORIZATION_L1_ROLES=$KEYCLOAK_AUTHORIZATION_L1_ROLES
       - KEYCLOAK_AUTHORIZATION_L2_FILTERS=$KEYCLOAK_AUTHORIZATION_L2_FILTERS
       - server.ssl.enabled=false
@@ -138,7 +139,7 @@ services:
     ports:
       - "8090:8090"
     volumes:
-      - keycloak_data5:/opt/keycloak/data
+      - keycloak_data2:/opt/keycloak/data
     expose:
       - "8090"
     environment:
@@ -243,4 +244,4 @@ volumes:
   mongodb-graylog_data:
   graylog_data:
   graylog_journal:
-  keycloak_data5:
+  keycloak_data2:
