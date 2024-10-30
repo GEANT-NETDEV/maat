@@ -34,7 +34,7 @@ server.ssl.key-alias=spa-inventory3
 keycloak.enabled=$KEYCLOAK_ENABLED
 keycloak.authorization.l1.roles=$KEYCLOAK_AUTHORIZATION_L1_ROLES
 keycloak.authorization.l2.filters=$KEYCLOAK_AUTHORIZATION_L2_FILTERS
-spring.security.oauth2.resourceserver.jwt.issuer-uri=http://keycloakhost:8090/realms/MaatRealm
+spring.security.oauth2.resourceserver.jwt.issuer-uri=http://$KEYCLOAK_HOST:$KEYCLOAK_PORT/realms/MaatRealm
 spring.security.oauth2.resourceserver.jwt.jwk-set-uri=${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
 
 token.converter.principal-attribute=preferred_username

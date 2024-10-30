@@ -13,6 +13,8 @@ services:
       - MAAT_ROLE_DELETE_ONLY=$MAAT_ROLE_DELETE_ONLY
       - MAAT_ROLE_PATCH_ONLY=$MAAT_ROLE_PATCH_ONLY
       - KEYCLOAK_ENABLED=$KEYCLOAK_ENABLED
+      - KEYCLOAK_HOST=$KEYCLOAK_HOST
+      - KEYCLOAK_PORT=$KEYCLOAK_PORT
       - KEYCLOAK_CLIENT_ID=$KEYCLOAK_CLIENT_ID
       - KEYCLOAK_AUTHORIZATION_L1_ROLES=$KEYCLOAK_AUTHORIZATION_L1_ROLES
       - KEYCLOAK_AUTHORIZATION_L2_FILTERS=$KEYCLOAK_AUTHORIZATION_L2_FILTERS
@@ -138,8 +140,8 @@ services:
     hostname: $KEYCLOAK_HOST
     ports:
       - "8090:8090"
-    volumes:
-      - keycloak_data2:/opt/keycloak/data
+    #volumes:
+    #  - keycloak_data3:/opt/keycloak/data
     expose:
       - "8090"
     environment:
@@ -164,14 +166,14 @@ services:
         condition: service_healthy
     profiles:
       - keycloak_setup
-    entrypoint: sh -c "sleep 1
-      && /opt/keycloak/bin/kcadm.sh config credentials --server http://keycloak-dev:8090 --realm master --user $KEYCLOAK_USER --password $KEYCLOAK_PASS
-      && /opt/keycloak/bin/kcadm.sh create realms -s realm=MaatRealm -s enabled=true
-      && /opt/keycloak/bin/kcadm.sh create users -r MaatRealm -s username=$KEYCLOAK_USER -s enabled=true -s email=account@mail.com -s firstName=firstName -s lastName=lastName -s emailVerified=true
-      && /opt/keycloak/bin/kcadm.sh set-password -r MaatRealm --username $KEYCLOAK_USER --new-password $KEYCLOAK_PASS
-      && /opt/keycloak/bin/kcadm.sh create clients -r MaatRealm -s clientId=$KEYCLOAK_CLIENT_ID -s enabled=true -s clientAuthenticatorType=client-secret -s secret=$KEYCLOAK_CLIENT_SECRET -s directAccessGrantsEnabled=true
-      && /opt/keycloak/bin/kcadm.sh create roles -r MaatRealm -s name=maatuser
-      && /opt/keycloak/bin/kcadm.sh add-roles --uusername $KEYCLOAK_USER --rolename maatuser -r MaatRealm"
+    volumes:
+      - ./keycloak_conf/keycloak-setup.sh:/opt/keycloak/scripts/keycloak-setup.sh
+    environment:
+      - KEYCLOAK_USER=$KEYCLOAK_USER
+      - KEYCLOAK_PASS=$KEYCLOAK_PASS
+      - KEYCLOAK_CLIENT_ID=$KEYCLOAK_CLIENT_ID
+      - KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_CLIENT_SECRET
+    entrypoint: sh -c "sleep 1 && /opt/keycloak/scripts/keycloak-setup.sh"
 
 
   mongodb-graylog:
@@ -244,4 +246,4 @@ volumes:
   mongodb-graylog_data:
   graylog_data:
   graylog_journal:
-  keycloak_data2:
+  keycloak_data3:
