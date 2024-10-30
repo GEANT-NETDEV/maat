@@ -15,7 +15,11 @@ import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.env.Environment;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.jwt.Jwt;
+import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationToken;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.SSLEngine;
@@ -47,6 +51,8 @@ public class ExtendedServiceService implements ServiceService {
     private final ServiceFinder finder;
     @Autowired
     public Environment environment;
+    @Value("${keycloak.enabled}")
+    private String keycloakStatus;
 
     final String backward_regexA = "^bref:";
     final String backward_regexB = "^ref:";
@@ -62,6 +68,17 @@ public class ExtendedServiceService implements ServiceService {
         this.creator = serviceCreator;
         this.updater = new ServiceUpdater(serviceRepository);
         this.finder = new ServiceFinder(serviceRepository);
+    }
+
+    static Optional<JwtAuthenticationToken> getCurrentRequestAuthentication() {
+        if(SecurityContextHolder.getContext().getAuthentication() instanceof JwtAuthenticationToken jwtAuth) {
+            return Optional.of(jwtAuth);
+        }
+        return Optional.empty();
+    }
+
+    static Optional<String> getBearerToken() {
+        return getCurrentRequestAuthentication().map(JwtAuthenticationToken::getToken).map(Jwt::getTokenValue);
     }
 
     @Override
@@ -336,10 +353,20 @@ public class ExtendedServiceService implements ServiceService {
             return Either.left(new DomainError("Error, cannot connect to service: " + uriSyntaxException.getMessage(), Error.SERVICE_MISSING));
         }
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(uri)
-                .method("GET", HttpRequest.BodyPublishers.noBody())
-                .build();
+        HttpRequest request;
+        if (Objects.equals(keycloakStatus, "true")) {
+            request = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .header("Authorization", "Bearer " + getBearerToken().get())
+                    .method("GET", HttpRequest.BodyPublishers.noBody())
+                    .build();
+        } else {
+            request = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .method("GET", HttpRequest.BodyPublishers.noBody())
+                    .build();
+        }
+
         HttpResponse<String> response;
         try {
             response = client.send(request,
@@ -408,10 +435,19 @@ public class ExtendedServiceService implements ServiceService {
             return Either.left(new DomainError("Error, cannot connect to resource: " + uriSyntaxException.getMessage(), Error.RESOURCE_MISSING));
         }
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(uri)
-                .method("GET", HttpRequest.BodyPublishers.noBody())
-                .build();
+        HttpRequest request;
+        if (Objects.equals(keycloakStatus, "true")) {
+            request = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .header("Authorization", "Bearer " + getBearerToken().get())
+                    .method("GET", HttpRequest.BodyPublishers.noBody())
+                    .build();
+        } else {
+            request = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .method("GET", HttpRequest.BodyPublishers.noBody())
+                    .build();
+        }
         HttpResponse<String> response;
         try {
             response = client.send(request,
@@ -479,12 +515,23 @@ public class ExtendedServiceService implements ServiceService {
             return Either.left(new DomainError("Error, cannot connect to resource: " + uriSyntaxException.getMessage(), Error.RESOURCE_MISSING));
         }
 
-        HttpRequest request = HttpRequest.newBuilder()
-                .uri(uri)
-                .header("Content-Type", "application/json")
-                .method("PATCH", HttpRequest.BodyPublishers.ofString(resource.toString()))
-                // .POST(HttpRequest.BodyPublishers.ofString(service.toString()))
-                .build();
+        HttpRequest request;
+        if (Objects.equals(keycloakStatus, "true")) {
+            request = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Bearer " + getBearerToken().get())
+                    .method("PATCH", HttpRequest.BodyPublishers.ofString(resource.toString()))
+                    // .POST(HttpRequest.BodyPublishers.ofString(service.toString()))
+                    .build();
+        } else {
+            request = HttpRequest.newBuilder()
+                    .uri(uri)
+                    .header("Content-Type", "application/json")
+                    .method("PATCH", HttpRequest.BodyPublishers.ofString(resource.toString()))
+                    // .POST(HttpRequest.BodyPublishers.ofString(service.toString()))
+                    .build();
+        }
         HttpResponse<String> response;
         try {
             response = client.send(request,

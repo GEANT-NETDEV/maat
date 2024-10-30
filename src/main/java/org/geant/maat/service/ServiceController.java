@@ -109,8 +109,7 @@ public class ServiceController implements ResultMapper{
     ResponseEntity<?> getService(
             @PathVariable String id,
             @RequestParam(required = false, defaultValue = "") List<String> fields,
-            @RequestParam Map<String, String> allRequestParams,
-            @RequestHeader("Authorization") String token
+            @RequestParam Map<String, String> allRequestParams
     ) {
         allRequestParams.remove("fields");
 
@@ -137,8 +136,7 @@ public class ServiceController implements ResultMapper{
             @ApiResponse(responseCode = "409", content = { @Content(schema = @Schema()) }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @PostMapping(value = "/${api.service.version}/service")
-    ResponseEntity<?> addService(@RequestBody JsonNode requestBody,
-                                 @RequestHeader("Authorization") String token) {
+    ResponseEntity<?> addService(@RequestBody JsonNode requestBody) {
 
         if(Objects.requireNonNull(environment.getProperty("notification.sendNotificationToListeners")).equalsIgnoreCase("true")) {
             if (Objects.equals(keycloakStatus, "true") && Objects.equals(keycloakAuthorizationL2Status, "true")) {
@@ -175,8 +173,7 @@ public class ServiceController implements ResultMapper{
             @ApiResponse(responseCode = "409", content = { @Content(schema = @Schema()) }),
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @DeleteMapping(value = "/${api.service.version}/service/{id}")
-    ResponseEntity<?> deleteService(@PathVariable String id,
-                                    @RequestHeader("Authorization") String token) {
+    ResponseEntity<?> deleteService(@PathVariable String id) {
 
         if(Objects.requireNonNull(environment.getProperty("notification.sendNotificationToListeners")).equalsIgnoreCase("true")) {
             if (Objects.equals(keycloakStatus, "true") && Objects.equals(keycloakAuthorizationL2Status, "true")) {
@@ -214,8 +211,7 @@ public class ServiceController implements ResultMapper{
             @ApiResponse(responseCode = "500", content = { @Content(schema = @Schema()) }) })
     @PatchMapping(value = "/${api.service.version}/service/{id}")
     ResponseEntity<?> updateService(@PathVariable String id,
-                                    @RequestBody JsonNode requestBody,
-                                    @RequestHeader("Authorization") String token) {
+                                    @RequestBody JsonNode requestBody) {
 
         if(Objects.requireNonNull(environment.getProperty("notification.sendNotificationToListeners")).equalsIgnoreCase("true")) {
             if (Objects.equals(keycloakStatus, "true") && Objects.equals(keycloakAuthorizationL2Status, "true")) {
