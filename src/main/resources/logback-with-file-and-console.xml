@@ -5,6 +5,15 @@
 
     <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
 
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+    </appender>
+
     <appender name="GRAYLOG" class="de.siegmar.logbackgelf.GelfUdpAppender">
         <graylogHost>${graylogHost}</graylogHost>
         <graylogPort>${graylogPort}</graylogPort>
@@ -35,7 +44,10 @@
 
     <root level="info">
         <appender-ref ref="GRAYLOG" />
+        <appender-ref ref="CONSOLE" />
         <appender-ref ref="FILE" />
     </root>
+
+
 
 </configuration>

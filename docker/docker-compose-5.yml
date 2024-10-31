@@ -31,6 +31,7 @@ services:
       - MAAT_SERVICE_PORT=$MAAT_SERVICE_PORT
       - GRAYLOG_HOST=$GRAYLOG_HOST
       - GRAYLOG_PORT=$GRAYLOG_PORT
+      - LOGGING_CONFIG=$LOGGING_CONFIG
     depends_on:
       mongodb-maat:
         condition: service_healthy
