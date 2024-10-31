@@ -16,6 +16,8 @@ logging.level.org.springframework.security=DEBUG
 api.resource.version=v4.0.0
 api.service.version=v4.0.0
 
+server.port=$MAAT_PORT
+
 resource.protocol=$MAAT_RESOURCE_PROTOCOL
 resource.address=$MAAT_RESOURCE_ADDRESS
 resource.port=$MAAT_RESOURCE_PORT
