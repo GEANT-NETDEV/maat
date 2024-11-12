@@ -8,14 +8,7 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - MAAT_ROLE_GET_ONLY=$MAAT_ROLE_GET_ONLY
-      - MAAT_ROLE_POST_ONLY=$MAAT_ROLE_POST_ONLY
-      - MAAT_ROLE_DELETE_ONLY=$MAAT_ROLE_DELETE_ONLY
-      - MAAT_ROLE_PATCH_ONLY=$MAAT_ROLE_PATCH_ONLY
       - KEYCLOAK_ENABLED=$KEYCLOAK_ENABLED
-      - KEYCLOAK_HOST=$KEYCLOAK_HOST
-      - KEYCLOAK_PORT=$KEYCLOAK_PORT
-      - KEYCLOAK_CLIENT_ID=$KEYCLOAK_CLIENT_ID
       - KEYCLOAK_AUTHORIZATION_L1_ROLES=$KEYCLOAK_AUTHORIZATION_L1_ROLES
       - KEYCLOAK_AUTHORIZATION_L2_FILTERS=$KEYCLOAK_AUTHORIZATION_L2_FILTERS
       - server.ssl.enabled=false
@@ -29,30 +22,44 @@ services:
       - MAAT_SERVICE_PROTOCOL=$MAAT_SERVICE_PROTOCOL
       - MAAT_SERVICE_ADDRESS=$MAAT_SERVICE_ADDRESS
       - MAAT_SERVICE_PORT=$MAAT_SERVICE_PORT
-      - GRAYLOG_HOST=$GRAYLOG_HOST
-      - GRAYLOG_PORT=$GRAYLOG_PORT
       - LOGGING_CONFIG=$LOGGING_CONFIG
+    depends_on:
+      mongodb-maat:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080 --server-response 2>&1 | grep -E \"(401|200)\" || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 10
 
-  mongodb:
-    image: mongo:latest
+  mongodb-maat:
+    image: mongo:7.0.4
     hostname: $MONGODB_HOST
     ports:
       - "27017:27017"
     expose:
       - "27017"
     volumes:
-      - mongodb:/data/db
+      - mongodb-maat:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_USER
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 10
 
   eventListener:
-    image: artifactory.software.geant.org/spa-docker/eventlistener:1.0.1
+    image: artifactory.software.geant.org/spa-docker/eventlistener:1.0.3
     hostname: $EVENT_LISTENER_HOST
     ports:
       - "8081:8081"
     depends_on:
-      - maat
+      mongodb-eventlistener:
+        condition: service_healthy
+      maat:
+        condition: service_healthy
     restart: on-failure
     environment:
       - MONGO_HOST=$MONGODB_EL_HOST
@@ -61,24 +68,32 @@ services:
       - MONGO_PORT=$MONGO_EL_PORT
       - MONGO_TIMEOUT=$MONGO_EL_TIMEOUT
       - AUTO_REGISTER=$AUTO_REGISTER
+      - MAAT_PROTOCOL=$MAAT_PROTOCOL
       - MAAT_HOST=$MAAT_HOST
       - MAAT_PORT=$MAAT_PORT
+      - EVENT_LISTENER_PROTOCOL=$EVENT_LISTENER_PROTOCOL
       - EVENT_LISTENER_HOST=$EVENT_LISTENER_HOST
       - EVENT_LISTENER_PORT=$EVENT_LISTENER_PORT
+      - LOGGING_CONFIG=$LOGGING_CONFIG
 
-  mongodb2:
-    image: mongo:latest
+  mongodb-eventlistener:
+    image: mongo:7.0.4
     hostname: $MONGODB_EL_HOST
     ports:
       - "27022:27017"
     expose:
       - "27022"
     volumes:
-      - mongodb2:/data/db
+      - mongodb-eventlistener:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_EL_USER
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_EL_PASSWORD
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 10
 
 volumes:
-  mongodb:
-  mongodb2:
+  mongodb-maat:
+  mongodb-eventlistener:
