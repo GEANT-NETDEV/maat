@@ -12,13 +12,13 @@ services:
       - MAAT_ROLE_POST_ONLY=$MAAT_ROLE_POST_ONLY
       - MAAT_ROLE_DELETE_ONLY=$MAAT_ROLE_DELETE_ONLY
       - MAAT_ROLE_PATCH_ONLY=$MAAT_ROLE_PATCH_ONLY
-      - KEYCLOAK_ENABLED=$KEYCLOAK_ENABLED
+      - KEYCLOAK_ENABLED=true
       - KEYCLOAK_HOST=$KEYCLOAK_HOST
       - KEYCLOAK_PORT=$KEYCLOAK_PORT
-      - KEYCLOAK_CLIENT_ID=$KEYCLOAK_CLIENT_ID
+      - KEYCLOAK_CLIENT_ID_FOR_USERS=$KEYCLOAK_CLIENT_ID_FOR_USERS
       - KEYCLOAK_AUTHORIZATION_L1_ROLES=$KEYCLOAK_AUTHORIZATION_L1_ROLES
       - KEYCLOAK_AUTHORIZATION_L2_FILTERS=$KEYCLOAK_AUTHORIZATION_L2_FILTERS
-      - server.ssl.enabled=false
+      - server.ssl.enabled=true
       - MONGO_HOST=$MONGODB_HOST
       - MONGO_USER=$MONGO_USER
       - MONGO_PASSWORD=$MONGO_PASSWORD
@@ -29,11 +29,17 @@ services:
       - MAAT_SERVICE_PROTOCOL=$MAAT_SERVICE_PROTOCOL
       - MAAT_SERVICE_ADDRESS=$MAAT_SERVICE_ADDRESS
       - MAAT_SERVICE_PORT=$MAAT_SERVICE_PORT
-      - GRAYLOG_HOST=$GRAYLOG_HOST
-      - GRAYLOG_PORT=$GRAYLOG_PORT
-      - LOGGING_CONFIG=$LOGGING_CONFIG
+      - LOGGING_CONFIG=classpath:logback-with-file-and-console.xml
+    depends_on:
+      mongodb-maat:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "(wget -qO- http://localhost:8080 --server-response 2>&1 | grep -E \"(401|200)\" || wget -qO- https://localhost:8080 --no-check-certificate --server-response 2>&1 | grep -E \"(401|200)\") || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
 
-  mongodb:
+  mongodb-maat:
     image: mongo:7.0.4
     hostname: $MONGODB_HOST
     ports:
@@ -41,18 +47,29 @@ services:
     expose:
       - "27017"
     volumes:
-      - mongodb:/data/db
+      - mongodb-maat:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_USER
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
+    depends_on:
+      keycloak-dev:
+        condition: service_healthy
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 10
 
   eventListener:
-    image: artifactory.software.geant.org/spa-docker/eventlistener:1.0.1
+    image: artifactory.software.geant.org/spa-docker/eventlistener:1.0.3
     hostname: $EVENT_LISTENER_HOST
     ports:
       - "8081:8081"
     depends_on:
-      - maat
+      mongodb-eventlistener:
+        condition: service_healthy
+      maat:
+        condition: service_healthy
     restart: on-failure
     environment:
       - MONGO_HOST=$MONGODB_EL_HOST
@@ -60,13 +77,22 @@ services:
       - MONGO_PASSWORD=$MONGO_EL_PASSWORD
       - MONGO_PORT=$MONGO_EL_PORT
       - MONGO_TIMEOUT=$MONGO_EL_TIMEOUT
-      - AUTO_REGISTER=$AUTO_REGISTER
+      - AUTO_REGISTER=off
+      - MAAT_PROTOCOL=$MAAT_PROTOCOL
       - MAAT_HOST=$MAAT_HOST
       - MAAT_PORT=$MAAT_PORT
+      - EVENT_LISTENER_PROTOCOL=$EVENT_LISTENER_PROTOCOL
       - EVENT_LISTENER_HOST=$EVENT_LISTENER_HOST
       - EVENT_LISTENER_PORT=$EVENT_LISTENER_PORT
+      - KEYCLOAK_PROTOCOL=$KEYCLOAK_PROTOCOL
+      - KEYCLOAK_HOST=$KEYCLOAK_HOST
+      - KEYCLOAK_PORT=$KEYCLOAK_PORT
+      - KEYCLOAK_CLIENT_ID=$KEYCLOAK_CLIENT_ID_FOR_CLIENTS
+      - KEYCLOAK_GRANT_TYPE=$KEYCLOAK_GRANT_TYPE_FOR_CLIENTS
+      - KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_CLIENT_SECRET
+      - LOGGING_CONFIG=classpath:logback-with-file-and-console.xml
 
-  mongodb2:
+  mongodb-eventlistener:
     image: mongo:7.0.4
     hostname: $MONGODB_EL_HOST
     ports:
@@ -74,44 +100,57 @@ services:
     expose:
       - "27022"
     volumes:
-      - mongodb2:/data/db
+      - mongodb-eventlistener:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_EL_USER
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_EL_PASSWORD
+    depends_on:
+      keycloak-dev:
+        condition: service_healthy
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 10
 
   keycloak-dev:
     image: quay.io/keycloak/keycloak:25.0.4
     hostname: $KEYCLOAK_HOST
     ports:
       - "8090:8090"
-    expose:
-      - "8090"
     volumes:
       - keycloak_data:/opt/keycloak/data
+    expose:
+      - "8090"
     environment:
       - KEYCLOAK_ADMIN=$KEYCLOAK_USER
       - KEYCLOAK_ADMIN_PASSWORD=$KEYCLOAK_PASS
-    command: start-dev --http-port 8090
+    command: start-dev --http-port 8090 --health-enabled=true
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000;echo -e \"GET /health/ready HTTP/1.1\r\nhost: http://localhost\r\nConnection: close\r\n\r\n\" >&3;grep \"HTTP/1.1 200 OK\" <&3"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    restart: unless-stopped
+
 
   keycloak-dev-setup:
-    image: quay.io/keycloak/keycloak:19.0.1
-    hostname: keycloaksetup
+    image: quay.io/keycloak/keycloak:25.0.4
     depends_on:
-      - keycloak-dev
-    profiles:
-      - keycloak_setup
-    entrypoint: sh -c "sleep 1
-      && /opt/keycloak/bin/kcadm.sh config credentials --server http://keycloak-dev:8090 --realm master --user admin --password admin
-      && /opt/keycloak/bin/kcadm.sh create realms -s realm=MaatRealm -s enabled=true
-      && /opt/keycloak/bin/kcadm.sh create users -r MaatRealm -s username=test -s enabled=true
-      && /opt/keycloak/bin/kcadm.sh set-password -r MaatRealm --username test --new-password test
-      && /opt/keycloak/bin/kcadm.sh create roles -r MaatRealm -s name=inv3user
-      && /opt/keycloak/bin/kcadm.sh create clients -r MaatRealm -s clientId=inv3 -s enabled=true -s clientAuthenticatorType=client-secret -s secret=d0b8122f-8dfb-46b7-b68a-f5cc4e25d123 -s standardFlowEnabled=true -s 'redirectUris=["http://keycloakhost:8090"]'
-      && /opt/keycloak/bin/kcadm.sh create clients -r MaatRealm -s clientId=inv3-account -s enabled=true -s clientAuthenticatorType=client-secret -s secret=d0b8122f-9e0c-46b7-b68a-f5cc4e25d123 -s serviceAccountsEnabled=true -s standardFlowEnabled=false
-      && /opt/keycloak/bin/kcadm.sh add-roles -username test --rolename inv3user -r MaatRealm
-      && /opt/keycloak/bin/kcadm.sh add-roles -username service-account-inv3-account --rolename inv3user -r MaatRealm"
+      keycloak-dev:
+        condition: service_healthy
+    volumes:
+      - ./keycloak_conf/keycloak-setup.sh:/opt/keycloak/scripts/keycloak-setup.sh
+    environment:
+      - KEYCLOAK_HOST=$KEYCLOAK_HOST
+      - KEYCLOAK_USER=$KEYCLOAK_USER
+      - KEYCLOAK_PASS=$KEYCLOAK_PASS
+      - KEYCLOAK_CLIENT_ID_FOR_CLIENTS=$KEYCLOAK_CLIENT_ID_FOR_CLIENTS
+      - KEYCLOAK_CLIENT_ID_FOR_USERS=$KEYCLOAK_CLIENT_ID_FOR_USERS
+      - KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_CLIENT_SECRET
+    entrypoint: sh -c "sleep 1 && /opt/keycloak/scripts/keycloak-setup.sh"
 
 volumes:
-  mongodb:
-  mongodb2:
+  mongodb-maat:
+  mongodb-eventlistener:
   keycloak_data:

@@ -8,9 +8,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - KEYCLOAK_ENABLED=$KEYCLOAK_ENABLED
-      - KEYCLOAK_AUTHORIZATION_L1_ROLES=$KEYCLOAK_AUTHORIZATION_L1_ROLES
-      - KEYCLOAK_AUTHORIZATION_L2_FILTERS=$KEYCLOAK_AUTHORIZATION_L2_FILTERS
+      - KEYCLOAK_ENABLED=false
+      - KEYCLOAK_AUTHORIZATION_L1_ROLES=false
+      - KEYCLOAK_AUTHORIZATION_L2_FILTERS=false
       - server.ssl.enabled=false
       - MONGO_HOST=$MONGODB_HOST
       - MONGO_USER=$MONGO_USER
@@ -22,7 +22,7 @@ services:
       - MAAT_SERVICE_PROTOCOL=$MAAT_SERVICE_PROTOCOL
       - MAAT_SERVICE_ADDRESS=$MAAT_SERVICE_ADDRESS
       - MAAT_SERVICE_PORT=$MAAT_SERVICE_PORT
-      - LOGGING_CONFIG=$LOGGING_CONFIG
+      - LOGGING_CONFIG=classpath:logback-with-file-and-console-without-graylog.xml
     depends_on:
       mongodb-maat:
         condition: service_healthy
@@ -74,7 +74,7 @@ services:
       - EVENT_LISTENER_PROTOCOL=$EVENT_LISTENER_PROTOCOL
       - EVENT_LISTENER_HOST=$EVENT_LISTENER_HOST
       - EVENT_LISTENER_PORT=$EVENT_LISTENER_PORT
-      - LOGGING_CONFIG=$LOGGING_CONFIG
+      - LOGGING_CONFIG=classpath:logback-with-file-and-console-without-graylog.xml
 
   mongodb-eventlistener:
     image: mongo:7.0.4

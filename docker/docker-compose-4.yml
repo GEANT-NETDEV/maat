@@ -8,16 +8,9 @@ services:
     ports:
       - "8080:8080"
     environment:
-      - MAAT_ROLE_GET_ONLY=$MAAT_ROLE_GET_ONLY
-      - MAAT_ROLE_POST_ONLY=$MAAT_ROLE_POST_ONLY
-      - MAAT_ROLE_DELETE_ONLY=$MAAT_ROLE_DELETE_ONLY
-      - MAAT_ROLE_PATCH_ONLY=$MAAT_ROLE_PATCH_ONLY
-      - KEYCLOAK_ENABLED=$KEYCLOAK_ENABLED
-      - KEYCLOAK_HOST=$KEYCLOAK_HOST
-      - KEYCLOAK_PORT=$KEYCLOAK_PORT
-      - KEYCLOAK_CLIENT_ID=$KEYCLOAK_CLIENT_ID
-      - KEYCLOAK_AUTHORIZATION_L1_ROLES=$KEYCLOAK_AUTHORIZATION_L1_ROLES
-      - KEYCLOAK_AUTHORIZATION_L2_FILTERS=$KEYCLOAK_AUTHORIZATION_L2_FILTERS
+      - KEYCLOAK_ENABLED=false
+      - KEYCLOAK_AUTHORIZATION_L1_ROLES=false
+      - KEYCLOAK_AUTHORIZATION_L2_FILTERS=false
       - server.ssl.enabled=false
       - MONGO_HOST=$MONGODB_HOST
       - MONGO_USER=$MONGO_USER
@@ -29,45 +22,60 @@ services:
       - MAAT_SERVICE_PROTOCOL=$MAAT_SERVICE_PROTOCOL
       - MAAT_SERVICE_ADDRESS=$MAAT_SERVICE_ADDRESS
       - MAAT_SERVICE_PORT=$MAAT_SERVICE_PORT
-      - GRAYLOG_HOST=$GRAYLOG_HOST
-      - GRAYLOG_PORT=$GRAYLOG_PORT
-      - LOGGING_CONFIG=$LOGGING_CONFIG
+      - LOGGING_CONFIG=classpath:logback-with-file-and-console-without-graylog.xml
+    depends_on:
+      mongodb-maat:
+        condition: service_healthy
+    healthcheck:
+      test: [ "CMD-SHELL", "wget -qO- http://localhost:8080 --server-response 2>&1 | grep -E \"(401|200)\" || exit 1" ]
+      interval: 30s
+      timeout: 10s
+      retries: 10
 
-  mongodb:
-    image: mongo:latest
+  mongodb-maat:
+    image: mongo:7.0.4
     hostname: $MONGODB_HOST
     ports:
       - "27017:27017"
     expose:
       - "27017"
     volumes:
-      - mongodb:/data/db
+      - mongodb-maat:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_USER
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 10
 
   gateway:
+    hostname: nginxhost
     build:
       context: .
       dockerfile: Dockerfile_nginx_ssl
     ports:
       - 8082:443
-
-#  share:
-#    build:
-#      context: .
-#      dockerfile: Dockerfile_nginx_share
-#    hostname: tmfscheme
-#    ports:
-#      - 8083:8083
+    environment:
+      - MAAT_PROTOCOL=$MAAT_PROTOCOL
+      - MAAT_HOST=$MAAT_HOST
+      - MAAT_PORT=$MAAT_PORT
+    command: /bin/sh -c "envsubst < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf; nginx -g 'daemon off;' | logger --udp --server $GRAYLOG_HOST --port 514 -t nginx"
+    depends_on:
+      maat:
+        condition: service_healthy
 
   eventListener:
-    image: artifactory.software.geant.org/spa-docker/eventlistener:1.0.1
+    image: artifactory.software.geant.org/spa-docker/eventlistener:1.0.3
     hostname: $EVENT_LISTENER_HOST
     ports:
       - "8081:8081"
     depends_on:
-      - maat
+      mongodb-eventlistener:
+        condition: service_healthy
+      maat:
+        condition: service_healthy
     restart: on-failure
     environment:
       - MONGO_HOST=$MONGODB_EL_HOST
@@ -82,31 +90,26 @@ services:
       - EVENT_LISTENER_PROTOCOL=$EVENT_LISTENER_PROTOCOL
       - EVENT_LISTENER_HOST=$EVENT_LISTENER_HOST
       - EVENT_LISTENER_PORT=$EVENT_LISTENER_PORT
-      - KEYCLOAK_PROTOCOL=$KEYCLOAK_PROTOCOL
-      - KEYCLOAK_HOST=$KEYCLOAK_HOST
-      - KEYCLOAK_PORT=$KEYCLOAK_PORT
-      - KEYCLOAK_USER=$KEYCLOAK_USER
-      - KEYCLOAK_PASS=$KEYCLOAK_PASS
-      - KEYCLOAK_CLIENT_ID=$KEYCLOAK_CLIENT_ID
-      - KEYCLOAK_GRANT_TYPE=$KEYCLOAK_GRANT_TYPE
-      - KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_CLIENT_SECRET
-      - GRAYLOG_HOST=$GRAYLOG_HOST
-      - GRAYLOG_PORT=$GRAYLOG_PORT
-      - LOGGING_CONFIG=$LOGGING_CONFIG
+      - LOGGING_CONFIG=classpath:logback-with-file-and-console-without-graylog.xml
 
-  mongodb2:
-    image: mongo:latest
+  mongodb-eventlistener:
+    image: mongo:7.0.4
     hostname: $MONGODB_EL_HOST
     ports:
       - "27022:27017"
     expose:
       - "27022"
     volumes:
-      - mongodb2:/data/db
+      - mongodb-eventlistener:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_EL_USER
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_EL_PASSWORD
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 10
 
 volumes:
-  mongodb:
-  mongodb2:
+  mongodb-maat:
+  mongodb-eventlistener:
