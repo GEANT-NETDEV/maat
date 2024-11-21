@@ -54,6 +54,7 @@ API access can be encrypted (ssl) and authenticated (OAuth 2.0; use of Keycloak)
 - Java 21 (or higher versions)
 - NoSQL Database - MongoDB
 
+<a name="before-building"></a>
 ### Before building
 
 Install MongoDB with admin account.
@@ -71,6 +72,7 @@ db.createUser(
 )
 ```
 
+<a name="building"></a>
 ### Building
 
 ```mvn clean install```
@@ -81,16 +83,19 @@ In case you want to skip running the tests during the installation then you can 
 
 In both cases, the *jar* application will be created in the *target* folder.
 
+<a name="running"></a>
 ### Running:
 
 Go to **target/** folder and run .jar file with created name for Maat.
 
 ``` java -jar maat-1.0.6.jar ```
 
+<a name="installation-using-docker"></a>
 # Installation using Docker
 
 Maat can be run in a Docker container. The Docker image is available on the Artifactory repository at `artifactory.software.geant.org/spa-docker/maat:<actuall_version e.g. 1.0.6>`.
 
+<a name="configuration-of-the-env-file"></a>
 ## Configuration of the .env file
 
 Environment variables are key-value pairs that are used to configure application settings and other parameters that may
@@ -102,6 +107,7 @@ vary between environments.
 The .env file contains environment variables used to configure the Maat application and other related services. Below is
 a description of the most important configuration options.
 
+<a name="maat-parameters"></a>
 ### Maat Parameters
 
 |        Property        |  Values   |                                         Description                                         |
@@ -128,6 +134,7 @@ a description of the most important configuration options.
 | MONGO_PASSWORD |  abc123   |                 Password for the MongoDB database                 |
 | MONGO_TIMEOUT  |   3000    | Timeout (in milliseconds) for connections to the MongoDB database |
 
+<a name="keycloak-parameters"></a>
 ### Keycloak Parameters
 
 |             Property              |       Values       |                       Description                       |
@@ -146,6 +153,7 @@ a description of the most important configuration options.
 |  KEYCLOAK_AUTHORIZATION_L1_ROLES  |       false        |  Enable/disable level 1 role authorization in Keycloak  |
 | KEYCLOAK_AUTHORIZATION_L2_FILTERS |       false        | Enable/disable level 2 filter authorization in Keycloak |
 
+<a name="eventlistener-parameters-for-maat"></a>
 ### EventListener Parameters for Maat
 
 |        Property         | Values |                   Description                   |
@@ -155,6 +163,7 @@ a description of the most important configuration options.
 |   EVENT_LISTENER_HOST   | elhost |           Hostname for EventListener            |
 |   EVENT_LISTENER_PORT   |  8081  |             Port for EventListener              |
 
+<a name="mongodb-parameters-for-eventlistener"></a>
 ### MongoDB Parameters for EventListener
 
 |     Property      |    Values    |                                       Description                                       |
@@ -165,6 +174,7 @@ a description of the most important configuration options.
 |   MONGO_EL_PORT   |    27017     |                   Port for the MongoDB database used by EventListener                   |
 | MONGO_EL_TIMEOUT  |     3000     | Timeout (in milliseconds) for connections to the MongoDB database used by EventListener |
 
+<a name="graylog-parameters"></a>
 ### Graylog Parameters
 
 |   Property   |   Values    |           Description           |
@@ -172,6 +182,7 @@ a description of the most important configuration options.
 | GRAYLOG_HOST | grayloghost | Hostname for the Graylog server |
 | GRAYLOG_PORT |    12201    |   Port for the Graylog server   |
 
+<a name="logging-configuration"></a>
 ### Logging Configuration
 
 |    Property    |                           Values                            |                                    Description                                     |
@@ -181,6 +192,7 @@ a description of the most important configuration options.
 | LOGGING_CONFIG |         classpath:logback-with-file-and-console.xml         | Logging configuration for the Maat application. Logs in Graylog, file, and console |
 | LOGGING_CONFIG | classpath:logback-with-file-and-console-without-graylog.xml |   Logging configuration for the Maat application. Logs only in file and console    |
 
+<a name="installation-of-maat"></a>
 ## Installation of Maat
 
 An alternative installation procedure using docker containers.
@@ -189,6 +201,7 @@ Go to **docker/** folder and run:
 
 ```docker-compose up -d```
 
+<a name="installation-of-maat-with-eventlistener"></a>
 ## Installation of Maat with EventListener
 
 [EventListener](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-eventlistener) is a suporting
@@ -201,6 +214,7 @@ Go to **docker/** folder and run:
 
 ```docker-compose -f docker-compose-2.yml up```
 
+<a name="installation-of-maat-with-eventlistener-with-keycloak-and-ssl"></a>
 ## Installation of Maat (with EventListener) with Keycloak and SSL
 
 Go to **docker/** folder and run:
@@ -229,6 +243,7 @@ Replace `<TOKEN>` with the access token (access_token attribute in the response)
 }
 ```
 
+<a name="installation-of-maat-with-eventlistener-with-https-access-for-maat-by-nginx"></a>
 ## Installation of Maat (with EventListener) with HTTPS access (for Maat) by NGINX
 
 An alternative way to configure SSL (https) for the Maat application is to run nginx, which takes over handling secure
@@ -242,7 +257,7 @@ Go to **docker/** folder and run:
 
 ```docker-compose -f docker-compose-4.yml up```
 
-
+<a name="installation-of-maat-with-eventlistener-nginx-keycloak-and-graylog"></a>
 ## Installation of Maat (with EventListener, NGINX, Keycloak and Graylog)
 
 Complete installation of Maat with EventListener, Keycloak, Graylog, and NGINX.
@@ -257,6 +272,7 @@ Go to **docker/** folder and run:
 When you delete a database container, the volume still exists and when you restart the service, the old data will be included.
 To remove all data, when you delete the containers, you must also delete the volumes.
 
+<a name="example-api-requests"></a>
 # Example API requests
 
 <b>GET Requests</b>
@@ -321,6 +337,7 @@ this documentation).
 
 ```<ID>``` is identifier of a resource
 
+<a name="backward-relationships"></a>
 ## Backward Relationships
 
 Maat has an automatic reference completion, the so-called backward reference (relationship) generation. This is based on
@@ -433,6 +450,7 @@ The relationship in the newly created resource in such a case looks as follows:
 
 <br>The above functionalities cause that updating the "name" and "category" attributes is not allowed.
 
+<a name="postman"></a>
 ## POSTMAN
 
 Postman
@@ -441,13 +459,16 @@ to test REST API is available in the folder:
 
 - [src/main/resources](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat/browse/src/main/resources)
 
+<a name="swagger-ui"></a>
 ## SWAGGER UI
 
 Swagger UI for Maat is available at http://localhost:8080. Sample service and resource for the
 POST method are provided in the section above.
 
+<a name="configuration"></a>
 # Configuration
 
+<a name="basic-configuration"></a>
 ## Basic Configuration:
 
 |                 Property                 |                       Values                        |                                        Description                                        |
@@ -469,6 +490,7 @@ POST method are provided in the section above.
 |  resourceService.checkExistingResource   |                     true/false                      |         Enable/Disable check existing resource functionality for extended version         |
 | notification.sendNotificationToListeners |                     true/false                      |                     Enable/Disable sending notifications to listeners                     |
 
+<a name="ssl-configuration"></a>
 ## SSL Configuration
 
 |           Property            |      Values      |                            Description                            |
@@ -479,6 +501,7 @@ POST method are provided in the section above.
 | server.ssl.key-store-password |     test123      |                       Password for keystore                       |
 |     server.ssl.key-alias      |   exampleAlias   | The alias (or name) under which the key is stored in the keystore |
 
+<a name="api-authentication---keycloak"></a>
 ## API Authentication - Keycloak
 
 |                       Property                        |                                        Values                                         |                                              Description                                               |
@@ -491,6 +514,7 @@ POST method are provided in the section above.
 |          token.converter.principal-attribute          |                                  preferred_username                                   | Parameter that allows to extract the Keycloak user name from a token available on the Spring Boot side |
 |              token.converter.resource-id              |                                         maat                                          |                        The name of the client that Spring Boot application uses                        |
 
+<a name="rest-api"></a>
 # REST API
 
 REST APIs are compliant with TMForum:<br>
@@ -519,6 +543,7 @@ For GET method we can use a few params to filter resources or services more accu
 There is also the possibility to search elements by key-value option. For example parameter "name=resource1"
 will search all resources or services attributes "name" with value "resource1".
 
+<a name="request-validation"></a>
 ## Request validation
 
 Every resource or service added to the Maat via REST API is validated.
@@ -543,6 +568,7 @@ or a file path
     - file:///C:/Users/schema/TMF639-ResourceInventory-v4.json
     - file:///C:/Users/schema/TMF638-ServiceInventory-v4.json
 
+<a name="non-tmf-schema-for-validation"></a>
 ### Non-TMF schema for validation
 
 The schema file does not have to follow the TMF standard. It can be simplified to address user requirements regarding
@@ -556,6 +582,7 @@ data models. An example of simple schema files for resources and services can be
 A Postman collection for testing requests with above schema files is available
 here: [Example_with_simple_schema.postman_collection.json](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat/browse/src/main/resources/Example_with_simple_schema.postman_collection.json)
 
+<a name="keycloak-filtering-levels"></a>
 ### Keycloak Filtering Levels
 
 The Maat application implements two levels of filtering using Keycloak to ensure secure and role-based access to resources and services.  
@@ -666,8 +693,10 @@ This filter allows deleting resources where the resourceCharacteristic.name is "
 ```
 This filter allows updating resources where the resourceCharacteristic.name is "location" AND resourceCharacteristic.value is "Poznan" AND category is "device.router" OR where the resourceCharacteristic.name is "location" AND resourceCharacteristic.value is "Warszawa" AND category is "device.switch".
 
+<a name="mongodb"></a>
 # MongoDB
 
+<a name="mongodb-backup-data"></a>
 ## MongoDB backup data
 
 To create a copy of the MongoDB database from the container or restore the data to database follow the steps below:
@@ -683,6 +712,7 @@ To create a copy of the MongoDB database from the container or restore the data 
   2\) use "mongorestore" tool in MongoDB container<br>
   ```docker exec -i <container_id> /usr/bin/mongorestore --username <username> --password <password> /dump```
 
+<a name="mongodb-delete-data"></a>
 ## MongoDB delete data
 
 To delete data from MongoDB for resources_db, services_db and listeners_db follow the steps below:
