@@ -1,7 +1,5 @@
 # Table of Contents
 
-# Table of Contents
-
 - [Maat](#maat)
 - [Installation from sources](#installation-from-sources)
   - [Requirements](#requirements)
