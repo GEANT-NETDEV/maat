@@ -36,7 +36,7 @@
   - [MongoDB backup data](#mongodb-backup-data)
   - [MongoDB delete data](#mongodb-delete-data)
 
-
+<a name="maat"></a>
 # Maat
 
 Maat is an application that stores information about resources and services and exposes the TMF 638 Service Inventory
@@ -44,8 +44,10 @@ and TMF 639 Resource Inventory APIs.
 It is powered by Spring Boot 3.0 and NoSQL databases MongoDB.
 API access can be encrypted (ssl) and authenticated (OAuth 2.0; use of Keycloak).
 
+<a name="installation-from-sources"></a>
 # Installation from sources
 
+<a name="requirements"></a>
 ### Requirements
 
 - Maven 3.8.1 (or higher versions)
@@ -115,6 +117,7 @@ a description of the most important configuration options.
 |   MAAT_SERVICE_PORT    |   8082    |   Port (for services) used to communicate with Maat (also used to create href addresses)    |
 |    MAAT_SSL_ENABLED    |   false   |                           Enable/disable https protocol for Maat                            |
 
+<a name="mongodb-parameters-for-maat"></a>
 ### MongoDB Parameters for Maat
 
 |    Property    |  Values   |                            Description                            |
