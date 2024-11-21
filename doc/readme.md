@@ -1,22 +1,64 @@
+# Table of Contents
+
+# Table of Contents
+
+- [Maat](#maat)
+- [Installation from sources](#installation-from-sources)
+  - [Requirements](#requirements)
+  - [Before building](#before-building)
+  - [Building](#building)
+  - [Running](#running)
+- [Installation using Docker](#installation-using-docker)
+  - [Configuration of the .env file](#configuration-of-the-env-file)
+    - [Maat Parameters](#maat-parameters)
+    - [MongoDB Parameters for Maat](#mongodb-parameters-for-maat)
+    - [Keycloak Parameters](#keycloak-parameters)
+    - [EventListener Parameters for Maat](#eventlistener-parameters-for-maat)
+    - [MongoDB Parameters for EventListener](#mongodb-parameters-for-eventlistener)
+    - [Graylog Parameters](#graylog-parameters)
+    - [Logging Configuration](#logging-configuration)
+  - [Installation of Maat](#installation-of-maat)
+  - [Installation of Maat with EventListener](#installation-of-maat-with-eventlistener)
+  - [Installation of Maat (with EventListener) with Keycloak and SSL](#installation-of-maat-with-eventlistener-with-keycloak-and-ssl)
+  - [Installation of Maat (with EventListener) with HTTPS access (for Maat) by NGINX](#installation-of-maat-with-eventlistener-with-https-access-for-maat-by-nginx)
+  - [Installation of Maat (with EventListener, NGINX, Keycloak and Graylog)](#installation-of-maat-with-eventlistener-nginx-keycloak-and-graylog)
+- [Example API requests](#example-api-requests)
+- [Backward Relationships](#backward-relationships)
+- [POSTMAN](#postman)
+- [SWAGGER UI](#swagger-ui)
+- [Configuration](#configuration)
+  - [Basic Configuration](#basic-configuration)
+  - [SSL Configuration](#ssl-configuration)
+  - [API Authentication - Keycloak](#api-authentication---keycloak)
+- [REST API](#rest-api)
+  - [Request validation](#request-validation)
+    - [Non-TMF schema for validation](#non-tmf-schema-for-validation)
+    - [Keycloak Filtering Levels](#keycloak-filtering-levels)
+- [MongoDB](#mongodb)
+  - [MongoDB backup data](#mongodb-backup-data)
+  - [MongoDB delete data](#mongodb-delete-data)
+
+
 # Maat
 
-Maat is an application that stores information about resources and services and exposes the TMF 638 Service Inventory and TMF 639 Resource Inventory APIs.
+Maat is an application that stores information about resources and services and exposes the TMF 638 Service Inventory
+and TMF 639 Resource Inventory APIs.
 It is powered by Spring Boot 3.0 and NoSQL databases MongoDB.
 API access can be encrypted (ssl) and authenticated (OAuth 2.0; use of Keycloak).
 
 # Installation from sources
 
-### Requirements:
+### Requirements
 
 - Maven 3.8.1 (or higher versions)
-- Java 17 (or higher versions)
+- Java 21 (or higher versions)
 - NoSQL Database - MongoDB
 
 ### Before building
 
 Install MongoDB with admin account.
 
-You can create admin account using mongosh and the following script:
+You can create admin account using [mongosh](https://www.mongodb.com/docs/mongodb-shell/) and the following script:
 
 ```
 use admin  
@@ -29,7 +71,7 @@ db.createUser(
 )
 ```
 
-### Building:
+### Building
 
 ```mvn clean install```
 
@@ -38,49 +80,121 @@ In case you want to skip running the tests during the installation then you can 
 ```mvn clean install -DskipTests```
 
 In both cases, the *jar* application will be created in the *target* folder.
+
 ### Running:
 
-Go to **target/** folder and run jar file with created name for Maat.
+Go to **target/** folder and run .jar file with created name for Maat.
 
-``` java -jar maat-0.9.1.jar ```
+``` java -jar maat-1.0.6.jar ```
 
 # Installation using Docker
 
-## Configuration (.env) file
+Maat can be run in a Docker container. The Docker image is available on the Artifactory repository at `artifactory.software.geant.org/spa-docker/maat:<actuall_version e.g. 1.0.6>`.
 
-Environment variables are key-value pairs that are used to configure application settings and other parameters that may vary between environments.
+## Configuration of the .env file
+
+Environment variables are key-value pairs that are used to configure application settings and other parameters that may
+vary between environments.
 <br><br>The ```.env``` file is located in the ```docker/``` folder.
 
-<br>The most important options for Maat service that may need to be changed when running the application by docker-compose:
+**Warning!** <br> It is not recommended to use localhost in the .env file. Instead, use the address of the machine where Docker is running (e.g., the IP address).
 
+The .env file contains environment variables used to configure the Maat application and other related services. Below is
+a description of the most important configuration options.
 
-|        Property         |                  Values                   |                                         Description                                          |
-|:-----------------------:|:-----------------------------------------:|:--------------------------------------------------------------------------------------------:|
-|        MAAT_HOST        |             &lt;hostname&gt;              |    Hostname used in the Maat container to communicate with the EventListener application     |
-|        MAAT_PORT        |            &lt;port number&gt;            |      Port used in the Maat container to communicate with the EventListener application       |
-| MAAT_RESOURCE_PROTOCOL  |               http or https               | Protocol (for resources) used to communicate with Maat (also used to create href addresses)  |
-|  MAAT_RESOURCE_ADDRESS  |  &lt;domain name&gt;  or <ip address&gt;  |  Address (for resources) used to communicate with Maat (also used to create href addresses)  |
-|   MAAT_RESOURCE_PORT    |            &lt;port number&gt;            |   Port (for resources) used to communicate with Maat (also used to create href addresses)    |
-| MAAT_SERVICE_PROTOCOL   |               http or https               |  Protocol (for services) used to communicate with Maat (also used to create href addresses)  |
-|  MAAT_SERVICE_ADDRESS   | &lt;domain name&gt; or &lt;ip address&gt; |  Address (for services) used to communicate with Maat (also used to create href addresses)   |
-|    MAAT_SERVICE_PORT    |            &lt;port number&gt;            |    Port (for services) used to communicate with Maat (also used to create href addresses)    |
+### Maat Parameters
+
+|        Property        |  Values   |                                         Description                                         |
+|:----------------------:|:---------:|:-------------------------------------------------------------------------------------------:|
+|     MAAT_PROTOCOL      |   http    |    Protocol used in the Maat container to communicate with the EventListener application    |
+|       MAAT_HOST        | maathost  |    Hostname used in the Maat container to communicate with the EventListener application    |
+|       MAAT_PORT        |   8080    |      Port used in the Maat container to communicate with the EventListener application      |
+| MAAT_RESOURCE_PROTOCOL |   https   | Protocol (for resources) used to communicate with Maat (also used to create href addresses) |
+| MAAT_RESOURCE_ADDRESS  | localhost | Address (for resources) used to communicate with Maat (also used to create href addresses)  |
+|   MAAT_RESOURCE_PORT   |   8082    |   Port (for resources) used to communicate with Maat (also used to create href addresses)   |
+| MAAT_SERVICE_PROTOCOL  |   https   | Protocol (for services) used to communicate with Maat (also used to create href addresses)  |
+|  MAAT_SERVICE_ADDRESS  | localhost |  Address (for services) used to communicate with Maat (also used to create href addresses)  |
+|   MAAT_SERVICE_PORT    |   8082    |   Port (for services) used to communicate with Maat (also used to create href addresses)    |
+|    MAAT_SSL_ENABLED    |   false   |                           Enable/disable https protocol for Maat                            |
+
+### MongoDB Parameters for Maat
+
+|    Property    |  Values   |                            Description                            |
+|:--------------:|:---------:|:-----------------------------------------------------------------:|
+|  MONGODB_HOST  | mongohost |          Hostname for the MongoDB database used by Maat           |
+|   MONGO_PORT   |   27017   |            Port for the MongoDB database used by Maat             |
+|   MONGO_USER   |   admin   |                 Username for the MongoDB database                 |
+| MONGO_PASSWORD |  abc123   |                 Password for the MongoDB database                 |
+| MONGO_TIMEOUT  |   3000    | Timeout (in milliseconds) for connections to the MongoDB database |
+
+### Keycloak Parameters
+
+|             Property              |       Values       |                       Description                       |
+|:---------------------------------:|:------------------:|:-------------------------------------------------------:|
+|         KEYCLOAK_PROTOCOL         |        http        |       Protocol used to communicate with Keycloak        |
+|           KEYCLOAK_HOST           |    keycloakhost    |            Hostname for the Keycloak server             |
+|           KEYCLOAK_PORT           |        8090        |              Port for the Keycloak server               |
+|           KEYCLOAK_USER           |       admin        |         Username for the Keycloak administrator         |
+|           KEYCLOAK_PASS           |       admin        |         Password for the Keycloak administrator         |
+|  KEYCLOAK_CLIENT_ID_FOR_CLIENTS   |        maat        |           Client ID for the Maat application            |
+|   KEYCLOAK_CLIENT_ID_FOR_USERS    |    maat-account    |     Client ID for the users of the Maat application     |
+|  KEYCLOAK_GRANT_TYPE_FOR_CLIENTS  | client_credentials |             Grant type for Keycloak clients             |
+|   KEYCLOAK_GRANT_TYPE_FOR_USERS   | authorization_code |              Grant type for Keycloak users              |
+|      KEYCLOAK_CLIENT_SECRET       |  <client_secret>   |               Client secret for Keycloak                |
+|         KEYCLOAK_ENABLED          |       false        |      Enable/disable Keycloak application for Maat       |
+|  KEYCLOAK_AUTHORIZATION_L1_ROLES  |       false        |  Enable/disable level 1 role authorization in Keycloak  |
+| KEYCLOAK_AUTHORIZATION_L2_FILTERS |       false        | Enable/disable level 2 filter authorization in Keycloak |
+
+### EventListener Parameters for Maat
+
+|        Property         | Values |                   Description                   |
+|:-----------------------:|:------:|:-----------------------------------------------:|
+|      AUTO_REGISTER      | on/off |     Automatic registration of EventListener     |
+| EVENT_LISTENER_PROTOCOL |  http  | Protocol used to communicate with EventListener |
+|   EVENT_LISTENER_HOST   | elhost |           Hostname for EventListener            |
+|   EVENT_LISTENER_PORT   |  8081  |             Port for EventListener              |
+
+### MongoDB Parameters for EventListener
+
+|     Property      |    Values    |                                       Description                                       |
+|:-----------------:|:------------:|:---------------------------------------------------------------------------------------:|
+|  MONGODB_EL_HOST  | mongo_elhost |                 Hostname for the MongoDB database used by EventListener                 |
+|   MONGO_EL_USER   |    admin     |                 Username for the MongoDB database used by EventListener                 |
+| MONGO_EL_PASSWORD |    abc123    |                 Password for the MongoDB database used by EventListener                 |
+|   MONGO_EL_PORT   |    27017     |                   Port for the MongoDB database used by EventListener                   |
+| MONGO_EL_TIMEOUT  |     3000     | Timeout (in milliseconds) for connections to the MongoDB database used by EventListener |
+
+### Graylog Parameters
+
+|   Property   |   Values    |           Description           |
+|:------------:|:-----------:|:-------------------------------:|
+| GRAYLOG_HOST | grayloghost | Hostname for the Graylog server |
+| GRAYLOG_PORT |    12201    |   Port for the Graylog server   |
+
+### Logging Configuration
+
+|    Property    |                           Values                            |                                    Description                                     |
+|:--------------:|:-----------------------------------------------------------:|:----------------------------------------------------------------------------------:|
+| LOGGING_CONFIG |                classpath:logback-spring.xml                 |        Logging configuration for the Maat application. Logs only in Graylog        |
+| LOGGING_CONFIG |               classpath:logback-with-file.xml               |      Logging configuration for the Maat application. Logs in Graylog and file      |
+| LOGGING_CONFIG |         classpath:logback-with-file-and-console.xml         | Logging configuration for the Maat application. Logs in Graylog, file, and console |
+| LOGGING_CONFIG | classpath:logback-with-file-and-console-without-graylog.xml |   Logging configuration for the Maat application. Logs only in file and console    |
 
 ## Installation of Maat
 
 An alternative installation procedure using docker containers.
 
-
-
 Go to **docker/** folder and run:
 
 ```docker-compose up -d```
 
-
 ## Installation of Maat with EventListener
 
-[EventListener](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-eventlistener) is a suporting application for storing notifications from Maat. Notifications inform about any events (add/update/delete resources/services) in Maat.
-EventListener automatically registers to Maat when starting (address and port of Maat are located in the properties maat-host and maat-port).
-
+[EventListener](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-eventlistener) is a suporting
+application for storing notifications from Maat. Notifications inform about any events (add/update/delete
+resources/services) in Maat.
+EventListener automatically registers to Maat when starting (address and port of Maat are located in the properties
+maat-host and maat-port).
 
 Go to **docker/** folder and run:
 
@@ -92,19 +206,20 @@ Go to **docker/** folder and run:
 
 ```docker-compose -f docker-compose-3.yml up```
 
-After starting all services in containers, run container with setup for Keycloak:
 
-```docker-compose --profile keycloak_setup -f docker-compose-3.yml up -d```
-
-Warning! When Maat works with Keycloak and SSL you must manually register EventListener using the steps below:
+**Warning!** <br> When Maat works with Keycloak and SSL you must manually register EventListener using the steps below:
 - Get access token</br>
-  ```curl -X POST --data "client_id=inv3&username=test&password=test&grant_type=password&client_secret=d0b8122f-8dfb-46b7-b68a-f5cc4e25d123" -H "Host: keycloakhost:8090" http://localhost:8090/realms/MaatRealm/protocol/openid-connect/token```
+For example for encoded `client_id=maat` and `client_secret=d0b8122f-8dfb-46b7-b68a-f5cc4e25d123` use the following command:</br>
+Replace `<keycloak_protocol>`, `<keycloak_host>`, `<keycloak_port>` with the appropriate values</br>
+  ```curl -k -X POST "<keycloak_protocol>://<keycloak_host>:<keycloak_port>/realms/MaatRealm/protocol/openid-connect/token" -H "Content-Type: application/x-www-form-urlencoded" -H "Authorization: Basic bWFhdDpkMGI4MTIyZi04ZGZiLTQ2YjctYjY4YS1mNWNjNGUyNWQxMjM=" -d "grant_type=client_credentials"```
 
 
-- Replace `<TOKEN>` with the access token (access_token attribute in the response) received in the previous step and execute the following command </br>
-  ```curl -X POST -k https://localhost:8080/hub -H "Authorization: Bearer <TOKEN>" -H "Content-Type:Application/json" -d "{\"callback\":\"http://elhost:8081/eventlistener\",\"query\":null}"```
+- Register EventListener to Maat</br>
+Replace `<maat_host>`, `<maat_port>` with the appropriate values</br>
+Replace `<TOKEN>` with the access token (access_token attribute in the response) received in the previous step and execute the following command </br>
+  ```curl -X POST -k https://<maat_host>:<maat_port>/hub -H "Authorization: Bearer <TOKEN>" -H "Content-Type:Application/json" -d "{\"callback\":\"http://elhost:8081/eventlistener\",\"query\":null}"```
   </br></br>or</br></br>
-  ```curl -X POST -k https://localhost:8080/hub -H "Authorization: Bearer <TOKEN>" -H "Content-Type:Application/json" -d @add_listener.json```
+  ```curl -X POST -k https://<maat_host>:<maat_port>/hub -H "Authorization: Bearer <TOKEN>" -H "Content-Type:Application/json" -d @add_listener.json```
   </br>with the content of the file add_listener.json
 ```
 {
@@ -115,8 +230,10 @@ Warning! When Maat works with Keycloak and SSL you must manually register EventL
 
 ## Installation of Maat (with EventListener) with HTTPS access (for Maat) by NGINX
 
-An alternative way to configure SSL (https) for the Maat application is to run nginx, which takes over handling secure communication.
-In this case, SSL configuration in Maat is no longer needed. An example of installation of Maat with nginx can be seen using the docker-compose-4.yml file.
+An alternative way to configure SSL (https) for the Maat application is to run nginx, which takes over handling secure
+communication.
+In this case, SSL configuration in Maat is no longer needed. An example of installation of Maat with nginx can be seen
+using the docker-compose-4.yml file.
 
 The default port used by nginx is 8082
 
@@ -124,10 +241,20 @@ Go to **docker/** folder and run:
 
 ```docker-compose -f docker-compose-4.yml up```
 
-<br> <b>Warning!</b><br>All of the above options for running Maat application with Docker use Volumes. Each MongoDB database has its own volume assigned in the docker-compose file. 
+
+## Installation of Maat (with EventListener, NGINX, Keycloak and Graylog)
+
+Complete installation of Maat with EventListener, Keycloak, Graylog, and NGINX.
+
+Graylog is a log management system that allows you to collect, index, and analyze any machine data. It provides a web interface for searching and analyzing logs.
+
+Go to **docker/** folder and run:
+
+```docker-compose -f docker-compose-5.yml up```
+
+<br>**Warning!**<br>All of the above options for running Maat application with Docker use Volumes. Each MongoDB database has its own volume assigned in the docker-compose file. 
 When you delete a database container, the volume still exists and when you restart the service, the old data will be included.
 To remove all data, when you delete the containers, you must also delete the volumes.
-
 
 # Example API requests
 
@@ -136,7 +263,6 @@ To remove all data, when you delete the containers, you must also delete the vol
 - Get all resources
 
 ```curl http://127.0.0.1:8080/resourceInventoryManagement/v4.0.0/resource```
-
 
 - Get all services
 
@@ -160,7 +286,8 @@ Content of the file request_resource.json
 }
 ```
 
-Attribute "@schemaLocation" must have the correct local path/url of schema file (see "Request Validation" section of this documentation).
+Attribute "@schemaLocation" must have the correct local path/url of schema file (see "Request Validation" section of
+this documentation).
 
 - Add service
 
@@ -177,14 +304,15 @@ Content of the file request_service.json
     "@schemaLocation": "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json"
 }
 ```
-Attribute "@schemaLocation" must have the correct local path/url of schema file (see "Request Validation" section of this documentation).
+
+Attribute "@schemaLocation" must have the correct local path/url of schema file (see "Request Validation" section of
+this documentation).
 
 <br><b>DELETE Requests</b>
 
 - Delete resource
 
 ```curl -X DELETE http://127.0.0.1:8080/resourceInventoryManagement/v4.0.0/resource/<ID>```
-
 
 - Delete service
 
@@ -193,13 +321,20 @@ Attribute "@schemaLocation" must have the correct local path/url of schema file 
 ```<ID>``` is identifier of a resource
 
 ## Backward Relationships
-Maat has an automatic reference completion, the so-called backward reference (relationship) generation. This is based on the fact that when a resource/service A that has a reference to resource/service B (relationship A->B) is created or updated, a backward reference to resource/service A (relationship B->A) is automatically created in resource/service B as well.
 
-To activate the creation of backward references, the prefix "bref" in the relationshipType attribute of the resourceRelationship element must be used. The second condition is also to add (after the prefix) the name of the resource/service category in the relationshipType to which the reference is created.  
+Maat has an automatic reference completion, the so-called backward reference (relationship) generation. This is based on
+the fact that when a resource/service A that has a reference to resource/service B (relationship A->B) is created or
+updated, a backward reference to resource/service A (relationship B->A) is automatically created in resource/service B
+as well.
+
+To activate the creation of backward references, the prefix "bref" in the relationshipType attribute of the
+resourceRelationship element must be used. The second condition is also to add (after the prefix) the name of the
+resource/service category in the relationshipType to which the reference is created.
 
 Example:
 
-Create (REST API POST method) a new resource with the relationship to the existing resource id="Res-123" and force generation of the backward reference to the resource to be created:
+Create (REST API POST method) a new resource with the relationship to the existing resource id="Res-123" and force
+generation of the backward reference to the resource to be created:
 
 ```
 {
@@ -219,7 +354,8 @@ Create (REST API POST method) a new resource with the relationship to the existi
 }
 ```
 
-When such a POST request is received and accepted (validation is correct) by Maat, the following backward reference to the newly created resource is added to the above resource id="Res-123":
+When such a POST request is received and accepted (validation is correct) by Maat, the following backward reference to
+the newly created resource is added to the above resource id="Res-123":
 
 ```
 "resourceRelationship": [
@@ -233,13 +369,16 @@ When such a POST request is received and accepted (validation is correct) by Maa
         ],
 ```
 
-Relationships can occur in the following options: resource<->resource, service<->service, resource<->service, service<->resource. A reference to the resource is added using resourceRelationship, while serviceRelationship is used for a reference to the service. 
+Relationships can occur in the following options: resource<->resource, service<->service, resource<->service, service<->
+resource. A reference to the resource is added using resourceRelationship, while serviceRelationship is used for a
+reference to the service.
 
 <br>
 In addition, the name of the referenced resource/service can be automatically added. This can be helpful in some situations to limit the number of calls to Maat to retrieve the name of the resource/service referenced. For this purpose, the attribute name with the value "set-name"  must be placed in the relationship.
 
 - Example:
-  <br>Create (REST API POST method) a new resource with a backward reference to the service id="Service-123" and with the name attribute having the value "set-name".
+  <br>Create (REST API POST method) a new resource with a backward reference to the service id="Service-123" and with
+  the name attribute having the value "set-name".
 
 ```
 {
@@ -260,7 +399,8 @@ In addition, the name of the referenced resource/service can be automatically ad
 }
 ```
 
-When such a POST request is received and accepted (validation is correct) by Maat, the following backward reference to the newly created resource, with its name, is added to the service id="Service-123" .
+When such a POST request is received and accepted (validation is correct) by Maat, the following backward reference to
+the newly created resource, with its name, is added to the service id="Service-123" .
 
 ```
 "resourceRelationship": [
@@ -294,22 +434,27 @@ The relationship in the newly created resource in such a case looks as follows:
 
 ## POSTMAN
 
-Postman collection ([Maat-Test.postman_collection](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat/browse/src/main/resources/Maat_Test.postman_collection.json))
+Postman
+collection ([Maat-Test.postman_collection](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat/browse/src/main/resources/Maat_Test.postman_collection.json))
 to test REST API is available in the folder:
+
 - [src/main/resources](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat/browse/src/main/resources)
 
 ## SWAGGER UI
-Swagger UI for Maat is available at http://localhost:8080/swagger-ui/index.html. Sample service and resource for the POST method are provided in the section above.
+
+Swagger UI for Maat is available at http://localhost:8080. Sample service and resource for the
+POST method are provided in the section above.
 
 # Configuration
 
-Basic Configuration:
+## Basic Configuration:
 
 |                 Property                 |                       Values                        |                                        Description                                        |
 |:----------------------------------------:|:---------------------------------------------------:|:-----------------------------------------------------------------------------------------:|
 |                mongo-host                |               localhost or 127.0.0.1                |                 Hostname for Maat database in the form of name or address                 |
 |                mongo-user                |                    &lt;user&gt;                     |                                   Username for MongoDB                                    |
 |              mongo-password              |                  &lt;password&gt;                   |                                   Password for MongoDB                                    |
+|               server.port                |                 &lt;port number&gt;                 |                                Port for Maat application                                  |
 |            resource.protocol             |                  &lt;protocol&gt;                   |                   Remote application server protocol for resource part                    |
 |             resource.address             |       &lt;domain name> or &lt;ip address&gt;        |                    Remote application server address for resource part                    |
 |              resource.port               |                 &lt;port number&gt;                 |                     Remote application server port for resource part                      |
@@ -323,35 +468,33 @@ Basic Configuration:
 |  resourceService.checkExistingResource   |                     true/false                      |         Enable/Disable check existing resource functionality for extended version         |
 | notification.sendNotificationToListeners |                     true/false                      |                     Enable/Disable sending notifications to listeners                     |
 
+## SSL Configuration
 
-### SSL Configuration
+|           Property            |      Values      |                            Description                            |
+|:-----------------------------:|:----------------:|:-----------------------------------------------------------------:|
+|      server.ssl.enabled       |    true/false    |              Enable/Disable https protocol for Maat               |
+|   server.ssl.key-store-type   |      PKCS12      |                           Keystore type                           |
+|     server.ssl.key-store      | src/main.key.p12 |                     The path of keystore file                     |
+| server.ssl.key-store-password |     test123      |                       Password for keystore                       |
+|     server.ssl.key-alias      |   exampleAlias   | The alias (or name) under which the key is stored in the keystore |
 
-|                 Property                 |      Values      |                            Description                            |
-|:----------------------------------------:|:----------------:|:-----------------------------------------------------------------:|
-|            server.ssl.enabled            |    true/false    |              Enable/Disable https protocol for Maat               |
-|        server.ssl.key-store-type         |      PKCS12      |                           Keystore type                           |
-|           server.ssl.key-store           | src/main.key.p12 |                     The path of keystore file                     |
-|      server.ssl.key-store-password       |     test123      |                       Password for keystore                       |
-|           server.ssl.key-alias           |   exampleAlias   | The alias (or name) under which the key is stored in the keystore |
-
-
-### API Authentication - Keycloak
+## API Authentication - Keycloak
 
 |                       Property                        |                                        Values                                         |                                              Description                                               |
 |:-----------------------------------------------------:|:-------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------:|
 |                   keycloak.enabled                    |                                      true/false                                       |                              Enable/Disable Keycloak application for Maat                              |
-| spring.security.oauth2.resourceserver.jwt.issuer-uri  |                  http://<domain name&gt;:<port number&gt;/realms/MaatRealm                  |                                       The URL to Keycloak realm                                        |
+|            keycloak.authorization.l1.roles            |                                      true/false                                       |                             Enable/Disable role authorization in Keycloak                              |
+|           keycloak.authorization.l2.filters           |                                      true/false                                       |                            Enable/Disable filter authorization in Keycloak                             |
+| spring.security.oauth2.resourceserver.jwt.issuer-uri  |               http://<domain name&gt;:<port number&gt;/realms/MaatRealm               |                                       The URL to Keycloak realm                                        |
 | spring.security.oauth2.resourceserver.jwt.jwk-set-uri | ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs |                            JSON Web Key URI to use to verify the JWT token                             |
 |          token.converter.principal-attribute          |                                  preferred_username                                   | Parameter that allows to extract the Keycloak user name from a token available on the Spring Boot side |
-|              token.converter.resource-id              |                                         inv3                                          |                        The name of the client that Spring Boot application uses                        |
-
+|              token.converter.resource-id              |                                         maat                                          |                        The name of the client that Spring Boot application uses                        |
 
 # REST API
 
 REST APIs are compliant with TMForum:<br>
 https://github.com/tmforum-apis/TMF639_ResourceInventory <br>
 https://github.com/tmforum-apis/TMF638_ServiceInventory
-
 
 |                                  Link                                  | Method | Input |       Description        |
 |:----------------------------------------------------------------------:|:------:|:-----:|:------------------------:|
@@ -366,7 +509,6 @@ https://github.com/tmforum-apis/TMF638_ServiceInventory
 |  http://127.0.0.1:8080/serviceInventoryManagement/v4.0.0/service/[ID]  | DELETE |  ID   |   Delete service by ID   |
 |  http://127.0.0.1:8080/serviceInventoryManagement/v4.0.0/service/[ID]  | PATCH  |  ID   | Update existing service  |
 
-
 For GET method we can use a few params to filter resources or services more accurately:
 
 - limit *--to limit the number of displayed objects*
@@ -379,51 +521,176 @@ will search all resources or services attributes "name" with value "resource1".
 ## Request validation
 
 Every resource or service added to the Maat via REST API is validated.
-Validation is performed using a schema that defines the appropriate attributes and relationships according to the TMF standards (TMF 638 Service Inventory and TMF 639 Resource Inventory APIs).
+Validation is performed using a schema that defines the appropriate attributes and relationships according to the TMF
+standards (TMF 638 Service Inventory and TMF 639 Resource Inventory APIs).
 
-Schema location for validation in the POST request is located in the @schemaLocation attribute. This attribute can contain public <b>[GitHub](https://github.com/GEANT-NETDEV/Inv3-schema)</b> address:
+Schema location for validation in the POST request is located in the @schemaLocation attribute. This attribute can
+contain public <b>[GitHub](https://github.com/GEANT-NETDEV/Inv3-schema)</b> address:
 
-- for resource validation: https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json
-- for service validation: https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json
+- for resource
+  validation: https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json
+- for service
+  validation: https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json
 
 or a file path
 
 - for Linux:
-  - file:///home/maat/schema/TMF639-ResourceInventory-v4.json
-  - file:///home/maat/schema/TMF638-ServiceInventory-v4.json
+    - file:///home/maat/schema/TMF639-ResourceInventory-v4.json
+    - file:///home/maat/schema/TMF638-ServiceInventory-v4.json
 
 - for Windows:
-  - file:///C:/Users/schema/TMF639-ResourceInventory-v4.json
-  - file:///C:/Users/schema/TMF638-ServiceInventory-v4.json
+    - file:///C:/Users/schema/TMF639-ResourceInventory-v4.json
+    - file:///C:/Users/schema/TMF638-ServiceInventory-v4.json
 
 ### Non-TMF schema for validation
-The schema file does not have to follow the TMF standard. It can be simplified to address user requirements regarding data models. An example of simple schema files for resources and services can be found here:
-- for resource validation: https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json
-- for service validation: https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json
 
-A Postman collection for testing requests with above schema files is available here: [Example_with_simple_schema.postman_collection.json](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat/browse/src/main/resources/Example_with_simple_schema.postman_collection.json)
+The schema file does not have to follow the TMF standard. It can be simplified to address user requirements regarding
+data models. An example of simple schema files for resources and services can be found here:
+
+- for resource
+  validation: https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json
+- for service
+  validation: https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json
+
+A Postman collection for testing requests with above schema files is available
+here: [Example_with_simple_schema.postman_collection.json](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat/browse/src/main/resources/Example_with_simple_schema.postman_collection.json)
+
+### Keycloak Filtering Levels
+
+The Maat application implements two levels of filtering using Keycloak to ensure secure and role-based access to resources and services.  
+
+<b>Level 1: Role-Based Filtering</b>
+
+The first level of filtering is based on the roles assigned to the user in Keycloak. Depending on the roles, users are granted different levels of access to the application's endpoints.
+The roles and their corresponding HTTP methods are as follows:  
+
+- **GET** requests require the **"get"** role.
+- **POST** requests require the **"post"** role.
+- **DELETE** requests require the **"delete"** role.
+- **PATCH** requests require the **"patch"** role.
+
+If the keycloak.authorization.l1.roles property is set to true, the application will enforce these role-based access controls.
+Otherwise, all authenticated users will have access to the endpoints.
+
+**Adding Attribute Mapping with Filters to Token (Instructions for Keycloak)**
+
+Configuration of "Client Scopes"
+
+For OIDC clients, you can use Client Scopes to add user attributes to tokens.  
+
+Adding Client Scope to Client
+1. Navigate to "Client Scopes":  
+   - In the left menu, select "Client Scopes".
+2. Create a new "Client Scope":  
+   - Click "Create".
+   - Name it **user_access_filters**.
+   - Add a description: **Custom filters for REST methods assigned to the user**.
+   - Select type **Default Client Scopes**.
+3. Add "Mapper" in Client Scope:  
+   - After creating the Client Scope, select it from the list.
+   - Go to the "Mappers" tab.
+   - Click "Configure a new mapper" or "Add mapper" and choose the mapper type **User Attribute**.
+   - In the "Name" field, enter **get_filter**.
+   - In the "User Attribute" field, enter **get_filter**.
+   - In the "Token Claim Name" field, enter **user_access_filters.get_filter**.
+   - In the "Claim JSON Type" field, select **JSON**.
+   - Check the options "Add to ID token" and "Add to access token".
+   - Click "Save". 
+
+Assign Client Scope to Client **maat-account**
+1. Navigate to the client **maat-account**:
+   - In the "Client Scopes" tab, add the newly created Client Scope (**user_access_filters**) to Assigned Client Scopes as Default.
+
+Create Roles for Client **maat-account**
+1. Create roles:
+   - For the client **maat-account**, create roles named **get**, **post**, **delete**, **patch**.
+2. Assign roles to the user:  
+   - Assign the appropriate roles to the user.
+
+**Level 2: Token-Based Filtering**
+
+The second level of filtering is based on filters included in the user's JWT token.
+This is handled in the UserDataFilters.java file. The token contains claims that specify additional filters for accessing resources and services.
+These filters are applied on top of the role-based filtering to further restrict access based on specific criteria.
+
+The token-based filters are defined in the user_access_filters claim within the JWT token.
+This claim can include different types of filters such as get_filter, post_filter, patch_filter, and delete_filter.
+These filters are applied to the corresponding HTTP methods to ensure that users can only access data that matches the specified criteria.
+
+**Example**
+
+For example, if a user has the **get_only** role and their token includes a **get_filter** that restricts access to resources with a specific attribute,
+the user will only be able to perform GET requests on resources that match both the role and the filter criteria.
+
+By combining these two levels of filtering, the Maat application ensures that access to resources and services is tightly controlled based on both user roles and specific filter criteria included in the JWT token.
+
+<b>Filter Logic</b>
+
+In Keycloak, for a given user, you must define an attribute where the key is one of the four filter types (**GET_FILTER**, **POST_FILTER**, **DELETE_FILTER**, **PATCH_FILTER**) and the value is an array of objects. Everything inside an object (within {}) is represented as a logical AND function, while each separate object ({}) represents a logical OR operation.  
+
+Example Filters
+
+- GET_FILTER:  
+```
+[
+{"resourceCharacteristic.name": "location", "resourceCharacteristic.value": "Poznan", "category": "device.router"},
+{"resourceCharacteristic.name": "location", "resourceCharacteristic.value": "Warszawa", "category": "device.router"}
+]
+```
+This filter allows access to resources where the resourceCharacteristic.name is "location" AND resourceCharacteristic.value is "Poznan" AND category is "device.router" OR where the resourceCharacteristic.name is "location" AND resourceCharacteristic.value is "Warszawa" AND category is "device.router".  
+
+- POST_FILTER:  
+```
+[
+{"category": "device.router"},
+{"category": "device.switch"}
+]
+```
+This filter allows creating resources where the category is "device.router" OR category is "device.switch".  
+
+- DELETE_FILTER:  
+```
+[
+{"resourceCharacteristic.name": "location", "resourceCharacteristic.value": "Poznan"}
+]
+```
+This filter allows deleting resources where the resourceCharacteristic.name is "location" AND resourceCharacteristic.value is "Poznan".  
+
+- PATCH_FILTER:  
+```
+[
+{"resourceCharacteristic.name": "location", "resourceCharacteristic.value": "Poznan", "category": "device.router"},
+{"resourceCharacteristic.name": "location", "resourceCharacteristic.value": "Warszawa", "category": "device.switch"}
+]
+```
+This filter allows updating resources where the resourceCharacteristic.name is "location" AND resourceCharacteristic.value is "Poznan" AND category is "device.router" OR where the resourceCharacteristic.name is "location" AND resourceCharacteristic.value is "Warszawa" AND category is "device.switch".
 
 # MongoDB
+
 ## MongoDB backup data
+
 To create a copy of the MongoDB database from the container or restore the data to database follow the steps below:
+
 - create backup:<br>
   1\) use "mongodump" tool in MongoDB container <br>
-```docker exec -i <container_id> /usr/bin/mongodump --username <username> --password <password> --out /dump```<br>
+  ```docker exec -i <container_id> /usr/bin/mongodump --username <username> --password <password> --out /dump```<br>
   2\) copy created data from container to host machine <br>
   ```docker cp <container_id>:/dump /home/service/MongodbBackup/Maat```<br><br>
 - restore data:<br>
   1\) copy data from host machine to MongoDB container<br>
-```docker cp ./dump <container_id>:/dump```<br>
+  ```docker cp ./dump <container_id>:/dump```<br>
   2\) use "mongorestore" tool in MongoDB container<br>
-```docker exec -i <container_id> /usr/bin/mongorestore --username <username> --password <password> /dump```
+  ```docker exec -i <container_id> /usr/bin/mongorestore --username <username> --password <password> /dump```
 
 ## MongoDB delete data
+
 To delete data from MongoDB for resources_db, services_db and listeners_db follow the steps below:
+
 - for resources:
   ```docker exec -it <container_id> /usr/bin/mongosh --username <username> --password <password> --authenticationDatabase admin --eval "use resources_db;" --eval  "db.dropDatabase()"```
 - for services:
-```docker exec -it <container_id> /usr/bin/mongosh --username <username> --password <password> --authenticationDatabase admin --eval "use services_db;" --eval  "db.dropDatabase()"```
+  ```docker exec -it <container_id> /usr/bin/mongosh --username <username> --password <password> --authenticationDatabase admin --eval "use services_db;" --eval  "db.dropDatabase()"```
 - for listeners:
-```docker exec -it <container_id> /usr/bin/mongosh --username <username> --password <password> --authenticationDatabase admin --eval "use listeners_db;" --eval  "db.dropDatabase()"```
+  ```docker exec -it <container_id> /usr/bin/mongosh --username <username> --password <password> --authenticationDatabase admin --eval "use listeners_db;" --eval  "db.dropDatabase()"```
 - for all of these databases:
-```docker exec -it <container_id> /usr/bin/mongosh --username <username> --password <password> --authenticationDatabase admin --eval "use resources_db;" --eval  "db.dropDatabase()" --eval "use services_db;" --eval  "db.dropDatabase()" --eval "use listeners_db;" --eval  "db.dropDatabase()"```
+  ```docker exec -it <container_id> /usr/bin/mongosh --username <username> --password <password> --authenticationDatabase admin --eval "use resources_db;" --eval  "db.dropDatabase()" --eval "use services_db;" --eval  "db.dropDatabase()" --eval "use listeners_db;" --eval  "db.dropDatabase()"```
