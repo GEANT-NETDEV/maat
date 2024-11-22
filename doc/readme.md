@@ -262,8 +262,6 @@ Go to **docker/** folder and run:
 
 Complete installation of Maat with EventListener, Keycloak, Graylog, and NGINX.
 
-Graylog is a log management system that allows you to collect, index, and analyze any machine data. It provides a web interface for searching and analyzing logs.
-
 Go to **docker/** folder and run:
 
 ```docker-compose -f docker-compose-5.yml up```
@@ -514,6 +512,14 @@ POST method are provided in the section above.
 |          token.converter.principal-attribute          |                                  preferred_username                                   | Parameter that allows to extract the Keycloak user name from a token available on the Spring Boot side |
 |              token.converter.resource-id              |                                         maat                                          |                        The name of the client that Spring Boot application uses                        |
 
+<a name="graylog-configuration"></a>
+## Graylog Configuration
+|     Property      |  Values   |         Description         |
+|:-----------------:|:---------:|:---------------------------:|
+| logging.gelf.host | 127.0.0.1 | Host for the Graylog server |
+| logging.gelf.port |   12201   | Port for the Graylog server |
+|  logging.config   |   12201   |   Log configuration file    |
+
 <a name="rest-api"></a>
 # REST API
 
@@ -725,3 +731,50 @@ To delete data from MongoDB for resources_db, services_db and listeners_db follo
   ```docker exec -it <container_id> /usr/bin/mongosh --username <username> --password <password> --authenticationDatabase admin --eval "use listeners_db;" --eval  "db.dropDatabase()"```
 - for all of these databases:
   ```docker exec -it <container_id> /usr/bin/mongosh --username <username> --password <password> --authenticationDatabase admin --eval "use resources_db;" --eval  "db.dropDatabase()" --eval "use services_db;" --eval  "db.dropDatabase()" --eval "use listeners_db;" --eval  "db.dropDatabase()"```
+
+# Graylog
+Graylog is a log management system that allows you to collect, index, and analyze any machine data. It provides a web interface for searching and analyzing logs.
+
+<a name="graylog-input-configuration"></a>
+## Graylog Input Configuration Guide
+This readme part provides step-by-step instructions on how to add inputs in the Graylog WebGUI and locate received logs.
+
+**Log in to Graylog Web Interface**
+1. Open a web browser.
+2. Navigate to the Graylog Web Interface URL:  
+   `http://<SERVER_IP>:9000`
+3. Log in using your credentials (by default: `admin:admin`).
+
+**Adding an Input**
+1. Go to the Inputs Section:
+    - From the sidebar menu, click **System / Inputs**.
+2. Choose the Input Type:
+    - At the top of the page, find the dropdown menu labeled **Select Input**.
+    - Select the input type you want to configure (needed: `Syslog UDP`, `Syslog TCP`, `GELF UDP`, `GELF TCP`).
+3. Launch a New Input:
+    - Click the **Launch new input** button.
+4. Configure the Input:
+    - Fill in the configuration form:
+        - **Check the global box**: To apply the input to all nodes. 
+        - **Title**: A descriptive name for the input.
+        - **Bind Address**: The IP address where Graylog will listen for logs.
+        - **Port**: The port Graylog will use to receive logs (e.g., `514` for Syslog, `12201` for GELF).
+        - **Additional Settings**: Configure options like decoding or protocols based on the input type.
+    - Click **Launch Input** to enable the input.
+5. Check Input Status:
+    - Ensure the input is running; it should be marked as **Running**.
+
+**Locating and Analyzing Received Logs**
+1. Navigate to the "Search" Section:
+    - In the main menu, click **Search**.
+    - All logs received by Graylog will be displayed in real-time.
+2. Use the Sources Filter:
+    - Click **Sources** to view a list of devices/servers sending logs.
+3. Leverage Graylog Search Query Language (GLS):
+    - Use queries to filter logs by fields:
+        - Example: `source: "app_name"`
+        - Example: `message: "log_keyword"`
+4. Adjust the Time Range:
+    - In the top-right corner, select a time range (e.g., **Last hour**, **Last day**).
+
+For more information on the graylog configuration, visit: https://go2docs.graylog.org
