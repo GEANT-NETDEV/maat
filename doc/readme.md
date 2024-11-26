@@ -39,6 +39,8 @@
 - [MongoDB](#mongodb)
   - [MongoDB backup data](#mongodb-backup-data)
   - [MongoDB delete data](#mongodb-delete-data)
+- [Graylog](#graylog)
+  - [Graylog Input Configuration Guide](#graylog-input-configuration-guide)
 
 <a name="maat"></a>
 # Maat
@@ -771,10 +773,12 @@ To delete data from MongoDB for resources_db, services_db and listeners_db follo
 - for all of these databases:
   ```docker exec -it <container_id> /usr/bin/mongosh --username <username> --password <password> --authenticationDatabase admin --eval "use resources_db;" --eval  "db.dropDatabase()" --eval "use services_db;" --eval  "db.dropDatabase()" --eval "use listeners_db;" --eval  "db.dropDatabase()"```
 
+
+<a name="graylog"></a>
 # Graylog
 Graylog is a log management system that allows you to collect, index, and analyze any machine data. It provides a web interface for searching and analyzing logs.
 
-<a name="graylog-input-configuration"></a>
+<a name="graylog-input-configuration-guide"></a>
 ## Graylog Input Configuration Guide
 This readme part provides step-by-step instructions on how to add inputs in the Graylog WebGUI and locate received logs.
 
