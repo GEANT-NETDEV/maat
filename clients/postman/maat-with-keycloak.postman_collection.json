@@ -1,0 +1,166 @@
+{
+	"info": {
+		"_postman_id": "3c8711e0-1f66-4316-bdea-306575032611",
+		"name": "Maat with Keycloak",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "24659957"
+	},
+	"item": [
+		{
+			"name": "Login by user with browser",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "oauth2",
+					"oauth2": [
+						{
+							"key": "accessTokenUrl",
+							"value": "http://1.2.3.4:8090/realms/MaatRealm/protocol/openid-connect/token",
+							"type": "string"
+						},
+						{
+							"key": "authUrl",
+							"value": "http://1.2.3.4:8090/realms/MaatRealm/protocol/openid-connect/auth",
+							"type": "string"
+						},
+						{
+							"key": "redirect_uri",
+							"value": "https://1.2.3.4:8082",
+							"type": "string"
+						},
+						{
+							"key": "clientSecret",
+							"value": "d0b8122f-8dfb-46b7-b68a-f5cc4e25d123",
+							"type": "string"
+						},
+						{
+							"key": "clientId",
+							"value": "maat-account",
+							"type": "string"
+						},
+						{
+							"key": "authRequestParams",
+							"value": [],
+							"type": "any"
+						},
+						{
+							"key": "tokenRequestParams",
+							"value": [],
+							"type": "any"
+						},
+						{
+							"key": "refreshRequestParams",
+							"value": [],
+							"type": "any"
+						},
+						{
+							"key": "client_authentication",
+							"value": "body",
+							"type": "string"
+						},
+						{
+							"key": "useBrowser",
+							"value": false,
+							"type": "boolean"
+						},
+						{
+							"key": "grant_type",
+							"value": "authorization_code",
+							"type": "string"
+						},
+						{
+							"key": "addTokenTo",
+							"value": "header",
+							"type": "string"
+						},
+						{
+							"key": "scope",
+							"value": "openid",
+							"type": "string"
+						},
+						{
+							"key": "tokenName",
+							"value": "Maat token",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://1.2.3.4:8082/resourceInventoryManagement/v4.0.0/resource",
+					"protocol": "https",
+					"host": [
+						"1",
+						"2",
+						"3",
+						"4"
+					],
+					"port": "8082",
+					"path": [
+						"resourceInventoryManagement",
+						"v4.0.0",
+						"resource"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Token for client",
+			"protocolProfileBehavior": {
+				"disabledSystemHeaders": {}
+			},
+			"request": {
+				"auth": {
+					"type": "basic",
+					"basic": [
+						{
+							"key": "password",
+							"value": "d0b8122f-8dfb-46b7-b68a-f5cc4e25d123",
+							"type": "string"
+						},
+						{
+							"key": "username",
+							"value": "maat",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "urlencoded",
+					"urlencoded": [
+						{
+							"key": "grant_type",
+							"value": "client_credentials",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://1.2.3.4:8090/realms/MaatRealm/protocol/openid-connect/token",
+					"protocol": "http",
+					"host": [
+						"1",
+						"2",
+						"3",
+						"4"
+					],
+					"port": "8090",
+					"path": [
+						"realms",
+						"MaatRealm",
+						"protocol",
+						"openid-connect",
+						"token"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

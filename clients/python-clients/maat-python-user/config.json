@@ -1,0 +1,14 @@
+{
+  "keycloak": {
+    "auth_url": "http://1.2.3.4:8090/realms/MaatRealm/protocol/openid-connect/auth",
+    "token_url": "http://1.2.3.4:8090/realms/MaatRealm/protocol/openid-connect/token",
+    "client_id": "maat-account",
+    "client_secret": "d0b8122f-8dfb-46b7-b68a-f5cc4e25d123",
+    "redirect_uri": "https://1.2.3.4:8082",
+    "username": "username",
+    "password": "password"
+  },
+  "maat": {
+    "resource_url": "http://1.2.3.4:8080/resourceInventoryManagement/v4.0.0/resource"
+  }
+}

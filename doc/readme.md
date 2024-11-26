@@ -27,11 +27,15 @@
 - [Configuration](#configuration)
   - [Basic Configuration](#basic-configuration)
   - [SSL Configuration](#ssl-configuration)
-  - [API Authentication - Keycloak](#api-authentication---keycloak)
+  - [Authentication and authorization configuration - Keycloak](#authentication-and-authorization-configuration---keycloak)
 - [REST API](#rest-api)
   - [Request validation](#request-validation)
     - [Non-TMF schema for validation](#non-tmf-schema-for-validation)
-    - [Keycloak Filtering Levels](#keycloak-filtering-levels)
+    - [Authentication](#authentication)
+      - [Enabling authentication in Maat with Keycloak](#enabling-authentication-in-maat-with-keycloak)
+    - [Authorization](#authorization)
+      - [Rest method filtering](#rest-method-filtering)
+      - [JSON content filtering](#json-content-filtering)
 - [MongoDB](#mongodb)
   - [MongoDB backup data](#mongodb-backup-data)
   - [MongoDB delete data](#mongodb-delete-data)
@@ -110,18 +114,18 @@ a description of the most important configuration options.
 <a name="maat-parameters"></a>
 ### Maat Parameters
 
-|        Property        |  Values   |                                         Description                                         |
-|:----------------------:|:---------:|:-------------------------------------------------------------------------------------------:|
-|     MAAT_PROTOCOL      |   http    |    Protocol used in the Maat container to communicate with the EventListener application    |
-|       MAAT_HOST        | maathost  |    Hostname used in the Maat container to communicate with the EventListener application    |
-|       MAAT_PORT        |   8080    |      Port used in the Maat container to communicate with the EventListener application      |
-| MAAT_RESOURCE_PROTOCOL |   https   | Protocol (for resources) used to communicate with Maat (also used to create href addresses) |
-| MAAT_RESOURCE_ADDRESS  | localhost | Address (for resources) used to communicate with Maat (also used to create href addresses)  |
-|   MAAT_RESOURCE_PORT   |   8082    |   Port (for resources) used to communicate with Maat (also used to create href addresses)   |
-| MAAT_SERVICE_PROTOCOL  |   https   | Protocol (for services) used to communicate with Maat (also used to create href addresses)  |
-|  MAAT_SERVICE_ADDRESS  | localhost |  Address (for services) used to communicate with Maat (also used to create href addresses)  |
-|   MAAT_SERVICE_PORT    |   8082    |   Port (for services) used to communicate with Maat (also used to create href addresses)    |
-|    MAAT_SSL_ENABLED    |   false   |                           Enable/disable https protocol for Maat                            |
+|        Property        |        Values        |                                         Description                                         |
+|:----------------------:|:--------------------:|:-------------------------------------------------------------------------------------------:|
+|     MAAT_PROTOCOL      |         http         |    Protocol used in the Maat container to communicate with the EventListener application    |
+|       MAAT_HOST        |       maathost       |    Hostname used in the Maat container to communicate with the EventListener application    |
+|       MAAT_PORT        |         8080         |      Port used in the Maat container to communicate with the EventListener application      |
+| MAAT_RESOURCE_PROTOCOL |      http/https      | Protocol (for resources) used to communicate with Maat (also used to create href addresses) |
+| MAAT_RESOURCE_ADDRESS  | localhost/ip_address | Address (for resources) used to communicate with Maat (also used to create href addresses)  |
+|   MAAT_RESOURCE_PORT   |         8082         |   Port (for resources) used to communicate with Maat (also used to create href addresses)   |
+| MAAT_SERVICE_PROTOCOL  |      http/https      | Protocol (for services) used to communicate with Maat (also used to create href addresses)  |
+|  MAAT_SERVICE_ADDRESS  | localhost/ip_address |  Address (for services) used to communicate with Maat (also used to create href addresses)  |
+|   MAAT_SERVICE_PORT    |         8082         |   Port (for services) used to communicate with Maat (also used to create href addresses)    |
+|    MAAT_SSL_ENABLED    |      true/false      |                           Enable/disable https protocol for Maat                            |
 
 <a name="mongodb-parameters-for-maat"></a>
 ### MongoDB Parameters for Maat
@@ -149,9 +153,9 @@ a description of the most important configuration options.
 |  KEYCLOAK_GRANT_TYPE_FOR_CLIENTS  | client_credentials |             Grant type for Keycloak clients             |
 |   KEYCLOAK_GRANT_TYPE_FOR_USERS   | authorization_code |              Grant type for Keycloak users              |
 |      KEYCLOAK_CLIENT_SECRET       |  <client_secret>   |               Client secret for Keycloak                |
-|         KEYCLOAK_ENABLED          |       false        |      Enable/disable Keycloak application for Maat       |
-|  KEYCLOAK_AUTHORIZATION_L1_ROLES  |       false        |  Enable/disable level 1 role authorization in Keycloak  |
-| KEYCLOAK_AUTHORIZATION_L2_FILTERS |       false        | Enable/disable level 2 filter authorization in Keycloak |
+|         KEYCLOAK_ENABLED          |     true/false     |      Enable/disable Keycloak application for Maat       |
+|  KEYCLOAK_AUTHORIZATION_L1_ROLES  |     true/false     |  Enable/disable level 1 role authorization in Keycloak  |
+| KEYCLOAK_AUTHORIZATION_L2_FILTERS |     true/false     | Enable/disable level 2 filter authorization in Keycloak |
 
 <a name="eventlistener-parameters-for-maat"></a>
 ### EventListener Parameters for Maat
@@ -501,8 +505,8 @@ POST method are provided in the section above.
 | server.ssl.key-store-password |     test123      |                       Password for keystore                       |
 |     server.ssl.key-alias      |   exampleAlias   | The alias (or name) under which the key is stored in the keystore |
 
-<a name="api-authentication---keycloak"></a>
-## API Authentication - Keycloak
+<a name=""></a>
+## Authentication and authorization configuration - Keycloak
 
 |                       Property                        |                                        Values                                         |                                              Description                                               |
 |:-----------------------------------------------------:|:-------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------:|
@@ -512,7 +516,7 @@ POST method are provided in the section above.
 | spring.security.oauth2.resourceserver.jwt.issuer-uri  |               http://<domain name&gt;:<port number&gt;/realms/MaatRealm               |                                       The URL to Keycloak realm                                        |
 | spring.security.oauth2.resourceserver.jwt.jwk-set-uri | ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs |                            JSON Web Key URI to use to verify the JWT token                             |
 |          token.converter.principal-attribute          |                                  preferred_username                                   | Parameter that allows to extract the Keycloak user name from a token available on the Spring Boot side |
-|              token.converter.resource-id              |                                         maat                                          |                        The name of the client that Spring Boot application uses                        |
+|              token.converter.resource-id              |                                     maat-account                                      |                        The name of the client that Spring Boot application uses                        |
 
 <a name="rest-api"></a>
 # REST API
@@ -582,12 +586,46 @@ data models. An example of simple schema files for resources and services can be
 A Postman collection for testing requests with above schema files is available
 here: [Example_with_simple_schema.postman_collection.json](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat/browse/src/main/resources/Example_with_simple_schema.postman_collection.json)
 
-<a name="keycloak-filtering-levels"></a>
-### Keycloak Filtering Levels
+<a name="authentication"></a>
+## Authentication
+For authentication, the Maat application uses OAuth 2.0 with Keycloak. The application is secured with Keycloak, which is an open-source identity and access management solution.
 
-The Maat application implements two levels of filtering using Keycloak to ensure secure and role-based access to resources and services.  
+<a name="enabling-authentication-in-maat-with-keycloak"></a>
+### Enabling authentication in Maat with Keycloak
+To enable authentication in Maat using Keycloak, the following properties must be set:
+- in the application.properties file for the standalone Maat application:
+  - keycloak.enabled
+  - spring.security.oauth2.resourceserver.jwt.issuer-uri
+  - spring.security.oauth2.resourceserver.jwt.jwk-set-uri
+  - token.converter.resource-id
 
-<b>Level 1: Role-Based Filtering</b>
+Example values are in the [Authentication and authorization configuration - Keycloak](#authentication-and-authorization-configuration---keycloak) section.
+
+- or in .env file for Docker:
+  - KEYCLOAK_ENABLED (true)
+  - KEYCLOAK_PROTOCOL
+  - KEYCLOAK_HOST
+  - KEYCLOAK_PORT
+  - KEYCLOAK_USER
+  - KEYCLOAK_PASS
+  - KEYCLOAK_CLIENT_ID_FOR_CLIENTS
+  - KEYCLOAK_CLIENT_ID_FOR_USERS
+
+Example values are in the [Keycloak Parameters](#keycloak-parameters) section.
+
+It is recommended to use Docker for the Maat application with Keycloak. In docker-compose-5.yml or docker-compose-3.yml files, the environment variables are set for the Maat application and Keycloak.
+There is also separate container (keycloak-dev-setup) with script for Keycloak configuration. The script is used to create roles, clients, and users in Keycloak and run it automatically when the container starts.
+
+More information about fetching the access token from Keycloak and accessing the Maat application by sample clients is available in the [/clients](../clients/readme.md) folder.
+
+
+<a name="authorization"></a>
+## Authorization
+
+The Maat application implements two levels of authorization (filtering) using Keycloak to ensure secure and role-based access to resources and services.  
+
+<a name="rest-method-filtering"></a>
+### REST API methods filtering
 
 The first level of filtering is based on the roles assigned to the user in Keycloak. Depending on the roles, users are granted different levels of access to the application's endpoints.
 The roles and their corresponding HTTP methods are as follows:  
@@ -597,53 +635,54 @@ The roles and their corresponding HTTP methods are as follows:
 - **DELETE** requests require the **"delete"** role.
 - **PATCH** requests require the **"patch"** role.
 
-If the keycloak.authorization.l1.roles property is set to true, the application will enforce these role-based access controls.
+If the keycloak.authorization.l1.roles property is set to true, the application will enforce these REST method access controls.
 Otherwise, all authenticated users will have access to the endpoints.
 
-**Adding Attribute Mapping with Filters to Token (Instructions for Keycloak)**
-
-Configuration of "Client Scopes"
-
-For OIDC clients, you can use Client Scopes to add user attributes to tokens.  
-
-Adding Client Scope to Client
-1. Navigate to "Client Scopes":  
-   - In the left menu, select "Client Scopes".
-2. Create a new "Client Scope":  
-   - Click "Create".
-   - Name it **user_access_filters**.
-   - Add a description: **Custom filters for REST methods assigned to the user**.
-   - Select type **Default Client Scopes**.
-3. Add "Mapper" in Client Scope:  
-   - After creating the Client Scope, select it from the list.
-   - Go to the "Mappers" tab.
-   - Click "Configure a new mapper" or "Add mapper" and choose the mapper type **User Attribute**.
-   - In the "Name" field, enter **get_filter**.
-   - In the "User Attribute" field, enter **get_filter**.
-   - In the "Token Claim Name" field, enter **user_access_filters.get_filter**.
-   - In the "Claim JSON Type" field, select **JSON**.
-   - Check the options "Add to ID token" and "Add to access token".
-   - Click "Save". 
-
-Assign Client Scope to Client **maat-account**
-1. Navigate to the client **maat-account**:
-   - In the "Client Scopes" tab, add the newly created Client Scope (**user_access_filters**) to Assigned Client Scopes as Default.
-
-Create Roles for Client **maat-account**
-1. Create roles:
-   - For the client **maat-account**, create roles named **get**, **post**, **delete**, **patch**.
-2. Assign roles to the user:  
-   - Assign the appropriate roles to the user.
-
-**Level 2: Token-Based Filtering**
+<a name="json-content-filtering"></a>
+### JSON content filtering
 
 The second level of filtering is based on filters included in the user's JWT token.
-This is handled in the UserDataFilters.java file. The token contains claims that specify additional filters for accessing resources and services.
+The token contains claims that specify additional filters for accessing resources and services.
 These filters are applied on top of the role-based filtering to further restrict access based on specific criteria.
 
 The token-based filters are defined in the user_access_filters claim within the JWT token.
 This claim can include different types of filters such as get_filter, post_filter, patch_filter, and delete_filter.
 These filters are applied to the corresponding HTTP methods to ensure that users can only access data that matches the specified criteria.
+
+**Adding Attribute Mapping with filters to Token (Instructions for Keycloak)**
+
+Configuration of "Client Scopes"
+
+For OIDC clients, you can use Client Scopes to add user attributes to tokens.
+
+Adding Client Scope to Client
+1. Navigate to "Client Scopes":
+    - In the left menu, select "Client Scopes".
+2. Create a new "Client Scope":
+    - Click "Create".
+    - Name it **user_access_filters**.
+    - Add a description: **Custom filters for REST methods assigned to the user**.
+    - Select type **Default Client Scopes**.
+3. Add "Mapper" in Client Scope:
+    - After creating the Client Scope, select it from the list.
+    - Go to the "Mappers" tab.
+    - Click "Configure a new mapper" or "Add mapper" and choose the mapper type **User Attribute**.
+    - In the "Name" field, enter **get_filter**.
+    - In the "User Attribute" field, enter **get_filter**.
+    - In the "Token Claim Name" field, enter **user_access_filters.get_filter**.
+    - In the "Claim JSON Type" field, select **JSON**.
+    - Check the options "Add to ID token" and "Add to access token".
+    - Click "Save".
+
+Assign Client Scope to Client **maat-account**
+1. Navigate to the client **maat-account**:
+    - In the "Client Scopes" tab, add the newly created Client Scope (**user_access_filters**) to Assigned Client Scopes as Default.
+
+Create Roles for Client **maat-account**
+1. Create roles:
+    - For the client **maat-account**, create roles named **get**, **post**, **delete**, **patch**.
+2. Assign roles to the user:
+    - Assign the appropriate roles to the user.
 
 **Example**
 
@@ -656,7 +695,7 @@ By combining these two levels of filtering, the Maat application ensures that ac
 
 In Keycloak, for a given user, you must define an attribute where the key is one of the four filter types (**GET_FILTER**, **POST_FILTER**, **DELETE_FILTER**, **PATCH_FILTER**) and the value is an array of objects. Everything inside an object (within {}) is represented as a logical AND function, while each separate object ({}) represents a logical OR operation.  
 
-Example Filters
+**Example Filters**
 
 - GET_FILTER:  
 ```
