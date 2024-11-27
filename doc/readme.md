@@ -505,7 +505,7 @@ POST method are provided in the section above.
 | server.ssl.key-store-password |     test123      |                       Password for keystore                       |
 |     server.ssl.key-alias      |   exampleAlias   | The alias (or name) under which the key is stored in the keystore |
 
-<a name=""></a>
+<a name="authentication-and-authorization-configuration---keycloak"></a>
 ## Authentication and authorization configuration - Keycloak
 
 |                       Property                        |                                        Values                                         |                                              Description                                               |
