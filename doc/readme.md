@@ -672,7 +672,7 @@ Adding Client Scope to Client
     - Add a description: **Custom filters for REST methods assigned to the user**.
     - Select type **Default Client Scopes**.
 
-![Screenshot of client scope](/doc/images/maat-keycloak-client-scope.png "Client scope")
+![Screenshot of client scope](images/maat-keycloak-client-scope.png "Client scope")
 
 3. Add "Mapper" in Client Scope:
     - After creating the Client Scope, select it from the list.
@@ -685,7 +685,7 @@ Adding Client Scope to Client
     - Check the options "Add to ID token" and "Add to access token".
     - Click "Save".
 
-![Screenshot of mappers](/doc/images/maat-keycloak-mappers.png "Mappers")
+![Screenshot of mappers](images/maat-keycloak-mappers.png "Mappers")
 
 Assign Client Scope to Client **maat-account**
 1. Navigate to the client **maat-account**:
@@ -695,12 +695,12 @@ Create Roles for Client **maat-account**
 1. Create roles:
     - For the client **maat-account**, create roles named **get**, **post**, **delete**, **patch**.
 
-![Screenshot of client roles](/doc/images/maat-keycloak-roles.png "Client roles")
+![Screenshot of client roles](images/maat-keycloak-roles.png "Client roles")
 
 2. Assign roles to the user:
     - Assign the appropriate roles to the user.
 
-![Screenshot of user roles](/doc/images/maat-keycloak-user-roles.png "User roles")
+![Screenshot of user roles](images/maat-keycloak-user-roles.png "User roles")
 
 **Example**
 
@@ -750,7 +750,7 @@ This filter allows deleting resources where the resourceCharacteristic.name is "
 ```
 This filter allows updating resources where the resourceCharacteristic.name is "location" AND resourceCharacteristic.value is "Poznan" AND category is "device.router" OR where the resourceCharacteristic.name is "location" AND resourceCharacteristic.value is "Warszawa" AND category is "device.switch".
 
-![Screenshot of user attributes](/doc/images/maat-keycloak-attributes.png "User attributes")
+![Screenshot of user attributes](images/maat-keycloak-attributes.png "User attributes")
 
 <a name="mongodb"></a>
 # MongoDB
