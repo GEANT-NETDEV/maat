@@ -671,6 +671,9 @@ Adding Client Scope to Client
     - Name it **user_access_filters**.
     - Add a description: **Custom filters for REST methods assigned to the user**.
     - Select type **Default Client Scopes**.
+
+![Screenshot of client scope](/doc/images/maat-keycloak-client-scope.png "Client scope")
+
 3. Add "Mapper" in Client Scope:
     - After creating the Client Scope, select it from the list.
     - Go to the "Mappers" tab.
@@ -682,6 +685,8 @@ Adding Client Scope to Client
     - Check the options "Add to ID token" and "Add to access token".
     - Click "Save".
 
+![Screenshot of mappers](/doc/images/maat-keycloak-mappers.png "Mappers")
+
 Assign Client Scope to Client **maat-account**
 1. Navigate to the client **maat-account**:
     - In the "Client Scopes" tab, add the newly created Client Scope (**user_access_filters**) to Assigned Client Scopes as Default.
@@ -689,8 +694,13 @@ Assign Client Scope to Client **maat-account**
 Create Roles for Client **maat-account**
 1. Create roles:
     - For the client **maat-account**, create roles named **get**, **post**, **delete**, **patch**.
+
+![Screenshot of client roles](/doc/images/maat-keycloak-roles.png "Client roles")
+
 2. Assign roles to the user:
     - Assign the appropriate roles to the user.
+
+![Screenshot of user roles](/doc/images/maat-keycloak-user-roles.png "User roles")
 
 **Example**
 
@@ -705,7 +715,7 @@ In Keycloak, for a given user, you must define an attribute where the key is one
 
 **Example Filters**
 
-- GET_FILTER:  
+- get_filter:  
 ```
 [
 {"resourceCharacteristic.name": "location", "resourceCharacteristic.value": "Poznan", "category": "device.router"},
@@ -714,7 +724,7 @@ In Keycloak, for a given user, you must define an attribute where the key is one
 ```
 This filter allows access to resources where the resourceCharacteristic.name is "location" AND resourceCharacteristic.value is "Poznan" AND category is "device.router" OR where the resourceCharacteristic.name is "location" AND resourceCharacteristic.value is "Warszawa" AND category is "device.router".  
 
-- POST_FILTER:  
+- post_filter:  
 ```
 [
 {"category": "device.router"},
@@ -723,7 +733,7 @@ This filter allows access to resources where the resourceCharacteristic.name is 
 ```
 This filter allows creating resources where the category is "device.router" OR category is "device.switch".  
 
-- DELETE_FILTER:  
+- delete_filter:  
 ```
 [
 {"resourceCharacteristic.name": "location", "resourceCharacteristic.value": "Poznan"}
@@ -731,7 +741,7 @@ This filter allows creating resources where the category is "device.router" OR c
 ```
 This filter allows deleting resources where the resourceCharacteristic.name is "location" AND resourceCharacteristic.value is "Poznan".  
 
-- PATCH_FILTER:  
+- patch_filter:  
 ```
 [
 {"resourceCharacteristic.name": "location", "resourceCharacteristic.value": "Poznan", "category": "device.router"},
@@ -739,6 +749,8 @@ This filter allows deleting resources where the resourceCharacteristic.name is "
 ]
 ```
 This filter allows updating resources where the resourceCharacteristic.name is "location" AND resourceCharacteristic.value is "Poznan" AND category is "device.router" OR where the resourceCharacteristic.name is "location" AND resourceCharacteristic.value is "Warszawa" AND category is "device.switch".
+
+![Screenshot of user attributes](/doc/images/maat-keycloak-attributes.png "User attributes")
 
 <a name="mongodb"></a>
 # MongoDB
