@@ -599,7 +599,7 @@ here: [Example_with_simple_schema.postman_collection.json](https://bitbucket.sof
 
 <a name="authentication"></a>
 ## Authentication
-For authentication, the Maat application uses OAuth 2.0 with Keycloak. The application is secured with Keycloak, which is an open-source identity and access management solution.
+For authentication, the Maat application uses OAuth 2.0 with Keycloak (25.0.4). The application is secured with Keycloak, which is an open-source identity and access management solution.
 
 <a name="enabling-authentication-in-maat-with-keycloak"></a>
 ### Enabling authentication in Maat with Keycloak
@@ -633,7 +633,7 @@ More information about fetching the access token from Keycloak and accessing the
 <a name="authorization"></a>
 ## Authorization
 
-The Maat application implements two levels of authorization (filtering) using Keycloak to ensure secure and role-based access to resources and services.  
+The Maat application implements two levels of authorization (filtering) using Keycloak (25.0.4) to ensure secure and role-based access to resources and services.  
 
 <a name="rest-method-filtering"></a>
 ### REST API methods filtering
