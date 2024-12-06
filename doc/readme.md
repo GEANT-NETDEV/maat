@@ -28,6 +28,7 @@
   - [Basic Configuration](#basic-configuration)
   - [SSL Configuration](#ssl-configuration)
   - [Authentication and authorization configuration - Keycloak](#authentication-and-authorization-configuration---keycloak)
+  - [Graylog Configuration](#graylog-configuration)
 - [REST API](#rest-api)
   - [Request validation](#request-validation)
     - [Non-TMF schema for validation](#non-tmf-schema-for-validation)
@@ -39,8 +40,10 @@
 - [MongoDB](#mongodb)
   - [MongoDB backup data](#mongodb-backup-data)
   - [MongoDB delete data](#mongodb-delete-data)
-- [Graylog](#graylog)
-  - [Graylog Input Configuration Guide](#graylog-input-configuration-guide)
+- [Graylog](#graylog) 
+    - [Graylog in Docker](#graylog-in-docker)
+    - [Graylog in Maat or EventListener](#graylog-in-maat-or-eventlistener)
+    - [Graylog Input Configuration Guide](#graylog-input-configuration-guide)
 
 <a name="maat"></a>
 # Maat
@@ -452,7 +455,7 @@ The relationship in the newly created resource in such a case looks as follows:
     ]
 ```
 
-<br>The above functionalities cause that updating the "name" and "category" attributes is not allowed.
+<br>The above functionalities cause that updating the "name" and "category" attributes is not allowed. It is also forbidden for the user to update the parmeters: “@type”, "@schemaLocation", "href", "id", "startOperatingDate", "serviceDate".
 
 <a name="postman"></a>
 ## POSTMAN
@@ -790,6 +793,14 @@ To delete data from MongoDB for resources_db, services_db and listeners_db follo
 # Graylog
 Graylog is a log management system that allows you to collect, index, and analyze any machine data. It provides a web interface for searching and analyzing logs.
 
+<a name="graylog-in-docker"></a>
+## Graylog in Docker
+In order to launch a docker instance in which Graylog will run, use docker-compose-5.yml. This is described in: [Installation of Maat (with EventListener, NGINX, Keycloak and Graylog)](#installation-of-maat-with-eventlistener-nginx-keycloak-and-graylog). The user should additionally make sure that the variables for Graylog are set correctly in the .env file. These are contained in: [Graylog Parameters](#graylog-parameters) and [Logging Configuration](#logging-configuration).
+
+<a name="graylog-in-docker"></a>
+## Graylog in Maat or EventListener
+When building and running the Maat or EventListener application itself outside of the docker, the user, in order to enable communication with the Graylog server, must correctly set the parameters in application.properties file, described in: [Graylog Configuration](#graylog-configuration).
+
 <a name="graylog-input-configuration-guide"></a>
 ## Graylog Input Configuration Guide
 This readme part provides step-by-step instructions on how to add inputs in the Graylog WebGUI and locate received logs.
@@ -799,6 +810,7 @@ This readme part provides step-by-step instructions on how to add inputs in the 
 2. Navigate to the Graylog Web Interface URL:  
    `http://<SERVER_IP>:9000`
 3. Log in using your credentials (by default: `admin:admin`).
+![Screenshot of graylog login](images/maat-graylog-login.png "Graylog login")
 
 **Adding an Input**
 1. Go to the Inputs Section:
@@ -808,6 +820,7 @@ This readme part provides step-by-step instructions on how to add inputs in the 
     - Select the input type you want to configure (needed: `Syslog UDP`, `Syslog TCP`, `GELF UDP`, `GELF TCP`).
 3. Launch a New Input:
     - Click the **Launch new input** button.
+      ![Screenshot of graylog new input](images/maat-graylog-new-input.png "New input")
 4. Configure the Input:
     - Fill in the configuration form:
         - **Check the global box**: To apply the input to all nodes. 
@@ -815,9 +828,11 @@ This readme part provides step-by-step instructions on how to add inputs in the 
         - **Bind Address**: The IP address where Graylog will listen for logs.
         - **Port**: The port Graylog will use to receive logs (e.g., `514` for Syslog, `12201` for GELF).
         - **Additional Settings**: Configure options like decoding or protocols based on the input type.
+          ![Screenshot of graylog new inpiut configuration](images/maat-graylog-input-configuration.png "Input configuration")
     - Click **Launch Input** to enable the input.
 5. Check Input Status:
     - Ensure the input is running; it should be marked as **Running**.
+      ![Screenshot of graylog input status](images/maat-graylog-input-status.png "Input status")
 
 **Locating and Analyzing Received Logs**
 1. Navigate to the "Search" Section:
