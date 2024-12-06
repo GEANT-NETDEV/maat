@@ -523,11 +523,11 @@ POST method are provided in the section above.
 
 <a name="graylog-configuration"></a>
 ## Graylog Configuration
-|     Property      |  Values   |         Description         |
-|:-----------------:|:---------:|:---------------------------:|
-| logging.gelf.host | 127.0.0.1 | Host for the Graylog server |
-| logging.gelf.port |   12201   | Port for the Graylog server |
-|  logging.config   |   12201   |   Log configuration file    |
+|     Property      |            Values             |         Description         |
+|:-----------------:|:-----------------------------:|:---------------------------:|
+| logging.gelf.host |           127.0.0.1           | Host for the Graylog server |
+| logging.gelf.port |             12201             | Port for the Graylog server |
+|  logging.config   | 	classpath:logback-spring.xml |   Log configuration file    |
 
 <a name="rest-api"></a>
 # REST API
