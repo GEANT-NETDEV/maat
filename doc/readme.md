@@ -555,8 +555,17 @@ For GET method we can use a few params to filter resources or services more accu
 - offset *--to make offset on received objects*
 - fields *--to display only selected fields (for example: fields=name,description)*
 
-There is also the possibility to search elements by key-value option. For example parameter "name=resource1"
-will search all resources or services attributes "name" with value "resource1".
+There is also the possibility to search elements by key-value option. For example parameter **name=resource1**
+will search all resources or services attributes **name** with value **resource1**.
+Similarly, the parameter **category=device.router** will search all resources where the attribute **category** has the value **device.router**.
+
+Example:
+- to search for resources where the category parameter has the value device.router: <br>
+  ```/resourceInventoryManagement/v4.0.0/resource?category=device.router```
+- to combine this with displaying specific fields, for example, category and name: <br>
+  ```/resourceInventoryManagement/v4.0.0/resource?fields=category,name&category=device.router```
+
+Note the use of the **?** operator to start the query parameters and the **&** operator to combine multiple parameters.
 
 <a name="request-validation"></a>
 ## Request validation
