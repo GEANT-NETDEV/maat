@@ -779,8 +779,10 @@ To create a copy of the MongoDB database from the container or restore the data 
   ```docker cp <container_id>:/dump /home/service/MongodbBackup/Maat```<br><br>
 - restore data:<br>
   1\) copy data from host machine to MongoDB container<br>
-  ```docker cp ./dump <container_id>:/dump```<br>
-  2\) use "mongorestore" tool in MongoDB container<br>
+  ```docker cp ./dump/. <container_id>:/dump```<br>
+  2\) before restoring data, delete the entire database to avoid conflicts with existing IDs.
+  Below is a section for deleting data from the database. If you want to delete everything, use the **"for all of these databases"** point. <br>
+  3\) use "mongorestore" tool in MongoDB container<br>
   ```docker exec -i <container_id> /usr/bin/mongorestore --username <username> --password <password> /dump```
 
 <a name="mongodb-delete-data"></a>
