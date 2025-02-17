@@ -74,6 +74,7 @@ services:
       - MAAT_PROTOCOL=$MAAT_PROTOCOL
       - MAAT_HOST=$MAAT_HOST
       - MAAT_PORT=$MAAT_PORT
+      - GRAYLOG_HOST=$GRAYLOG_HOST
     command: /bin/sh -c "envsubst < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf; nginx -g 'daemon off;' | logger --udp --server $GRAYLOG_HOST --port 514 -t nginx"
     depends_on:
       maat:
