@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "3cecdbcb-86ec-4aaf-adc3-a237d4fa0e3e",
+		"_postman_id": "fcac93fa-bbe8-4eb4-9c76-1b22cfd3fde6",
 		"name": "Maat",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "24659957"
@@ -320,7 +320,7 @@
 									"bearer": [
 										{
 											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICJqX2VYWE4zRXZqWFJ3R3RtOXAwcmVrdndHUmVGNksyNW5vbXhmNzhkaFE0In0.eyJleHAiOjE3MzAzODAwODMsImlhdCI6MTczMDM3OTc4MywianRpIjoiZDIzNTJkMDUtYmYyNi00NjYyLTliODQtM2I1YmZlY2NiMmMxIiwiaXNzIjoiaHR0cDovLzE3Mi4xOC4xODcuMjUyOjgwOTAvcmVhbG1zL01hYXRSZWFsbSIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiJkOGFkZmEzNS1mYjQxLTQ3YzUtOWFiNy0wNzk2NDA3MjMxMjEiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJtYWF0LWFjY291bnQiLCJhY3IiOiIxIiwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtbWFhdHJlYWxtIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsIm1hYXR1c2VyIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJlbWFpbCBwcm9maWxlIiwiY2xpZW50SG9zdCI6IjE3Mi4xOS4wLjEiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInByZWZlcnJlZF91c2VybmFtZSI6InNlcnZpY2UtYWNjb3VudC1tYWF0LWFjY291bnQiLCJjbGllbnRBZGRyZXNzIjoiMTcyLjE5LjAuMSIsImNsaWVudF9pZCI6Im1hYXQtYWNjb3VudCJ9.caudX0WPqs58flWNTrnYqdXGtXn3pCApKbbtZ4eCyqnMjKqw-Ora7sk0dO9VW7Zz0vrUU6ic7liQxMyAB_511K-DDfepDe2oL-nhUiToY_AaE1QFw_5Po70vXeIWfkXCmXc3BsyFSIF4uhABvhigxIIhojeJHxOTxqk7iGW5THKklOjJzH8n0YpfUihBJfIBPoPU1lo_KyT1rWEIeVw8ZdYn0ZOFh3gSgXVBdwyhwj-Y9k5CGLHKmpnl-Rt3uHqtK-SbypfMiqW-jSNch2qWubYfBHUo3qxaVt00YkshXZzv4Cbvs2Gc3xs_uwczgwdPLCFr_V8YKsXhR5kq5tB7TQ",
+											"value": "{{keycloak-token}}",
 											"type": "string"
 										}
 									]
@@ -450,7 +450,7 @@
 									"bearer": [
 										{
 											"key": "token",
-											"value": "eyJhbGciOiJSUzI1NiIsInR5cCIgOiAiSldUIiwia2lkIiA6ICI0bm5TSXdOMmI1OE9mZFBWaHNHVjZjWFVKM0hWTnFYYUwxeGtpeWVqaV84In0.eyJleHAiOjE3MzA5ODQxNDgsImlhdCI6MTczMDk4Mzg0OCwianRpIjoiNTRlOTJmYTUtZWNhNi00NWE0LWFjYWMtNDUyZDc0MjY0MDg5IiwiaXNzIjoiaHR0cDovLzE3Mi4xOC4xODcuMjUyOjgwOTAvcmVhbG1zL01hYXRSZWFsbSIsImF1ZCI6ImFjY291bnQiLCJzdWIiOiJjNDk3Zjg1MC03NTBkLTQ5MjUtYmJlZS04ODkxZGQxYTI5YzgiLCJ0eXAiOiJCZWFyZXIiLCJhenAiOiJtYWF0LWFjY291bnQiLCJhY3IiOiIxIiwicmVhbG1fYWNjZXNzIjp7InJvbGVzIjpbImRlZmF1bHQtcm9sZXMtbWFhdHJlYWxtIiwib2ZmbGluZV9hY2Nlc3MiLCJ1bWFfYXV0aG9yaXphdGlvbiIsIm1hYXR1c2VyIl19LCJyZXNvdXJjZV9hY2Nlc3MiOnsiYWNjb3VudCI6eyJyb2xlcyI6WyJtYW5hZ2UtYWNjb3VudCIsIm1hbmFnZS1hY2NvdW50LWxpbmtzIiwidmlldy1wcm9maWxlIl19fSwic2NvcGUiOiJlbWFpbCBwcm9maWxlIiwiY2xpZW50SG9zdCI6IjE3Mi4yMS4wLjEiLCJlbWFpbF92ZXJpZmllZCI6ZmFsc2UsInByZWZlcnJlZF91c2VybmFtZSI6InNlcnZpY2UtYWNjb3VudC1tYWF0LWFjY291bnQiLCJjbGllbnRBZGRyZXNzIjoiMTcyLjIxLjAuMSIsImNsaWVudF9pZCI6Im1hYXQtYWNjb3VudCJ9.LBIX8hPq5F-kUr4tYHaqot8QadSu7y119bcnkOFATuPZB9g--_1ZavK_bii0HWG6WS1alVCIoCB0Y3txQcUk1sJ_AhJnCANvTS5PJWrgQM3UqB-HR420ZLhnoPr6HWQpxDjihzZyltAdzRMjE99T9KNSc9w7M1MHgYlAfDXW2e-0BornPWLwXQc2DqNl6lRTsluCAa977SH_HybOmONFx6fBbeTNKwSkEhlLv1Xn-eVJXvsGjbloW_72g6z5xsLgaeqmams0v85kFMSynFKCDAWHdYTXbTjpT_7LHbcWE9oZI-KBaHf6ri9fgCXk6fVqOzPj0blkWBlaSgcoynwf2g",
+											"value": "{{keycloak-token}}",
 											"type": "string"
 										}
 									]
@@ -483,6 +483,16 @@
 						{
 							"name": "Create Listener",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{keycloak-token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "POST",
 								"header": [],
 								"body": {
@@ -512,6 +522,16 @@
 						{
 							"name": "DELETE Listener",
 							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{keycloak-token}}",
+											"type": "string"
+										}
+									]
+								},
 								"method": "DELETE",
 								"header": [],
 								"url": {
