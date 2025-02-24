@@ -110,6 +110,27 @@ services:
       timeout: 10s
       retries: 10
 
+  react:
+    image: "artifactory.software.geant.org/spa-docker/maat-ui/assets:make-build-12004724"
+    read_only: true
+    ports:
+      - "9100:9100"
+    environment:
+      - LISTEN_PORT=9100
+      - S6_READ_ONLY_ROOT=1
+      - MAIN_DOMAIN=localhost.maat-ui.pl
+      - USE_REDUX_LOGGER=false
+      - SENTRY_DSN=
+      - SENTRY_ENVIRONMENT=
+
+      - SERVICES_MAAT_API_URL=$MAAT_SERVICE_PROTOCOL://$MAAT_SERVICE_ADDRESS:$MAAT_SERVICE_PORT/serviceInventoryManagement/v4.0.0/service
+      - RESOURCES_MAAT_API_URL=$MAAT_RESOURCE_PROTOCOL://$MAAT_RESOURCE_ADDRESS:$MAAT_RESOURCE_PORT/resourceInventoryManagement/v4.0.0/resource
+    tmpfs:
+      - "/run:exec"
+      - "/var/cache/nginx"
+      - "/var/lib/nginx/tmp:uid=999,gid=998"
+      - "/var/log/nginx:uid=999,gid=998"  # default error log location is opened before config file is read
+
 volumes:
   mongodb-maat:
   mongodb-eventlistener:
