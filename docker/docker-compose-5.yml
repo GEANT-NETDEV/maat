@@ -49,7 +49,7 @@ services:
     expose:
       - "27017"
     volumes:
-      - mongodb-maat-fosdem:/data/db
+      - mongodb-maat:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_USER
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
@@ -124,7 +124,7 @@ services:
     expose:
       - "27022"
     volumes:
-      - mongodb-eventlistener-fosdem:/data/db
+      - mongodb-eventlistener:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_EL_USER
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_EL_PASSWORD
