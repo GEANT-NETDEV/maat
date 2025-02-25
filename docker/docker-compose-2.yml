@@ -51,7 +51,7 @@ services:
       retries: 10
 
   eventListener:
-    image: artifactory.software.geant.org/spa-docker/eventlistener:1.0.3
+    image: artifactory.software.geant.org/spa-docker/eventlistener:1.0.4
     hostname: $EVENT_LISTENER_HOST
     ports:
       - "8081:8081"
