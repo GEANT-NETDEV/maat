@@ -15,11 +15,13 @@
     - [MongoDB Parameters for EventListener](#mongodb-parameters-for-eventlistener)
     - [Graylog Parameters](#graylog-parameters)
     - [Logging Configuration](#logging-configuration)
+    - [Grafana Loki Parameters](#grafana-loki-parameters)
   - [Installation of Maat](#installation-of-maat)
   - [Installation of Maat with EventListener](#installation-of-maat-with-eventlistener)
   - [Installation of Maat (with EventListener) with Keycloak and SSL](#installation-of-maat-with-eventlistener-with-keycloak-and-ssl)
   - [Installation of Maat (with EventListener) with HTTPS access (for Maat) by NGINX](#installation-of-maat-with-eventlistener-with-https-access-for-maat-by-nginx)
   - [Installation of Maat (with EventListener, NGINX, Keycloak and Graylog)](#installation-of-maat-with-eventlistener-nginx-keycloak-and-graylog)
+  - [Installation of Maat (with EventListener, NGINX, Keycloak and Grafana Loki)](#installation-of-maat-with-eventlistener-nginx-keycloak-and-grafna-loki)
 - [Example API requests](#example-api-requests)
 - [Backward Relationships](#backward-relationships)
 - [POSTMAN](#postman)
@@ -29,6 +31,7 @@
   - [SSL Configuration](#ssl-configuration)
   - [Authentication and authorization configuration - Keycloak](#authentication-and-authorization-configuration---keycloak)
   - [Graylog Configuration](#graylog-configuration)
+  - [Grafana Loki Configuration](#grafana-loki-configuration)
 - [REST API](#rest-api)
   - [Request validation](#request-validation)
     - [Non-TMF schema for validation](#non-tmf-schema-for-validation)
@@ -44,6 +47,10 @@
     - [Graylog in Docker](#graylog-in-docker)
     - [Graylog in Maat or EventListener](#graylog-in-maat-or-eventlistener)
     - [Graylog Input Configuration Guide](#graylog-input-configuration-guide)
+- [Grafana Loki](#grafana-loki)
+  - [Grafana Loki in Docker](#grafana-loki-in-docker)
+  - [Grafana Loki in Maat or Eventlistener](#grafana-loki-in-maat-or-eventlistener)
+  - [Grafana Loki Input Configuration Guide](#grafana-loki-input-configuration-guide)
 
 <a name="maat"></a>
 # Maat
@@ -194,12 +201,21 @@ a description of the most important configuration options.
 <a name="logging-configuration"></a>
 ### Logging Configuration
 
-|    Property    |                           Values                            |                                    Description                                     |
-|:--------------:|:-----------------------------------------------------------:|:----------------------------------------------------------------------------------:|
-| LOGGING_CONFIG |                classpath:logback-spring.xml                 |        Logging configuration for the Maat application. Logs only in Graylog        |
-| LOGGING_CONFIG |               classpath:logback-with-file.xml               |      Logging configuration for the Maat application. Logs in Graylog and file      |
-| LOGGING_CONFIG |         classpath:logback-with-file-and-console.xml         | Logging configuration for the Maat application. Logs in Graylog, file, and console |
-| LOGGING_CONFIG | classpath:logback-with-file-and-console-without-graylog.xml |   Logging configuration for the Maat application. Logs only in file and console    |
+|    Property    |                           Values                            |                                                       Description                                                       |
+|:--------------:|:-----------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------:|
+| LOGGING_CONFIG |                classpath:logback-spring.xml                 |                          Logging configuration for the Maat application. Logs only in Graylog                           |
+| LOGGING_CONFIG |               classpath:logback-with-file.xml               |                        Logging configuration for the Maat application. Logs in Graylog and file                         |
+| LOGGING_CONFIG |         classpath:logback-with-file-and-console.xml         |                   Logging configuration for the Maat application. Logs in Graylog, file, and console                    |
+| LOGGING_CONFIG | classpath:logback-with-file-and-console-without-graylog.xml |                      Logging configuration for the Maat application. Logs only in file and console                      |
+| LOGGING_CONFIG |              classpath:logback-loki-docker.xml              | Logging configuration for the Maat application. Logs in Grafana Loki stored from all containers. Use in docker-compose. |
+| LOGGING_CONFIG |             classpath:logback-loki-appender.xml             |                     Logging configuration for the Maat application. Use outside of docker-compose .                     | 
+
+<a name="grafana-loki-parameters"></a>
+### Grafana Loki Parameters
+
+|   Property   |  Values  |             Description              |
+|:------------:|:--------:|:------------------------------------:|
+|  LOKI_HOST   | lokihost | Hostname for the Grafana Loki server |
 
 <a name="installation-of-maat"></a>
 ## Installation of Maat
@@ -274,6 +290,15 @@ Complete installation of Maat with EventListener, Keycloak, Graylog, and NGINX.
 Go to **docker/** folder and run:
 
 ```docker-compose -f docker-compose-5.yml up```
+
+<a name="installation-of-maat-with-eventlistener-nginx-keycloak-and-grafana-loki"></a>
+## Installation of Maat (with EventListener, NGINX, Keycloak and Grafana Loki)
+
+Complete installation of Maat with EventListener, Keycloak, Grafana Loki, and NGINX.
+
+Go to **docker/** folder and run:
+
+```docker-compose -f docker-compose-6.yml up```
 
 <br>**Warning!**<br>All of the above options for running Maat application with Docker use Volumes. Each MongoDB database has its own volume assigned in the docker-compose file. 
 When you delete a database container, the volume still exists and when you restart the service, the old data will be included.
@@ -528,6 +553,13 @@ POST method are provided in the section above.
 | logging.gelf.host |           127.0.0.1           | Host for the Graylog server |
 | logging.gelf.port |             12201             | Port for the Graylog server |
 |  logging.config   | 	classpath:logback-spring.xml |   Log configuration file    |
+
+<a name="grafana-loki-configuration"></a>
+## Grafana Loki Configuration
+|     Property      |               Values               |           Description            |
+|:-----------------:|:----------------------------------:|:--------------------------------:|
+|   logging.loki    |             127.0.0.1              | Host for the Grafana Loki server |
+|  logging.config   | 	classpath:logback-loki-docker.xml |      Log configuration file      |
 
 <a name="rest-api"></a>
 # REST API
@@ -806,7 +838,7 @@ Graylog is a log management system that allows you to collect, index, and analyz
 ## Graylog in Docker
 In order to launch a docker instance in which Graylog will run, use docker-compose-5.yml. This is described in: [Installation of Maat (with EventListener, NGINX, Keycloak and Graylog)](#installation-of-maat-with-eventlistener-nginx-keycloak-and-graylog). The user should additionally make sure that the variables for Graylog are set correctly in the .env file. These are contained in: [Graylog Parameters](#graylog-parameters) and [Logging Configuration](#logging-configuration).
 
-<a name="graylog-in-docker"></a>
+<a name="graylog-in-maat-or-eventlistener"></a>
 ## Graylog in Maat or EventListener
 When building and running the Maat or EventListener application itself outside of the docker, the user, in order to enable communication with the Graylog server, must correctly set the parameters in application.properties file, described in: [Graylog Configuration](#graylog-configuration).
 
@@ -857,3 +889,49 @@ This readme part provides step-by-step instructions on how to add inputs in the 
     - In the top-right corner, select a time range (e.g., **Last hour**, **Last day**).
 
 For more information on the graylog configuration, visit: https://go2docs.graylog.org
+
+<a name="grafana-loki"></a>
+# Grafana Loki
+Grafana Loki is a set of open source components that can be composed into a fully featured logging stack. A small index and highly compressed chunks simplifies the operation and significantly lowers the cost of Loki.
+
+<a name="grafana-loki-in-docker"></a>
+## Grafana Loki in Docker
+In order to launch a docker instance in which Grafana Loki will run, use docker-compose-6.yml. This is described in: [Installation of Maat (with EventListener, NGINX, Keycloak and Grafana Loki)](#installation-of-maat-with-eventlistener-nginx-keycloak-and-grafana-loki). The user should additionally make sure that the variables for Grafana Loki are set correctly in the .env file. These are contained in: [Grafana Loki Parameters](#grafana-loki-parameters) and [Logging Configuration](#logging-configuration). Use `classpath:logback-loki-docker.xml`. 
+
+<a name="grafana-loki-in-maat-or-eventlistener"></a>
+## Grafana Loki in Maat or EventListener
+When building and running the Maat or EventListener application itself outside of the docker, the user, in order to enable communication with the Grafana Loki server, must correctly set the parameters in application.properties file, described in: [Grafana Loki Configuration](#grafana-loki-configuration). Use `classpath:logback-loki-appender.xml`.
+
+
+<a name="grafana-loki-input-configuration-guide"></a>
+## Grafana Loki Input Configuration Guide
+This readme part provides step-by-step instructions on how to locate received logs in Grafana Loki.
+
+**Go to Grafana Web Interface**
+1. Open a web browser.
+2. Navigate to the Grafana Web Interface URL:  
+   `http://<SERVER_IP>:3000`
+   ![Screenshot of Grafana Web Interface](images/maat-grafana-loki-main.png "Grafana Web Interface")
+3. Logging in is not necessary (by default: `admin:admin`).
+
+**Locating and Analyzing Received Logs**
+1. Go to the Explore:
+   - From the left menu, click **Explore**.
+     ![Screenshot of Grafana Explore](images/maat-grafana-loki-explore.png "Grafana Explore")
+2. Choose Loki as data source.
+![Screenshot of Grafana Data Source](images/maat-grafana-loki-data-source.png "Grafana Data Source")
+3. Decide from which container logs you want to view:
+   - In "select label" select "container"
+   - In “select value” select the name of the container you are interested in.
+     - Example: `select label: "container"`
+     - Example: `select value: "/docker-grafana-1"`
+   ![Screenshot of Grafana Select](images/maat-grafana-loki-select.png "Grafana Select")
+4. Run query or launch live listening:
+   - For run query choose a time range.
+     ![Screenshot of Grafana Run](images/maat-grafana-loki-run.png "Grafana Run")
+5. The log panel will show all received logs of a given container from the selected time interval.
+   - In addition, you can expand the query with appropriate filters.
+     - Example: `Line contains: "info"`
+     ![Screenshot of Grafana Logs](images/maat-grafana-loki-logs.png "Grafana Logs")
+
+For more information on the Grafana Loki configuration, visit: https://grafana.com/docs/loki/latest/?pg=oss-loki&plcmt=quick-links

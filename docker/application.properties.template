@@ -71,3 +71,4 @@ validator.service.additional-props-restrict=false
 logging.gelf.host=$GRAYLOG_HOST
 logging.gelf.port=$GRAYLOG_PORT
 logging.config=$LOGGING_CONFIG
+logging.loki.host=$LOKI_HOST
