@@ -268,8 +268,8 @@ services:
       - "/var/log/nginx:uid=999,gid=998"  # default error log location is opened before config file is read
 
 volumes:
-  mongodb-maat-fosdem:
-  mongodb-eventlistener-fosdem:
+  mongodb-maat:
+  mongodb-eventlistener:
   mongodb-graylog_data:
   graylog_data:
   graylog_journal:
