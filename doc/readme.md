@@ -18,10 +18,10 @@
     - [Grafana Loki Parameters](#grafana-loki-parameters)
   - [Installation of Maat](#installation-of-maat)
   - [Installation of Maat with EventListener](#installation-of-maat-with-eventlistener)
-  - [Installation of Maat (with EventListener) with Keycloak and SSL](#installation-of-maat-with-eventlistener-with-keycloak-and-ssl)
-  - [Installation of Maat (with EventListener) with HTTPS access (for Maat) by NGINX](#installation-of-maat-with-eventlistener-with-https-access-for-maat-by-nginx)
-  - [Installation of Maat (with EventListener, NGINX, Keycloak and Graylog)](#installation-of-maat-with-eventlistener-nginx-keycloak-and-graylog)
-  - [Installation of Maat (with EventListener, NGINX, Keycloak and Grafana Loki)](#installation-of-maat-with-eventlistener-nginx-keycloak-and-grafna-loki)
+  - [Installation of Maat (with EventListener) with Maat UI, Keycloak and SSL](#installation-of-maat-with-eventlistener-with-maat-ui-keycloak-and-ssl)
+  - [Installation of Maat (with EventListener) with Maat UI and HTTPS access (for Maat) by NGINX](#installation-of-maat-with-eventlistener-with-maat-ui-and-https-access-for-maat-by-nginx)
+  - [Installation of Maat (with EventListener, Maat UI, NGINX, Keycloak and Graylog)](#installation-of-maat-with-eventlistener-maat-ui-nginx-keycloak-and-graylog)
+  - [Installation of Maat (with EventListener, Maat UI, NGINX, Keycloak and Grafana Loki)](#installation-of-maat-with-eventlistener-maat-ui-nginx-keycloak-and-grafana-loki)
 - [Example API requests](#example-api-requests)
 - [Backward Relationships](#backward-relationships)
 - [POSTMAN](#postman)
@@ -239,8 +239,12 @@ Go to **docker/** folder and run:
 
 ```docker-compose -f docker-compose-2.yml up```
 
-<a name="installation-of-maat-with-eventlistener-with-keycloak-and-ssl"></a>
-## Installation of Maat (with EventListener) with Keycloak and SSL
+<a name="installation-of-maat-with-eventlistener-with-maat-ui-keycloak-and-ssl"></a>
+## Installation of Maat (with EventListener) with Maat UI, Keycloak and SSL
+
+Maat UI is a user interface for the Maat application, which manages information about resources and services. It provides a graphical interface for interacting with the Maat backend, allowing users to view, add, update, and delete resources and services.
+
+The default port used by Maat UI is 9100
 
 Go to **docker/** folder and run:
 
@@ -268,8 +272,8 @@ Replace `<TOKEN>` with the access token (access_token attribute in the response)
 }
 ```
 
-<a name="installation-of-maat-with-eventlistener-with-https-access-for-maat-by-nginx"></a>
-## Installation of Maat (with EventListener) with HTTPS access (for Maat) by NGINX
+<a name="installation-of-maat-with-eventlistener-with-maat-ui-and-https-access-for-maat-by-nginx"></a>
+## Installation of Maat (with EventListener) with Maat UI and HTTPS access (for Maat) by NGINX
 
 An alternative way to configure SSL (https) for the Maat application is to run nginx, which takes over handling secure
 communication.
@@ -282,8 +286,8 @@ Go to **docker/** folder and run:
 
 ```docker-compose -f docker-compose-4.yml up```
 
-<a name="installation-of-maat-with-eventlistener-nginx-keycloak-and-graylog"></a>
-## Installation of Maat (with EventListener, NGINX, Keycloak and Graylog)
+<a name="installation-of-maat-with-eventlistener-maat-ui-nginx-keycloak-and-graylog"></a>
+## Installation of Maat (with EventListener, Maat UI, NGINX, Keycloak and Graylog
 
 Complete installation of Maat with EventListener, Keycloak, Graylog, and NGINX.
 
@@ -291,8 +295,8 @@ Go to **docker/** folder and run:
 
 ```docker-compose -f docker-compose-5.yml up```
 
-<a name="installation-of-maat-with-eventlistener-nginx-keycloak-and-grafana-loki"></a>
-## Installation of Maat (with EventListener, NGINX, Keycloak and Grafana Loki)
+<a name="installation-of-maat-with-eventlistener-maat-ui-nginx-keycloak-and-grafana-loki"></a>
+## Installation of Maat (with EventListener, Maat UI, NGINX, Keycloak and Grafana Loki)
 
 Complete installation of Maat with EventListener, Keycloak, Grafana Loki, and NGINX.
 
