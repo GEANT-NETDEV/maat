@@ -1,0 +1,22 @@
+name: Mirror to GitHub Repo
+
+on:
+  workflow_dispatch:
+  schedule:
+  - cron: '37 19 * * *'
+
+concurrency:
+  group: git-mirror
+
+jobs:
+  git-mirror:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: korvoj/git-mirror-action@v1.2.0
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+        with:
+          source-repo: "ssh://git@bitbucket.software.geant.org:7999/ossbss/maat.git"
+          destination-repo: "git@github.com:GEANT-NETDEV/maat.git"
+          single-branch: true
+          single-branch-name: "master"
