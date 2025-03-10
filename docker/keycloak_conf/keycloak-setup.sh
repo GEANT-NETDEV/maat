@@ -7,4 +7,4 @@
 /opt/keycloak/bin/kcadm.sh create clients -r MaatRealm -s clientId=$KEYCLOAK_CLIENT_ID_FOR_CLIENTS -s enabled=true -s clientAuthenticatorType=client-secret -s secret=$KEYCLOAK_CLIENT_SECRET -s serviceAccountsEnabled=true -s standardFlowEnabled=false
 /opt/keycloak/bin/kcadm.sh create roles -r MaatRealm -s name=maatuser
 /opt/keycloak/bin/kcadm.sh add-roles --uusername $KEYCLOAK_USER --rolename maatuser -r MaatRealm
-/opt/keycloak/bin/kcadm.sh add-roles --uusername service-account-maat-account --rolename maatuser -r MaatRealm
+/opt/keycloak/bin/kcadm.sh add-roles --uusername service-account-maat --rolename maatuser -r MaatRealm
