@@ -53,7 +53,7 @@
   - [Grafana Loki Input Configuration Guide](#grafana-loki-input-configuration-guide)
 
 <a name="maat"></a>
-# Maat
+## Maat
 
 Maat is an application that stores information about resources and services and exposes the TMF 638 Service Inventory
 and TMF 639 Resource Inventory APIs.
@@ -61,7 +61,7 @@ It is powered by Spring Boot 3.0 and NoSQL databases MongoDB.
 API access can be encrypted (ssl) and authenticated (OAuth 2.0; use of Keycloak).
 
 <a name="installation-from-sources"></a>
-# Installation from sources
+## Installation from sources
 
 <a name="requirements"></a>
 ### Requirements
@@ -100,19 +100,19 @@ In case you want to skip running the tests during the installation then you can 
 In both cases, the *jar* application will be created in the *target* folder.
 
 <a name="running"></a>
-### Running:
+### Running
 
 Go to **target/** folder and run .jar file with created name for Maat.
 
 ``` java -jar maat-1.0.10.jar ```
 
 <a name="installation-using-docker"></a>
-# Installation using Docker
+## Installation using Docker
 
 Maat can be run in a Docker container. The Docker image is available on the Artifactory repository at `artifactory.software.geant.org/spa-docker/maat:<actuall_version e.g. 1.0.10>`.
 
 <a name="configuration-of-the-env-file"></a>
-## Configuration of the .env file
+### Configuration of the .env file
 
 Environment variables are key-value pairs that are used to configure application settings and other parameters that may
 vary between environments.
@@ -124,7 +124,7 @@ The .env file contains environment variables used to configure the Maat applicat
 a description of the most important configuration options.
 
 <a name="maat-parameters"></a>
-### Maat Parameters
+#### Maat Parameters
 
 |        Property        |        Values        |                                         Description                                         |
 |:----------------------:|:--------------------:|:-------------------------------------------------------------------------------------------:|
@@ -140,7 +140,7 @@ a description of the most important configuration options.
 |    MAAT_SSL_ENABLED    |      true/false      |                           Enable/disable https protocol for Maat                            |
 
 <a name="mongodb-parameters-for-maat"></a>
-### MongoDB Parameters for Maat
+#### MongoDB Parameters for Maat
 
 |    Property    |  Values   |                            Description                            |
 |:--------------:|:---------:|:-----------------------------------------------------------------:|
@@ -151,7 +151,7 @@ a description of the most important configuration options.
 | MONGO_TIMEOUT  |   3000    | Timeout (in milliseconds) for connections to the MongoDB database |
 
 <a name="keycloak-parameters"></a>
-### Keycloak Parameters
+#### Keycloak Parameters
 
 |             Property              |       Values       |                       Description                       |
 |:---------------------------------:|:------------------:|:-------------------------------------------------------:|
@@ -170,7 +170,7 @@ a description of the most important configuration options.
 | KEYCLOAK_AUTHORIZATION_L2_FILTERS |     true/false     | Enable/disable level 2 filter authorization in Keycloak |
 
 <a name="eventlistener-parameters-for-maat"></a>
-### EventListener Parameters for Maat
+#### EventListener Parameters for Maat
 
 |        Property         | Values |                   Description                   |
 |:-----------------------:|:------:|:-----------------------------------------------:|
@@ -180,7 +180,7 @@ a description of the most important configuration options.
 |   EVENT_LISTENER_PORT   |  8081  |             Port for EventListener              |
 
 <a name="mongodb-parameters-for-eventlistener"></a>
-### MongoDB Parameters for EventListener
+#### MongoDB Parameters for EventListener
 
 |     Property      |    Values    |                                       Description                                       |
 |:-----------------:|:------------:|:---------------------------------------------------------------------------------------:|
@@ -191,7 +191,7 @@ a description of the most important configuration options.
 | MONGO_EL_TIMEOUT  |     3000     | Timeout (in milliseconds) for connections to the MongoDB database used by EventListener |
 
 <a name="graylog-parameters"></a>
-### Graylog Parameters
+#### Graylog Parameters
 
 |   Property   |   Values    |           Description           |
 |:------------:|:-----------:|:-------------------------------:|
@@ -199,7 +199,7 @@ a description of the most important configuration options.
 | GRAYLOG_PORT |    12201    |   Port for the Graylog server   |
 
 <a name="logging-configuration"></a>
-### Logging Configuration
+#### Logging Configuration
 
 |    Property    |                           Values                            |                                                       Description                                                       |
 |:--------------:|:-----------------------------------------------------------:|:-----------------------------------------------------------------------------------------------------------------------:|
@@ -211,14 +211,14 @@ a description of the most important configuration options.
 | LOGGING_CONFIG |             classpath:logback-loki-appender.xml             |                     Logging configuration for the Maat application. Use outside of docker-compose .                     | 
 
 <a name="grafana-loki-parameters"></a>
-### Grafana Loki Parameters
+#### Grafana Loki Parameters
 
 |   Property   |  Values  |             Description              |
 |:------------:|:--------:|:------------------------------------:|
 |  LOKI_HOST   | lokihost | Hostname for the Grafana Loki server |
 
 <a name="installation-of-maat"></a>
-## Installation of Maat
+### Installation of Maat
 
 An alternative installation procedure using docker containers.
 
@@ -227,7 +227,7 @@ Go to **docker/** folder and run:
 ```docker-compose up -d```
 
 <a name="installation-of-maat-with-eventlistener"></a>
-## Installation of Maat with EventListener
+### Installation of Maat with EventListener
 
 [EventListener](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-eventlistener) is a suporting
 application for storing notifications from Maat. Notifications inform about any events (add/update/delete
@@ -240,7 +240,7 @@ Go to **docker/** folder and run:
 ```docker-compose -f docker-compose-2.yml up```
 
 <a name="installation-of-maat-with-eventlistener-with-maat-ui-keycloak-and-ssl"></a>
-## Installation of Maat (with EventListener) with Maat UI, Keycloak and SSL
+### Installation of Maat (with EventListener) with Maat UI, Keycloak and SSL
 
 Maat UI is a user interface for the Maat application, which manages information about resources and services. It provides a graphical interface for interacting with the Maat backend, allowing users to view, add, update, and delete resources and services.
 
@@ -273,7 +273,7 @@ Replace `<TOKEN>` with the access token (access_token attribute in the response)
 ```
 
 <a name="installation-of-maat-with-eventlistener-with-maat-ui-and-https-access-for-maat-by-nginx"></a>
-## Installation of Maat (with EventListener) with Maat UI and HTTPS access (for Maat) by NGINX
+### Installation of Maat (with EventListener) with Maat UI and HTTPS access (for Maat) by NGINX
 
 An alternative way to configure SSL (https) for the Maat application is to run nginx, which takes over handling secure
 communication.
@@ -287,7 +287,7 @@ Go to **docker/** folder and run:
 ```docker-compose -f docker-compose-4.yml up```
 
 <a name="installation-of-maat-with-eventlistener-maat-ui-nginx-keycloak-and-graylog"></a>
-## Installation of Maat (with EventListener, Maat UI, NGINX, Keycloak and Graylog
+### Installation of Maat (with EventListener, Maat UI, NGINX, Keycloak and Graylog
 
 Complete installation of Maat with EventListener, Keycloak, Graylog, and NGINX.
 
@@ -296,7 +296,7 @@ Go to **docker/** folder and run:
 ```docker-compose -f docker-compose-5.yml up```
 
 <a name="installation-of-maat-with-eventlistener-maat-ui-nginx-keycloak-and-grafana-loki"></a>
-## Installation of Maat (with EventListener, Maat UI, NGINX, Keycloak and Grafana Loki)
+### Installation of Maat (with EventListener, Maat UI, NGINX, Keycloak and Grafana Loki)
 
 Complete installation of Maat with EventListener, Keycloak, Grafana Loki, and NGINX.
 
@@ -309,7 +309,7 @@ When you delete a database container, the volume still exists and when you resta
 To remove all data, when you delete the containers, you must also delete the volumes.
 
 <a name="example-api-requests"></a>
-# Example API requests
+## Example API requests
 
 <b>GET Requests</b>
 
@@ -374,7 +374,7 @@ this documentation).
 ```<ID>``` is identifier of a resource
 
 <a name="backward-relationships"></a>
-## Backward Relationships
+### Backward Relationships
 
 Maat has an automatic reference completion, the so-called backward reference (relationship) generation. This is based on
 the fact that when a resource/service A that has a reference to resource/service B (relationship A->B) is created or
@@ -487,7 +487,7 @@ The relationship in the newly created resource in such a case looks as follows:
 <br>The above functionalities cause that updating the "name" and "category" attributes is not allowed. It is also forbidden for the user to update the parmeters: “@type”, "@schemaLocation", "href", "id", "startOperatingDate", "serviceDate".
 
 <a name="postman"></a>
-## POSTMAN
+### POSTMAN
 
 Postman
 collection ([Maat-Test.postman_collection](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat/browse/src/main/resources/Maat_Test.postman_collection.json))
@@ -496,16 +496,16 @@ to test REST API is available in the folder:
 - [src/main/resources](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat/browse/src/main/resources)
 
 <a name="swagger-ui"></a>
-## SWAGGER UI
+### SWAGGER UI
 
 Swagger UI for Maat is available at http://localhost:8080. Sample service and resource for the
 POST method are provided in the section above.
 
 <a name="configuration"></a>
-# Configuration
+## Configuration
 
 <a name="basic-configuration"></a>
-## Basic Configuration:
+### Basic Configuration:
 
 |                 Property                 |                       Values                        |                                        Description                                        |
 |:----------------------------------------:|:---------------------------------------------------:|:-----------------------------------------------------------------------------------------:|
@@ -527,7 +527,7 @@ POST method are provided in the section above.
 | notification.sendNotificationToListeners |                     true/false                      |                     Enable/Disable sending notifications to listeners                     |
 
 <a name="ssl-configuration"></a>
-## SSL Configuration
+### SSL Configuration
 
 |           Property            |      Values      |                            Description                            |
 |:-----------------------------:|:----------------:|:-----------------------------------------------------------------:|
@@ -538,7 +538,7 @@ POST method are provided in the section above.
 |     server.ssl.key-alias      |   exampleAlias   | The alias (or name) under which the key is stored in the keystore |
 
 <a name="authentication-and-authorization-configuration---keycloak"></a>
-## Authentication and authorization configuration - Keycloak
+### Authentication and authorization configuration - Keycloak
 
 |                       Property                        |                                        Values                                         |                                              Description                                               |
 |:-----------------------------------------------------:|:-------------------------------------------------------------------------------------:|:------------------------------------------------------------------------------------------------------:|
@@ -551,7 +551,7 @@ POST method are provided in the section above.
 |              token.converter.resource-id              |                                     maat-account                                      |                        The name of the client that Spring Boot application uses                        |
 
 <a name="graylog-configuration"></a>
-## Graylog Configuration
+### Graylog Configuration
 |     Property      |            Values             |         Description         |
 |:-----------------:|:-----------------------------:|:---------------------------:|
 | logging.gelf.host |           127.0.0.1           | Host for the Graylog server |
@@ -559,14 +559,14 @@ POST method are provided in the section above.
 |  logging.config   | 	classpath:logback-spring.xml |   Log configuration file    |
 
 <a name="grafana-loki-configuration"></a>
-## Grafana Loki Configuration
+### Grafana Loki Configuration
 |     Property      |               Values               |           Description            |
 |:-----------------:|:----------------------------------:|:--------------------------------:|
 |   logging.loki    |             127.0.0.1              | Host for the Grafana Loki server |
 |  logging.config   | 	classpath:logback-loki-docker.xml |      Log configuration file      |
 
 <a name="rest-api"></a>
-# REST API
+## REST API
 
 REST APIs are compliant with TMForum:<br>
 https://github.com/tmforum-apis/TMF639_ResourceInventory <br>
@@ -604,7 +604,7 @@ Example:
 Note the use of the **?** operator to start the query parameters and the **&** operator to combine multiple parameters.
 
 <a name="request-validation"></a>
-## Request validation
+### Request validation
 
 Every resource or service added to the Maat via REST API is validated.
 Validation is performed using a schema that defines the appropriate attributes and relationships according to the TMF
@@ -801,10 +801,10 @@ This filter allows updating resources where the resourceCharacteristic.name is "
 ![Screenshot of user attributes](images/maat-keycloak-attributes.png "User attributes")
 
 <a name="mongodb"></a>
-# MongoDB
+## MongoDB
 
 <a name="mongodb-backup-data"></a>
-## MongoDB backup data
+### MongoDB backup data
 
 To create a copy of the MongoDB database from the container or restore the data to database follow the steps below:
 
@@ -822,7 +822,7 @@ To create a copy of the MongoDB database from the container or restore the data 
   ```docker exec -i <container_id> /usr/bin/mongorestore --username <username> --password <password> /dump```
 
 <a name="mongodb-delete-data"></a>
-## MongoDB delete data
+### MongoDB delete data
 
 To delete data from MongoDB for resources_db, services_db and listeners_db follow the steps below:
 
@@ -837,19 +837,19 @@ To delete data from MongoDB for resources_db, services_db and listeners_db follo
 
 
 <a name="graylog"></a>
-# Graylog
+## Graylog
 Graylog is a log management system that allows you to collect, index, and analyze any machine data. It provides a web interface for searching and analyzing logs.
 
 <a name="graylog-in-docker"></a>
-## Graylog in Docker
+### Graylog in Docker
 In order to launch a docker instance in which Graylog will run, use docker-compose-5.yml. This is described in: [Installation of Maat (with EventListener, NGINX, Keycloak and Graylog)](#installation-of-maat-with-eventlistener-nginx-keycloak-and-graylog). The user should additionally make sure that the variables for Graylog are set correctly in the .env file. These are contained in: [Graylog Parameters](#graylog-parameters) and [Logging Configuration](#logging-configuration).
 
 <a name="graylog-in-maat-or-eventlistener"></a>
-## Graylog in Maat or EventListener
+### Graylog in Maat or EventListener
 When building and running the Maat or EventListener application itself outside of the docker, the user, in order to enable communication with the Graylog server, must correctly set the parameters in application.properties file, described in: [Graylog Configuration](#graylog-configuration).
 
 <a name="graylog-input-configuration-guide"></a>
-## Graylog Input Configuration Guide
+### Graylog Input Configuration Guide
 This readme part provides step-by-step instructions on how to add inputs in the Graylog WebGUI and locate received logs.
 
 **Log in to Graylog Web Interface**
@@ -897,20 +897,20 @@ This readme part provides step-by-step instructions on how to add inputs in the 
 For more information on the graylog configuration, visit: https://go2docs.graylog.org
 
 <a name="grafana-loki"></a>
-# Grafana Loki
+## Grafana Loki
 Grafana Loki is a set of open source components that can be composed into a fully featured logging stack. A small index and highly compressed chunks simplifies the operation and significantly lowers the cost of Loki.
 
 <a name="grafana-loki-in-docker"></a>
-## Grafana Loki in Docker
+### Grafana Loki in Docker
 In order to launch a docker instance in which Grafana Loki will run, use docker-compose-6.yml. This is described in: [Installation of Maat (with EventListener, NGINX, Keycloak and Grafana Loki)](#installation-of-maat-with-eventlistener-nginx-keycloak-and-grafana-loki). The user should additionally make sure that the variables for Grafana Loki are set correctly in the .env file. These are contained in: [Grafana Loki Parameters](#grafana-loki-parameters) and [Logging Configuration](#logging-configuration). Use `classpath:logback-loki-docker.xml`. 
 
 <a name="grafana-loki-in-maat-or-eventlistener"></a>
-## Grafana Loki in Maat or EventListener
+### Grafana Loki in Maat or EventListener
 When building and running the Maat or EventListener application itself outside of the docker, the user, in order to enable communication with the Grafana Loki server, must correctly set the parameters in application.properties file, described in: [Grafana Loki Configuration](#grafana-loki-configuration). Use `classpath:logback-loki-appender.xml`.
 
 
 <a name="grafana-loki-input-configuration-guide"></a>
-## Grafana Loki Input Configuration Guide
+### Grafana Loki Input Configuration Guide
 This readme part provides step-by-step instructions on how to locate received logs in Grafana Loki.
 
 **Go to Grafana Web Interface**
