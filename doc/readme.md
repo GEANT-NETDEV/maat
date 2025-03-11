@@ -940,4 +940,4 @@ This readme part provides step-by-step instructions on how to locate received lo
      - Example: `Line contains: "info"`
      ![Screenshot of Grafana Logs](images/maat-grafana-loki-logs.png "Grafana Logs")
 
-For more information on the Grafana Loki configuration, visit: https://grafana.com/docs/loki/latest/?pg=oss-loki&plcmt=quick-links
+For more information on the Grafana Loki configuration, visit [the official Loki documentation](https://grafana.com/docs/loki/latest/?pg=oss-loki&plcmt=quick-links)
