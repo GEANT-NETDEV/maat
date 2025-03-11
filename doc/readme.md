@@ -374,7 +374,7 @@ this documentation).
 ```<ID>``` is identifier of a resource
 
 <a name="backward-relationships"></a>
-### Backward Relationships
+## Backward Relationships
 
 Maat has an automatic reference completion, the so-called backward reference (relationship) generation. This is based on
 the fact that when a resource/service A that has a reference to resource/service B (relationship A->B) is created or
@@ -487,7 +487,7 @@ The relationship in the newly created resource in such a case looks as follows:
 <br>The above functionalities cause that updating the "name" and "category" attributes is not allowed. It is also forbidden for the user to update the parmeters: “@type”, "@schemaLocation", "href", "id", "startOperatingDate", "serviceDate".
 
 <a name="postman"></a>
-### POSTMAN
+## POSTMAN
 
 Postman
 collection ([Maat-Test.postman_collection](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat/browse/src/main/resources/Maat_Test.postman_collection.json))
@@ -496,7 +496,7 @@ to test REST API is available in the folder:
 - [src/main/resources](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat/browse/src/main/resources)
 
 <a name="swagger-ui"></a>
-### SWAGGER UI
+## SWAGGER UI
 
 Swagger UI for Maat is available at http://localhost:8080. Sample service and resource for the
 POST method are provided in the section above.
@@ -643,11 +643,11 @@ A Postman collection for testing requests with above schema files is available
 here: [Example_with_simple_schema.postman_collection.json](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat/browse/src/main/resources/Example_with_simple_schema.postman_collection.json)
 
 <a name="authentication"></a>
-## Authentication
+### Authentication
 For authentication, the Maat application uses OAuth 2.0 with Keycloak (25.0.4). The application is secured with Keycloak, which is an open-source identity and access management solution.
 
 <a name="enabling-authentication-in-maat-with-keycloak"></a>
-### Enabling authentication in Maat with Keycloak
+#### Enabling authentication in Maat with Keycloak
 To enable authentication in Maat using Keycloak, the following properties must be set:
 - in the application.properties file for the standalone Maat application:
   - keycloak.enabled
@@ -676,12 +676,12 @@ More information about fetching the access token from Keycloak and accessing the
 
 
 <a name="authorization"></a>
-## Authorization
+### Authorization
 
 The Maat application implements two levels of authorization (filtering) using Keycloak (25.0.4) to ensure secure and role-based access to resources and services.  
 
 <a name="rest-method-filtering"></a>
-### REST API methods filtering
+#### REST API methods filtering
 
 The first level of filtering is based on the roles assigned to the user in Keycloak. Depending on the roles, users are granted different levels of access to the application's endpoints.
 The roles and their corresponding HTTP methods are as follows:  
@@ -695,7 +695,7 @@ If the keycloak.authorization.l1.roles property is set to true, the application 
 Otherwise, all authenticated users will have access to the endpoints.
 
 <a name="json-content-filtering"></a>
-### JSON content filtering
+#### JSON content filtering
 
 The second level of filtering is based on filters included in the user's JWT token.
 The token contains claims that specify additional filters for accessing resources and services.
