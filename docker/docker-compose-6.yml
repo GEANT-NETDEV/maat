@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   maat:
     image: artifactory.software.geant.org/spa-docker/maat:1.0.10
