@@ -335,7 +335,7 @@ Content of the file request_resource.json
     "description": "Resource's description",
     "category": "link",
     "@type": "LogicalResource",
-    "@schemaLocation": "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json"
+    "@schemaLocation": "https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/TMF639-ResourceInventory-v4-pionier.json"
 }
 ```
 
@@ -353,8 +353,9 @@ Content of the file request_service.json
     "serviceType": "Link",
     "name": "name2",
     "description": "Service description",
+    "category": "link",
     "@type": "Service",
-    "@schemaLocation": "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json"
+    "@schemaLocation": "https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/TMF638-ServiceInventory-v4-pionier.json"
 }
 ```
 
@@ -395,7 +396,7 @@ generation of the backward reference to the resource to be created:
     "name": "test",
     "category": "testCategoryB",
     "@type": "LogicalResource",
-    "@schemaLocation": "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+    "@schemaLocation": "https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/TMF639-ResourceInventory-v4-pionier.json",
     "resourceRelationship": [
       {
         "relationshipType": "bref:testCategoryA",
@@ -439,7 +440,7 @@ In addition, the name of the referenced resource/service can be automatically ad
     "name": "test4name",
     "category": "testCategory",
     "@type": "LogicalResource",
-    "@schemaLocation": "https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json",
+    "@schemaLocation": "https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/TMF639-ResourceInventory-v4-pionier.json",
     "serviceRelationship": [
       {
         "relationshipType": "bref:testServiceCategory",
@@ -611,12 +612,12 @@ Validation is performed using a schema that defines the appropriate attributes a
 standards (TMF 638 Service Inventory and TMF 639 Resource Inventory APIs).
 
 Schema location for validation in the POST request is located in the @schemaLocation attribute. This attribute can
-contain public <b>[GitHub](https://github.com/GEANT-NETDEV/Inv3-schema)</b> address:
+contain public <b>[Bitbucket](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema)</b> address:
 
 - for resource
-  validation: https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json
+  validation: https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/TMF639-ResourceInventory-v4-pionier.json
 - for service
-  validation: https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json
+  validation: https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/TMF638-ServiceInventory-v4-pionier.json
 
 or a file path
 
@@ -635,9 +636,9 @@ The schema file does not have to follow the TMF standard. It can be simplified t
 data models. An example of simple schema files for resources and services can be found here:
 
 - for resource
-  validation: https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json
+  validation: https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/ResourceInventory-example-1.json
 - for service
-  validation: https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF638-ServiceInventory-v4-pionier.json
+  validation: https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/ServiceInventory-example-1.json
 
 A Postman collection for testing requests with above schema files is available
 here: [Example_with_simple_schema.postman_collection.json](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat/browse/src/main/resources/Example_with_simple_schema.postman_collection.json)
