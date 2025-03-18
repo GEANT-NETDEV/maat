@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "fcac93fa-bbe8-4eb4-9c76-1b22cfd3fde6",
+		"_postman_id": "1dd85573-7245-4bde-99c7-7eed06f5668f",
 		"name": "Maat",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "24659957"
@@ -126,7 +126,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"category\": \"device.switch\",\r\n    \"description\": \"Test description\",\r\n    \"name\": \"ptx-poz-1\",\r\n    \"resourceCharacteristic\": [\r\n        {\r\n            \"name\": \"ae1\",\r\n            \"value\": \"test\"\r\n        },\r\n        {\r\n            \"name\": \"only\",\r\n            \"value\": \"package\"\r\n        }\r\n    ],\r\n    \"@schemaLocation\": \"https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/TMF639-ResourceInventory-v4-pionier.json\",\r\n    \"@type\": \"PhysicalResource\",\r\n    \"serialNumber\": \"1234\"\r\n}",
+									"raw": "{\r\n    \"category\": \"device.switch\",\r\n    \"description\": \"Test description\",\r\n    \"name\": \"ptx-poz-1\",\r\n    \"resourceCharacteristic\": [\r\n        {\r\n            \"name\": \"ae1\",\r\n            \"value\": \"test\"\r\n        },\r\n        {\r\n            \"name\": \"only\",\r\n            \"value\": \"package\"\r\n        }\r\n    ],\r\n    \"@schemaLocation\": \"https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/TMF639-ResourceInventory-v4-pionier.json\",\r\n    \"@type\": \"PhysicalResource\",\r\n    \"serialNumber\": \"1234\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"

@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "a7c283b6-9bc6-4a6a-9c32-159ad7f26de5",
+		"_postman_id": "87bdfb39-8ad7-4d35-b9d5-61c70a9cf655",
 		"name": "Example_with_simple_schema",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "24659957"
@@ -12,9 +12,16 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{gp4l_url_resource}}",
+					"raw": "{{maat-protocol}}://{{maat-host}}:{{maat-port}}/resourceInventoryManagement/v4.0.0/resource",
+					"protocol": "{{maat-protocol}}",
 					"host": [
-						"{{gp4l_url_resource}}"
+						"{{maat-host}}"
+					],
+					"port": "{{maat-port}}",
+					"path": [
+						"resourceInventoryManagement",
+						"v4.0.0",
+						"resource"
 					]
 				}
 			},
@@ -26,9 +33,16 @@
 				"method": "GET",
 				"header": [],
 				"url": {
-					"raw": "{{gp4l_url_service}}",
+					"raw": "{{maat-protocol}}://{{maat-host}}:{{maat-port}}/serviceInventoryManagement/v4.0.0/service",
+					"protocol": "{{maat-protocol}}",
 					"host": [
-						"{{gp4l_url_service}}"
+						"{{maat-host}}"
+					],
+					"port": "{{maat-port}}",
+					"path": [
+						"serviceInventoryManagement",
+						"v4.0.0",
+						"service"
 					]
 				}
 			},
@@ -41,7 +55,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"name\": \"Resource1\",\r\n  \"location\": \"Poznan\",\r\n  \"@type\": \"Resource\",\r\n  \"note\":[\r\n    {\r\n      \"author\": \"Martin\",\r\n      \"date\": \"2024-01-23T00:00:00.000Z\",\r\n      \"text\": \"Example text\"\r\n    }\r\n  ],\r\n  \"@schemaLocation\": \"https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/ResourceInventory-example-1.json\"\r\n}",
+					"raw": "{\r\n  \"name\": \"Resource1\",\r\n  \"location\": \"Poznan\",\r\n  \"@type\": \"Resource\",\r\n  \"category\": \"test\",\r\n  \"note\":[\r\n    {\r\n      \"author\": \"Martin\",\r\n      \"date\": \"2024-01-23T00:00:00.000Z\",\r\n      \"text\": \"Example text\"\r\n    }\r\n  ],\r\n  \"@schemaLocation\": \"https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/ResourceInventory-example-1.json\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -49,9 +63,16 @@
 					}
 				},
 				"url": {
-					"raw": "{{gp4l_url_resource}}",
+					"raw": "{{maat-protocol}}://{{maat-host}}:{{maat-port}}/resourceInventoryManagement/v4.0.0/resource",
+					"protocol": "{{maat-protocol}}",
 					"host": [
-						"{{gp4l_url_resource}}"
+						"{{maat-host}}"
+					],
+					"port": "{{maat-port}}",
+					"path": [
+						"resourceInventoryManagement",
+						"v4.0.0",
+						"resource"
 					]
 				}
 			},
@@ -64,7 +85,7 @@
 				"header": [],
 				"body": {
 					"mode": "raw",
-					"raw": "{\r\n  \"name\": \"service1\",\r\n  \"@type\": \"Service\",\r\n  \"category\": \"protocol\",\r\n  \"description\": \"example description\",\r\n  \"note\":[\r\n    {\r\n      \"author\": \"Martin\",\r\n      \"date\": \"2024-01-23T00:00:00.000Z\",\r\n      \"text\": \"Example text\"\r\n    }\r\n  ],\r\n  \"@schemaLocation\": \"https://raw.githubusercontent.com/GEANT-NETDEV/Inv3-schema/main/ServiceInventory-example-1.json\"\r\n}",
+					"raw": "{\r\n  \"name\": \"service1\",\r\n  \"@type\": \"Service\",\r\n  \"category\": \"protocol\",\r\n  \"description\": \"example description\",\r\n  \"note\":[\r\n    {\r\n      \"author\": \"Martin\",\r\n      \"date\": \"2024-01-23T00:00:00.000Z\",\r\n      \"text\": \"Example text\"\r\n    }\r\n  ],\r\n  \"@schemaLocation\": \"https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/ServiceInventory-example-1.json\"\r\n}",
 					"options": {
 						"raw": {
 							"language": "json"
@@ -72,13 +93,59 @@
 					}
 				},
 				"url": {
-					"raw": "{{gp4l_url_service}}",
+					"raw": "{{maat-protocol}}://{{maat-host}}:{{maat-port}}/serviceInventoryManagement/v4.0.0/service",
+					"protocol": "{{maat-protocol}}",
 					"host": [
-						"{{gp4l_url_service}}"
+						"{{maat-host}}"
+					],
+					"port": "{{maat-port}}",
+					"path": [
+						"serviceInventoryManagement",
+						"v4.0.0",
+						"service"
 					]
 				}
 			},
 			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "maat-protocol",
+			"value": "http",
+			"type": "string"
+		},
+		{
+			"key": "maat-host",
+			"value": "localhost",
+			"type": "string"
+		},
+		{
+			"key": "maat-port",
+			"value": "8080",
+			"type": "string"
 		}
 	]
 }
