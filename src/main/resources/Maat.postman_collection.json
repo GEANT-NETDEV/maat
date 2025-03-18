@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "072a370f-2ae1-46e6-958c-93084565bb5b",
+		"_postman_id": "f9b29f8f-d58c-441a-a303-c21c573d9053",
 		"name": "Maat",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "24659957"
@@ -198,7 +198,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"Changed name\"\r\n}",
+									"raw": "{\r\n    \"description\": \"Changed description\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -410,7 +410,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"name\": \"Changed name\"\r\n}",
+									"raw": "{\r\n    \"description\": \"Test description\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
