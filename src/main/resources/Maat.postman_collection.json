@@ -1,6 +1,6 @@
 {
 	"info": {
-		"_postman_id": "f9b29f8f-d58c-441a-a303-c21c573d9053",
+		"_postman_id": "6fcb94ad-9eb7-47d6-acb6-44c8aeb86a34",
 		"name": "Maat",
 		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
 		"_exporter_id": "24659957"
@@ -410,7 +410,7 @@
 								"header": [],
 								"body": {
 									"mode": "raw",
-									"raw": "{\r\n    \"description\": \"Test description\"\r\n}",
+									"raw": "{\r\n    \"description\": \"Changed description\"\r\n}",
 									"options": {
 										"raw": {
 											"language": "json"
@@ -650,7 +650,7 @@
 	"variable": [
 		{
 			"key": "maat-protocol",
-			"value": "https"
+			"value": "http"
 		},
 		{
 			"key": "maat-host",
@@ -658,7 +658,7 @@
 		},
 		{
 			"key": "maat-port",
-			"value": "8082"
+			"value": "8080"
 		},
 		{
 			"key": "keycloak-protocol",
