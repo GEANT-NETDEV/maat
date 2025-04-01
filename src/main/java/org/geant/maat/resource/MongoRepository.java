@@ -6,6 +6,7 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Projections;
+import static com.mongodb.client.model.Filters.regex;
 import io.vavr.control.Either;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -110,7 +111,14 @@ class MongoRepository implements ResourceRepository {
 
     public FindIterable<BaseResource> findAllQuery(List<String> fields, Map<String, String> filtering) {
         var filters = new ArrayList<Bson>();
-        filtering.forEach((key, value) -> filters.add(eq(key, value)));
+        filtering.forEach((key, value) -> {
+            if (value.contains("*")) {
+                filters.add(regex(key, value, "i"));
+            } else {
+                filters.add(regex(key, "^" + value + "$", "i"));
+            }
+        });
+
         if (filters.isEmpty()) {
             if (fields.isEmpty()) {
                 return collection.find();
