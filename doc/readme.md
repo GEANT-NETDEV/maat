@@ -43,14 +43,15 @@
 - [MongoDB](#mongodb)
   - [MongoDB backup data](#mongodb-backup-data)
   - [MongoDB delete data](#mongodb-delete-data)
-- [Graylog](#graylog) 
+- [Graylog - log aggregation](#graylog---log-aggregation) 
     - [Graylog in Docker](#graylog-in-docker)
     - [Graylog in Maat or EventListener](#graylog-in-maat-or-eventlistener)
     - [Graylog Input Configuration Guide](#graylog-input-configuration-guide)
-- [Grafana Loki](#grafana-loki)
+- [Grafana Loki - log aggregation](#grafana-loki---log-aggregation)
   - [Grafana Loki in Docker](#grafana-loki-in-docker)
   - [Grafana Loki in Maat or Eventlistener](#grafana-loki-in-maat-or-eventlistener)
   - [Grafana Loki Input Configuration Guide](#grafana-loki-input-configuration-guide)
+
 
 <a name="maat"></a>
 ## Maat
@@ -836,9 +837,8 @@ To delete data from MongoDB for resources_db, services_db and listeners_db follo
 - for all of these databases:
   ```docker exec -it <container_id> /usr/bin/mongosh --username <username> --password <password> --authenticationDatabase admin --eval "use resources_db;" --eval  "db.dropDatabase()" --eval "use services_db;" --eval  "db.dropDatabase()" --eval "use listeners_db;" --eval  "db.dropDatabase()"```
 
-
-<a name="graylog"></a>
-## Graylog
+<a name="graylog---log-aggregation"></a>
+## Graylog - log aggregation
 Graylog is a log management system that allows you to collect, index, and analyze any machine data. It provides a web interface for searching and analyzing logs.
 
 <a name="graylog-in-docker"></a>
@@ -897,11 +897,11 @@ This readme part provides step-by-step instructions on how to add inputs in the 
 
 For more information on the graylog configuration, visit: https://go2docs.graylog.org
 
-<a name="grafana-loki"></a>
-## Grafana Loki
+<a name="grafana-loki---log-aggregation"></a>
+## Grafana Loki - log aggregation
 Grafana Loki is a set of open source components that can be composed into a fully featured logging stack. A small index and highly compressed chunks simplifies the operation and significantly lowers the cost of Loki.
 
-<a name="grafana-loki-in-docker"></a>
+<a name="grafana-lokir"></a>
 ### Grafana Loki in Docker
 In order to launch a docker instance in which Grafana Loki will run, use docker-compose-6.yml. This is described in: [Installation of Maat (with EventListener, NGINX, Keycloak and Grafana Loki)](#installation-of-maat-with-eventlistener-nginx-keycloak-and-grafana-loki). The user should additionally make sure that the variables for Grafana Loki are set correctly in the .env file. These are contained in: [Grafana Loki Parameters](#grafana-loki-parameters) and [Logging Configuration](#logging-configuration). Use `classpath:logback-loki-docker.xml`. 
 
