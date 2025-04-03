@@ -714,6 +714,7 @@ Configuration of "Client Scopes"
 For OIDC clients, you can use Client Scopes to add user attributes to tokens.
 
 Adding Client Scope to Client
+
 1. Navigate to "Client Scopes":
     - In the left menu, select "Client Scopes".
 2. Create a new "Client Scope":
@@ -738,10 +739,12 @@ Adding Client Scope to Client
 ![Screenshot of mappers](images/maat-keycloak-mappers.png "Mappers")
 
 Assign Client Scope to Client **maat-account**
+
 1. Navigate to the client **maat-account**:
     - In the "Client Scopes" tab, add the newly created Client Scope (**user_access_filters**) to Assigned Client Scopes as Default.
 
 Create Roles for Client **maat-account**
+
 1. Create roles:
     - For the client **maat-account**, create roles named **get**, **post**, **delete**, **patch**.
 
@@ -854,6 +857,7 @@ When building and running the Maat or EventListener application itself outside o
 This readme part provides step-by-step instructions on how to add inputs in the Graylog WebGUI and locate received logs.
 
 **Log in to Graylog Web Interface**
+
 1. Open a web browser.
 2. Navigate to the Graylog Web Interface URL:  
    `http://<SERVER_IP>:9000`
@@ -861,6 +865,7 @@ This readme part provides step-by-step instructions on how to add inputs in the 
 ![Screenshot of graylog login](images/maat-graylog-login.png "Graylog login")
 
 **Adding an Input**
+
 1. Go to the Inputs Section:
     - From the sidebar menu, click **System / Inputs**.
 2. Choose the Input Type:
@@ -869,6 +874,7 @@ This readme part provides step-by-step instructions on how to add inputs in the 
 3. Launch a New Input:
     - Click the **Launch new input** button.
       ![Screenshot of graylog new input](images/maat-graylog-new-input.png "New input")
+
 4. Configure the Input:
     - Fill in the configuration form:
         - **Check the global box**: To apply the input to all nodes. 
@@ -883,6 +889,7 @@ This readme part provides step-by-step instructions on how to add inputs in the 
       ![Screenshot of graylog input status](images/maat-graylog-input-status.png "Input status")
 
 **Locating and Analyzing Received Logs**
+
 1. Navigate to the "Search" Section:
     - In the main menu, click **Search**.
     - All logs received by Graylog will be displayed in real-time.
