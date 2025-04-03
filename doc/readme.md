@@ -722,7 +722,6 @@ Adding Client Scope to Client
     - Name it **user_access_filters**.
     - Add a description: **Custom filters for REST methods assigned to the user**.
     - Select type **Default Client Scopes**.
-
 ![Screenshot of client scope](images/maat-keycloak-client-scope.png "Client scope")
 
 3. Add "Mapper" in Client Scope:
@@ -747,7 +746,6 @@ Create Roles for Client **maat-account**
 
 1. Create roles:
     - For the client **maat-account**, create roles named **get**, **post**, **delete**, **patch**.
-
 ![Screenshot of client roles](images/maat-keycloak-roles.png "Client roles")
 
 2. Assign roles to the user:
@@ -922,27 +920,34 @@ When building and running the Maat or EventListener application itself outside o
 This readme part provides step-by-step instructions on how to locate received logs in Grafana Loki.
 
 **Go to Grafana Web Interface**
+
 1. Open a web browser.
 2. Navigate to the Grafana Web Interface URL:  
    `http://<SERVER_IP>:3000`
    ![Screenshot of Grafana Web Interface](images/maat-grafana-loki-main.png "Grafana Web Interface")
+
 3. Logging in is not necessary (by default: `admin:admin`).
 
 **Locating and Analyzing Received Logs**
+
 1. Go to the Explore:
    - From the left menu, click **Explore**.
      ![Screenshot of Grafana Explore](images/maat-grafana-loki-explore.png "Grafana Explore")
+
 2. Choose Loki as data source.
 ![Screenshot of Grafana Data Source](images/maat-grafana-loki-data-source.png "Grafana Data Source")
+
 3. Decide from which container logs you want to view:
    - In "select label" select "container"
    - In “select value” select the name of the container you are interested in.
      - Example: `select label: "container"`
      - Example: `select value: "/docker-grafana-1"`
    ![Screenshot of Grafana Select](images/maat-grafana-loki-select.png "Grafana Select")
+
 4. Run query or launch live listening:
    - For run query choose a time range.
      ![Screenshot of Grafana Run](images/maat-grafana-loki-run.png "Grafana Run")
+
 5. The log panel will show all received logs of a given container from the selected time interval.
    - In addition, you can expand the query with appropriate filters.
      - Example: `Line contains: "info"`
