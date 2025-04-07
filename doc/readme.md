@@ -225,7 +225,7 @@ An alternative installation procedure using docker containers.
 
 Go to **docker/** folder and run:
 
-```docker-compose up -d```
+```docker compose up -d```
 
 <a name="installation-of-maat-with-eventlistener"></a>
 ### Installation of Maat with EventListener
@@ -238,7 +238,7 @@ maat-host and maat-port).
 
 Go to **docker/** folder and run:
 
-```docker-compose -f docker-compose-2.yml up```
+```docker compose -f docker-compose-2.yml up```
 
 <a name="installation-of-maat-with-eventlistener-with-maat-ui-keycloak-and-ssl"></a>
 ### Installation of Maat (with EventListener) with Maat UI, Keycloak and SSL
@@ -249,7 +249,7 @@ The default port used by Maat UI is 9100
 
 Go to **docker/** folder and run:
 
-```docker-compose -f docker-compose-3.yml up```
+```docker compose -f docker-compose-3.yml up```
 
 
 **Warning!** <br> When Maat works with Keycloak and SSL you must manually register EventListener using the steps below:
@@ -285,7 +285,7 @@ The default port used by nginx is 8082
 
 Go to **docker/** folder and run:
 
-```docker-compose -f docker-compose-4.yml up```
+```docker compose -f docker-compose-4.yml up```
 
 <a name="installation-of-maat-with-eventlistener-maat-ui-nginx-keycloak-and-graylog"></a>
 ### Installation of Maat (with EventListener, Maat UI, NGINX, Keycloak and Graylog
@@ -294,7 +294,7 @@ Complete installation of Maat with EventListener, Keycloak, Graylog, and NGINX.
 
 Go to **docker/** folder and run:
 
-```docker-compose -f docker-compose-5.yml up```
+```docker compose -f docker-compose-5.yml up```
 
 <a name="installation-of-maat-with-eventlistener-maat-ui-nginx-keycloak-and-grafana-loki"></a>
 ### Installation of Maat (with EventListener, Maat UI, NGINX, Keycloak and Grafana Loki)
@@ -303,7 +303,7 @@ Complete installation of Maat with EventListener, Keycloak, Grafana Loki, and NG
 
 Go to **docker/** folder and run:
 
-```docker-compose -f docker-compose-6.yml up```
+```docker compose -f docker-compose-6.yml up```
 
 <br>**Warning!**<br>All of the above options for running Maat application with Docker use Volumes. Each MongoDB database has its own volume assigned in the docker-compose file. 
 When you delete a database container, the volume still exists and when you restart the service, the old data will be included.
