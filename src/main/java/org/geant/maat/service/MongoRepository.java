@@ -15,8 +15,8 @@ import org.geant.maat.service.dto.BaseService;
 
 import java.util.*;
 
-import static com.mongodb.client.model.Filters.and;
-import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.*;
+import static com.mongodb.client.model.Filters.regex;
 import static com.mongodb.client.model.Projections.excludeId;
 class MongoRepository implements ServiceRepository {
 
@@ -108,7 +108,14 @@ class MongoRepository implements ServiceRepository {
 
     public FindIterable<BaseService> findAllQuery(List<String> fields, Map<String, String> filtering) {
         var filters = new ArrayList<Bson>();
-        filtering.forEach((key, value) -> filters.add(eq(key, value)));
+        filtering.forEach((key, value) -> {
+            if (value.contains("*")) {
+                filters.add(regex(key, value, "i"));
+            } else {
+                filters.add(regex(key, "^" + value + "$", "i"));
+            }
+        });
+
         if (filters.isEmpty()) {
             if (fields.isEmpty()) {
                 return collection.find();
