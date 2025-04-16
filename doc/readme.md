@@ -602,6 +602,8 @@ Example:
   ```/resourceInventoryManagement/v4.0.0/resource?category=device.router```
 - to combine this with displaying specific fields, for example, category and name: <br>
   ```/resourceInventoryManagement/v4.0.0/resource?fields=category,name&category=device.router```
+- to search more nested attributes like mtu and its value 1 in resourceCharacteristic where is list of attributes and displaying fields resourceCharacteristic.name and resourceCharacteristic.value: <br>
+  ```/resourceInventoryManagement/v4.0.0/resource?fields=resourceCharacteristic.name,resourceCharacteristic.value&resourceCharacteristic.name=mtu&resourceCharacteristic.value=1```
 
 Note the use of the **?** operator to start the query parameters and the **&** operator to combine multiple parameters.
 
