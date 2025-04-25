@@ -10,7 +10,7 @@
     </parent>
     <groupId>org.geant</groupId>
     <artifactId>maat</artifactId>
-    <version>1.0.10</version>
+    <version>1.0.11</version>
     <name>maat</name>
     <description>Maat</description>
     <properties>

@@ -105,12 +105,12 @@ In both cases, the *jar* application will be created in the *target* folder.
 
 Go to **target/** folder and run .jar file with created name for Maat.
 
-``` java -jar maat-1.0.10.jar ```
+``` java -jar maat-1.0.11.jar ```
 
 <a name="installation-using-docker"></a>
 ## Installation using Docker
 
-Maat can be run in a Docker container. The Docker image is available on the Artifactory repository at `artifactory.software.geant.org/spa-docker/maat:<actuall_version e.g. 1.0.10>`.
+Maat can be run in a Docker container. The Docker image is available on the Artifactory repository at `artifactory.software.geant.org/spa-docker/maat:<actuall_version e.g. 1.0.11>`.
 
 <a name="configuration-of-the-env-file"></a>
 ### Configuration of the .env file
@@ -225,7 +225,7 @@ An alternative installation procedure using docker containers.
 
 Go to **docker/** folder and run:
 
-```docker-compose up -d```
+```docker compose up -d```
 
 <a name="installation-of-maat-with-eventlistener"></a>
 ### Installation of Maat with EventListener
@@ -238,7 +238,7 @@ maat-host and maat-port).
 
 Go to **docker/** folder and run:
 
-```docker-compose -f docker-compose-2.yml up```
+```docker compose -f docker-compose-2.yml up```
 
 <a name="installation-of-maat-with-eventlistener-with-maat-ui-keycloak-and-ssl"></a>
 ### Installation of Maat (with EventListener) with Maat UI, Keycloak and SSL
@@ -249,7 +249,7 @@ The default port used by Maat UI is 9100
 
 Go to **docker/** folder and run:
 
-```docker-compose -f docker-compose-3.yml up```
+```docker compose -f docker-compose-3.yml up```
 
 
 **Warning!** <br> When Maat works with Keycloak and SSL you must manually register EventListener using the steps below:
@@ -285,7 +285,7 @@ The default port used by nginx is 8082
 
 Go to **docker/** folder and run:
 
-```docker-compose -f docker-compose-4.yml up```
+```docker compose -f docker-compose-4.yml up```
 
 <a name="installation-of-maat-with-eventlistener-maat-ui-nginx-keycloak-and-graylog"></a>
 ### Installation of Maat (with EventListener, Maat UI, NGINX, Keycloak and Graylog
@@ -294,7 +294,7 @@ Complete installation of Maat with EventListener, Keycloak, Graylog, and NGINX.
 
 Go to **docker/** folder and run:
 
-```docker-compose -f docker-compose-5.yml up```
+```docker compose -f docker-compose-5.yml up```
 
 <a name="installation-of-maat-with-eventlistener-maat-ui-nginx-keycloak-and-grafana-loki"></a>
 ### Installation of Maat (with EventListener, Maat UI, NGINX, Keycloak and Grafana Loki)
@@ -303,7 +303,7 @@ Complete installation of Maat with EventListener, Keycloak, Grafana Loki, and NG
 
 Go to **docker/** folder and run:
 
-```docker-compose -f docker-compose-6.yml up```
+```docker compose -f docker-compose-6.yml up```
 
 <br>**Warning!**<br>All of the above options for running Maat application with Docker use Volumes. Each MongoDB database has its own volume assigned in the docker-compose file. 
 When you delete a database container, the volume still exists and when you restart the service, the old data will be included.
@@ -602,6 +602,8 @@ Example:
   ```/resourceInventoryManagement/v4.0.0/resource?category=device.router```
 - to combine this with displaying specific fields, for example, category and name: <br>
   ```/resourceInventoryManagement/v4.0.0/resource?fields=category,name&category=device.router```
+- to search more nested attributes like mtu and its value 1 in resourceCharacteristic where is list of attributes and displaying fields resourceCharacteristic.name and resourceCharacteristic.value: <br>
+  ```/resourceInventoryManagement/v4.0.0/resource?fields=resourceCharacteristic.name,resourceCharacteristic.value&resourceCharacteristic.name=mtu&resourceCharacteristic.value=1```
 
 Note the use of the **?** operator to start the query parameters and the **&** operator to combine multiple parameters.
 
