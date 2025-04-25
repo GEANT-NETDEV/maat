@@ -570,9 +570,12 @@ POST method are provided in the section above.
 <a name="rest-api"></a>
 ## REST API
 
-REST APIs are compliant with TMForum:<br>
+REST APIs are compliant with TMForum (version 4.0.0):<br>
 https://github.com/tmforum-apis/TMF639_ResourceInventory <br>
 https://github.com/tmforum-apis/TMF638_ServiceInventory
+
+The compatibility of the REST API with TMF has been confirmed by CTK tests, which can be found in the folder:<br>
+- [src/test/tmf/ctk](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat/browse/src/test/tmf/ctk)
 
 |                                  Link                                  | Method | Input |       Description        |
 |:----------------------------------------------------------------------:|:------:|:-----:|:------------------------:|
