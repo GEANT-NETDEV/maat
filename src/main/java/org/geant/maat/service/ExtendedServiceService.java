@@ -96,7 +96,10 @@ public class ExtendedServiceService implements ServiceService {
     @Override
     public Either<DomainError, JsonNode> createService(JsonNode json, Boolean registerNewEventFlag) {
         ExtendedServiceLogger.infoJson("Creating service from json:", json);
-        String serviceCategory = json.get("category").textValue();
+        String pomServiceCategory = "defaultCategory";
+        boolean isServiceCategory = json.has("category");
+        if (isServiceCategory)  pomServiceCategory=json.get("category").textValue();
+        final String serviceCategory = pomServiceCategory;
         Optional<List<JsonNode>> listRelationshipsType = getRelationshipTypeIfEquals(json, backward_regexA, "serviceRelationship");
         Optional<List<JsonNode>> listRelationshipsNoType = getRelationshipTypeIfNoEquals(json, backward_regexA, "serviceRelationship");
         Optional<List<JsonNode>> listRelationshipsTypeResource = getRelationshipTypeIfEquals(json, backward_regexA, "resourceRelationship");

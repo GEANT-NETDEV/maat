@@ -67,6 +67,14 @@ public class ServiceController implements ResultMapper{
         allRequestParams.remove("offset");
         allRequestParams.remove("limit");
 
+        for (Map.Entry<String, String> entry : allRequestParams.entrySet()) {
+            String value = entry.getValue();
+            String newValue = deleteQuotesInDate(value);
+            if (!newValue.equals(value)) {
+                entry.setValue(newValue);
+            }
+        }
+
         if (Objects.equals(keycloakStatus, "true") && Objects.equals(keycloakAuthorizationL2Status, "true")) {
             UserDataFilters userFilters = new UserDataFilters(serviceService, false);
             if (offset == 0 && limit == 0) {
@@ -84,6 +92,13 @@ public class ServiceController implements ResultMapper{
             return toResponseEntity(serviceService.getServices(fields, allRequestParams, offset, limit),
                     allServices.size());
         }
+    }
+
+    private static String deleteQuotesInDate(String value) {
+        if (value != null && value.startsWith("\"") && value.endsWith("Z\"") && value.length() >= 3) {
+            return value.substring(1, value.length() - 1);
+        }
+        return value;
     }
 
     private ResponseEntity<Collection<JsonNode>> toResponseEntity(Collection<JsonNode> services, long totalCount) {

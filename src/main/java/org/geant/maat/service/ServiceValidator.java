@@ -85,11 +85,11 @@ public class ServiceValidator {
         final var maybeSchemedJson = SchemedJson.from(service);
 
         if (maybeSchemedJson.isLeft()) {
-            if(validatorEnable.equals("true"))
+            if(validatorEnable.equals("true")){
                 if(maybeSchemedJson.getLeft().equals("Schemed json need to have SCHEMA_LOCATION property"))
                     return Either.left(new DomainError("Schemed json need to have @schemaLocation property", org.geant.maat.service.Error.VALIDATION_ERROR));
                 else if(maybeSchemedJson.getLeft().equals("Schemed json need to have TYPE property"))
-                    return Either.left(new DomainError("Schemed json need to have @type property", org.geant.maat.service.Error.VALIDATION_ERROR));
+                    return Either.left(new DomainError("Schemed json need to have @type property", org.geant.maat.service.Error.VALIDATION_ERROR));}
             else
                 return Either.right(service);
         }

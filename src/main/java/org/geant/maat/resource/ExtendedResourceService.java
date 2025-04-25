@@ -97,7 +97,10 @@ public class ExtendedResourceService implements ResourceService {
     @Override
     public Either<DomainError, JsonNode> createResource(JsonNode json, Boolean registerNewEventFlag) {
         ExtendedResourceLogger.infoJson("Creating resource from json:", json);
-        String resourceCategory = json.get("category").textValue();
+        String pomResourceCategory = "defaultCategory";
+        boolean isResourceCategory = json.has("category");
+        if (isResourceCategory)  pomResourceCategory=json.get("category").textValue();
+        final String resourceCategory = pomResourceCategory;
         Optional<List<JsonNode>> listRelationshipsType = getRelationshipTypeIfEquals(json, backward_regexA, "resourceRelationship");
         Optional<List<JsonNode>> listRelationshipsNoType = getRelationshipTypeIfNoEquals(json, backward_regexA, "resourceRelationship");
         Optional<List<JsonNode>> listRelationshipsTypeService = getRelationshipTypeIfEquals(json, backward_regexA, "serviceRelationship");

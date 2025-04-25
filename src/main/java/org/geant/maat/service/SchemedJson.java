@@ -3,6 +3,7 @@ package org.geant.maat.service;
 import com.fasterxml.jackson.databind.JsonNode;
 import io.vavr.control.Either;
 
+
 public class SchemedJson {
 
     private final JsonNode json;
@@ -12,6 +13,7 @@ public class SchemedJson {
     }
 
     public static Either<String, org.geant.maat.service.SchemedJson> from(JsonNode json) {
+
         if (!json.has(ServiceProps.SCHEMA_LOCATION.name)) {
             return Either.left(String.format("Schemed json need to have %s property", ServiceProps.SCHEMA_LOCATION));
         }

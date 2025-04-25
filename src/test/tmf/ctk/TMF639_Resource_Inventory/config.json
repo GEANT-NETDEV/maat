@@ -1,5 +1,5 @@
 {
-    "url": "http://localhost:8080/",
+    "url": "http://127.0.0.1:8080/resourceInventoryManagement/v4.0.0/",
     "headers": {
         "Accept": "application/json",
         "Content-Type": "application/json",
@@ -9,7 +9,10 @@
         "Resource": {
             "POST": {
                 "payload": {
-                    "name": "RouterXX"
+                    "name": "RouterXX",
+                    "category":"sdp",
+                    "@schemaLocation": "https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/TMF639-ResourceInventory-v4-pionier.json",
+                    "@type": "Resource"
                 }
             }
         }

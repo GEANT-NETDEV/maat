@@ -44,47 +44,12 @@ Object.keys(config['payloads']).forEach(resource => {
 
 });
 
-isURLValid(config['url'])
-
-function isURLValid(triedURL) {
-
-    var options = {
-        uri: triedURL + exampleEndPoint,
-
-        headers: {
-            'User-Agent': 'Request-Promise'
-        },
-        json: true, // Automatically parses the JSON string in the response
-        resolveWithFullResponse: true
-    };
-    rp(options).then(function (jsonString) {
-        statusCode = jsonString.statusCode;
-        if (statusCode == 200) {
-            console.log("API Found on: " + triedURL + exampleEndPoint);
-            exportEnvironment(triedURL);
-            runNewman();
-        } else {
-            console.log("\n_______________________________________\nERROR:");
-            console.log("No API found on:")
-            console.log("_______________________________________\n");
-            return false;
-        }
-    }).catch(function (err) {
-        console.log("\n_______________________________________\nERROR:");
-        console.log(err + " while processing " + triedURL + "\n" + err.stack);
-        console.log("_______________________________________\n");
-    });
+exportEnvironment();
+runNewman();
 
 
 
-
-}
-
-
-
-
-
-function exportEnvironment(url) {
+function exportEnvironment() {
 
     var fs = require('fs');
     var environmentFile = "TMFENV-V4.0.0.postman_environment.json";

@@ -62,6 +62,10 @@ class MongoRepository implements ResourceRepository {
 
     @Override
     public Collection<JsonNode> findAll(List<String> fields, Map<String, String> filtering) {
+        if(filtering.containsKey("id")){
+            filtering.put("_id", filtering.get("id"));
+            filtering.remove("id");
+        }
         return findAllQuery(fields, filtering).into(new ArrayList<>())
                 .stream()
                 .map(BaseResource::toJson)
@@ -100,6 +104,10 @@ class MongoRepository implements ResourceRepository {
 
     @Override
     public Collection<JsonNode> findAll(List<String> fields, Map<String, String> filtering, int offset, int limit) {
+        if(filtering.containsKey("id")){
+            filtering.put("_id", filtering.get("id"));
+            filtering.remove("id");
+        }
         return findAllQuery(fields, filtering)
                 .skip(offset)
                 .limit(limit)
@@ -110,6 +118,10 @@ class MongoRepository implements ResourceRepository {
     }
 
     public FindIterable<BaseResource> findAllQuery(List<String> fields, Map<String, String> filtering) {
+        if(filtering.containsKey("id")){
+            filtering.put("_id", filtering.get("id"));
+            filtering.remove("id");
+        }
         var filters = new ArrayList<Bson>();
         filtering.forEach((key, value) -> {
             if (value.contains("*")) {
