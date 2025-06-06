@@ -6,7 +6,6 @@ import com.mongodb.client.FindIterable;
 import com.mongodb.client.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.model.Projections;
-import static com.mongodb.client.model.Filters.regex;
 import io.vavr.control.Either;
 import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
@@ -16,8 +15,7 @@ import org.geant.maat.resource.dto.BaseResource;
 
 import java.util.*;
 
-import static com.mongodb.client.model.Filters.and;
-import static com.mongodb.client.model.Filters.eq;
+import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Projections.excludeId;
 
 class MongoRepository implements ResourceRepository {
@@ -122,10 +120,17 @@ class MongoRepository implements ResourceRepository {
             filtering.put("_id", filtering.get("id"));
             filtering.remove("id");
         }
+
         var filters = new ArrayList<Bson>();
         filtering.forEach((key, value) -> {
-            if (value.contains("*")) {
-                filters.add(regex(key, value, "i"));
+            if (isBoolean(value)) {
+                filters.add(or(regex(key, "^" + value + "$", "i"), eq(key, Boolean.parseBoolean(value))));
+            }
+            else if (isNumeric(value)) {
+                filters.add(or(regex(key, "^" + value + "$", "i"), eq(key, Integer.parseInt(value))));
+            }
+            else if (value.contains("*")) {
+                filters.add(regex(key, value.replace("*", ".*"), "i"));
             } else {
                 filters.add(regex(key, "^" + value + "$", "i"));
             }
@@ -138,6 +143,21 @@ class MongoRepository implements ResourceRepository {
                 return collection.find().projection(Projections.include(fields));
             }
         }
+
         return collection.find(and(filters)).projection(Projections.include(fields));
+
+    }
+
+    private boolean isNumeric(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private boolean isBoolean(String str) {
+        return "true".equalsIgnoreCase(str) || "false".equalsIgnoreCase(str);
     }
 }

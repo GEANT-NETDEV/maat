@@ -11,6 +11,7 @@ import org.bson.codecs.configuration.CodecRegistries;
 import org.bson.codecs.configuration.CodecRegistry;
 import org.bson.conversions.Bson;
 import org.geant.maat.infrastructure.DomainError;
+import org.geant.maat.resource.dto.BaseResource;
 import org.geant.maat.service.dto.BaseService;
 
 import java.util.*;
@@ -119,10 +120,17 @@ class MongoRepository implements ServiceRepository {
             filtering.put("_id", filtering.get("id"));
             filtering.remove("id");
         }
+
         var filters = new ArrayList<Bson>();
         filtering.forEach((key, value) -> {
-            if (value.contains("*")) {
-                filters.add(regex(key, value, "i"));
+            if (isBoolean(value)) {
+                filters.add(or(regex(key, "^" + value + "$", "i"), eq(key, Boolean.parseBoolean(value))));
+            }
+            else if (isNumeric(value)) {
+                filters.add(or(regex(key, "^" + value + "$", "i"), eq(key, Integer.parseInt(value))));
+            }
+            else if (value.contains("*")) {
+                filters.add(regex(key, value.replace("*", ".*"), "i"));
             } else {
                 filters.add(regex(key, "^" + value + "$", "i"));
             }
@@ -135,7 +143,22 @@ class MongoRepository implements ServiceRepository {
                 return collection.find().projection(Projections.include(fields));
             }
         }
+
         return collection.find(and(filters)).projection(Projections.include(fields));
+
+    }
+
+    private boolean isNumeric(String str) {
+        try {
+            Integer.parseInt(str);
+            return true;
+        } catch (NumberFormatException e) {
+            return false;
+        }
+    }
+
+    private boolean isBoolean(String str) {
+        return "true".equalsIgnoreCase(str) || "false".equalsIgnoreCase(str);
     }
 
 
