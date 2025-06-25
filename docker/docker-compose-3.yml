@@ -45,7 +45,7 @@ services:
     expose:
       - "27017"
     volumes:
-      - mongodb-maat:/data/db
+      - mongodb-maat-temp3:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_USER
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
@@ -98,7 +98,7 @@ services:
     expose:
       - "27022"
     volumes:
-      - mongodb-eventlistener:/data/db
+      - mongodb-eventlistener-temp3:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_EL_USER
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_EL_PASSWORD
@@ -117,7 +117,7 @@ services:
     ports:
       - "8090:8090"
     volumes:
-      - keycloak_data:/opt/keycloak/data
+      - keycloak_data_temp3:/opt/keycloak/data
     expose:
       - "8090"
     environment:
@@ -149,7 +149,7 @@ services:
     entrypoint: sh -c "sleep 1 && /opt/keycloak/scripts/keycloak-setup.sh"
 
   react:
-    image: "artifactory.software.geant.org/spa-docker/maat-ui/assets:make-build-12004724"
+    image: "artifactory.software.geant.org/spa-docker/maat-ui/assets:make-build-15766860"
     read_only: true
     ports:
       - "9100:9100"
@@ -163,6 +163,9 @@ services:
 
       - SERVICES_MAAT_API_URL=$MAAT_SERVICE_PROTOCOL://$MAAT_SERVICE_ADDRESS:$MAAT_SERVICE_PORT/serviceInventoryManagement/v4.0.0/service
       - RESOURCES_MAAT_API_URL=$MAAT_RESOURCE_PROTOCOL://$MAAT_RESOURCE_ADDRESS:$MAAT_RESOURCE_PORT/resourceInventoryManagement/v4.0.0/resource
+
+      - SERVICES_MAAT_SCHEMA_LOCATION_URL=https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/TMF638-ServiceInventory-v4-pionier.json
+      - RESOURCES_MAAT_SCHEMA_LOCATION_URL=https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/TMF639-ResourceInventory-v4-pionier.json
     tmpfs:
       - "/run:exec"
       - "/var/cache/nginx"
@@ -170,6 +173,6 @@ services:
       - "/var/log/nginx:uid=999,gid=998"  # default error log location is opened before config file is read
 
 volumes:
-  mongodb-maat:
-  mongodb-eventlistener:
-  keycloak_data:
+  mongodb-maat-temp3:
+  mongodb-eventlistener-temp3:
+  keycloak_data_temp3:
