@@ -19,7 +19,7 @@ class ReadTest extends ResourceTest {
     @Test
     @DisplayName("It should be able to read all of them")
     void readAll() {
-        var resources = resourceService.getResources(Collections.emptyList(), Collections.emptyMap());
+        var resources = resourceService.getResources(Collections.emptyList(), Collections.emptyMap(), "");
         assertEquals(2, resources.size());
     }
 
@@ -27,7 +27,7 @@ class ReadTest extends ResourceTest {
     @TestFactory
     @DisplayName("It should be able to read each by id")
     Stream<DynamicTest> readById() {
-        return resourceService.getResources(Collections.emptyList(), Collections.emptyMap()).stream()
+        return resourceService.getResources(Collections.emptyList(), Collections.emptyMap(), "").stream()
                 .map(jsonNode -> jsonNode.get("id").asText())
                 .map(id -> dynamicTest(id, () -> assertTrue(resourceService.getResource(id).isPresent())));
     }
@@ -35,7 +35,7 @@ class ReadTest extends ResourceTest {
     @ParameterizedTest
     @CsvSource({"1, 1, 1", "1, 4, 1", "4, 4, 0"})
     void shouldGetCorrectNumberOfResourcesWithOffsetAndLimit(int offset, int limit, int expectedSize) {
-        var resources = resourceService.getResources(List.of(), Map.of(), offset, limit);
+        var resources = resourceService.getResources(List.of(), Map.of(), offset, limit, "");
 
         assertEquals(expectedSize, resources.size());
     }
@@ -51,7 +51,7 @@ class ReadTest extends ResourceTest {
     @Test
     @DisplayName("When getting resources with empty fields and filtering then all fields and resources should be returned")
     void emptyFieldsAndFiltering() {
-        var response = resourceService.getResources(Collections.emptyList(), Collections.emptyMap());
+        var response = resourceService.getResources(Collections.emptyList(), Collections.emptyMap(), "");
 
         assertEquals(2, response.size());
         assertTrue(response.containsAll(List.of(resource123.toJson(), resource456.toJson())));
@@ -78,8 +78,8 @@ class ReadTest extends ResourceTest {
     @Test
     @DisplayName("When passing filtering then only resource matching criteria should be returned")
     void filtering() {
-        var all = resourceService.getResources(List.of(), Map.of());
-        var filtered = resourceService.getResources(List.of(), Map.of("name", "123"));
+        var all = resourceService.getResources(List.of(), Map.of(), "");
+        var filtered = resourceService.getResources(List.of(), Map.of("name", "123"), "");
 
         assertEquals(2, all.size());
         assertEquals(1, filtered.size());

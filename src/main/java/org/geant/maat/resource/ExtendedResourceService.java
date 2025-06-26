@@ -1104,21 +1104,21 @@ public class ExtendedResourceService implements ResourceService {
 
 
     @Override
-    public Collection<JsonNode> getResources(List<String> fields, Map<String, String> filtering) {
-        ExtendedResourceLogger.info(String.format("Getting resources' fields %s matching filters %s", fields, filtering));
+    public Collection<JsonNode> getResources(List<String> fields, Map<String, String> filtering, String sort) {
+        ExtendedResourceLogger.info(String.format("Getting resources' fields %s matching filters %s sort %s", fields, filtering, sort));
 
-        var resources = finder.find(fields, filtering);
+        var resources = finder.find(fields, filtering, sort);
 
         ExtendedResourceLogger.info(String.format("Found %d resources", resources.size()));
         return resources;
     }
 
     @Override
-    public Collection<JsonNode> getResources(List<String> fields, Map<String, String> filtering, int offset, int limit) {
-        ExtendedResourceLogger.info(String.format("Getting resources' fields %s matching filters %s offset %s limit %s",
-                fields, filtering, offset, limit));
+    public Collection<JsonNode> getResources(List<String> fields, Map<String, String> filtering, int offset, int limit, String sort) {
+        ExtendedResourceLogger.info(String.format("Getting resources' fields %s matching filters %s offset %s limit %s sort %s",
+                fields, filtering, offset, limit, sort));
 
-        var resources = finder.find(fields, filtering, offset, limit);
+        var resources = finder.find(fields, filtering, offset, limit, sort);
 
         ExtendedResourceLogger.info(String.format("Found %d resources", resources.size()));
         return resources;

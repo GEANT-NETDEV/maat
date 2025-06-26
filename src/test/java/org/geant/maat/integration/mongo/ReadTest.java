@@ -44,7 +44,7 @@ class ReadTest extends org.geant.maat.integration.testcontainers.BaseTestContain
     @Test
     @DisplayName("It should be able to read all of them")
     void readAll() {
-        var resources =  resourceService.getResources(Collections.emptyList(), Collections.emptyMap());
+        var resources =  resourceService.getResources(Collections.emptyList(), Collections.emptyMap(), "");
         assertEquals(3,resources.size());
     }
 
@@ -52,7 +52,7 @@ class ReadTest extends org.geant.maat.integration.testcontainers.BaseTestContain
     @TestFactory
     @DisplayName("It should be able to read each by id")
     Stream<DynamicTest> readById() {
-        return resourceService.getResources(Collections.emptyList(), Collections.emptyMap()).stream()
+        return resourceService.getResources(Collections.emptyList(), Collections.emptyMap(), "").stream()
                 .map(jsonNode -> jsonNode.get("id").asText())
                 .map(id -> dynamicTest(String.format("for id '%s", id),
                                        () -> assertTrue(resourceService.getResource(id).isPresent())));

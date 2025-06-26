@@ -48,7 +48,7 @@ class FilteringTest extends org.geant.maat.integration.testcontainers.BaseTestCo
     @TestFactory
     @DisplayName("When getting all resources and empty list of fields and filtering is passed then all resources and all fields should be returned")
     Stream<DynamicTest> emptyFieldsAndFiltering() {
-        var response = service.getResources(Collections.emptyList(), Collections.emptyMap());
+        var response = service.getResources(Collections.emptyList(), Collections.emptyMap(), "");
         return response.stream()
                 .map(json -> dynamicTest(
                         json.toString(),
@@ -93,8 +93,8 @@ class FilteringTest extends org.geant.maat.integration.testcontainers.BaseTestCo
         on.put("name", "123");
         service.createResource(on, false);
 
-        var all = service.getResources(Collections.emptyList(), Map.of());
-        var filtered = service.getResources(Collections.emptyList(), filtering);
+        var all = service.getResources(Collections.emptyList(), Map.of(), "");
+        var filtered = service.getResources(Collections.emptyList(), filtering, "");
 
         assertEquals(2, all.size());
         assertEquals(1, filtered.size());

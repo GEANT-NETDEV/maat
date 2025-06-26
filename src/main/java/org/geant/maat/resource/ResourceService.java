@@ -21,10 +21,10 @@ public interface ResourceService {
 
     Either<DomainError, JsonNode> updateResource(String id, JsonNode updateJson, Boolean registerNewEventFlag);
 
-    Collection<JsonNode> getResources(List<String> fields, Map<String, String> filtering);
+    Collection<JsonNode> getResources(List<String> fields, Map<String, String> filtering, String sort);
 
     Collection<JsonNode> getResources(
-            List<String> fields, Map<String, String> filtering, int offset, int limit);
+            List<String> fields, Map<String, String> filtering, int offset, int limit, String sort);
 
 
 }

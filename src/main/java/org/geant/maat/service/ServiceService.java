@@ -21,8 +21,8 @@ public interface ServiceService {
 
     Either<DomainError, JsonNode> updateService(String id, JsonNode updateJson, Boolean registerNewEventFlag);
 
-    Collection<JsonNode> getServices(List<String> fields, Map<String, String> filtering);
+    Collection<JsonNode> getServices(List<String> fields, Map<String, String> filtering, String sort);
 
-    Collection<JsonNode> getServices(List<String> fields, Map<String, String> filtering, int offset, int limit);
+    Collection<JsonNode> getServices(List<String> fields, Map<String, String> filtering, int offset, int limit, String sort);
 
 }

@@ -1096,21 +1096,21 @@ public class ExtendedServiceService implements ServiceService {
     }
 
     @Override
-    public Collection<JsonNode> getServices(List<String> fields, Map<String, String> filtering) {
-        ExtendedServiceLogger.info(String.format("Getting services' fields %s matching filters %s", fields, filtering));
+    public Collection<JsonNode> getServices(List<String> fields, Map<String, String> filtering, String sort) {
+        ExtendedServiceLogger.info(String.format("Getting services' fields %s matching filters %s sort %s", fields, filtering, sort));
 
-        var services = finder.find(fields, filtering);
+        var services = finder.find(fields, filtering, sort);
 
         ExtendedServiceLogger.info(String.format("Found %d services", services.size()));
         return services;
     }
 
     @Override
-    public Collection<JsonNode> getServices(List<String> fields, Map<String, String> filtering, int offset, int limit) {
-        ExtendedServiceLogger.info(String.format("Getting services' fields %s matching filters %s offset %s limit %s",
-                fields, filtering, offset, limit));
+    public Collection<JsonNode> getServices(List<String> fields, Map<String, String> filtering, int offset, int limit, String sort) {
+        ExtendedServiceLogger.info(String.format("Getting services' fields %s matching filters %s offset %s limit %s sort %s",
+                fields, filtering, offset, limit, sort));
 
-        var services = finder.find(fields, filtering, offset, limit);
+        var services = finder.find(fields, filtering, offset, limit, sort);
 
         ExtendedServiceLogger.info(String.format("Found %d services", services.size()));
         return services;

@@ -14,7 +14,7 @@ interface ResourceRepository {
 
     Either<DomainError, JsonNode> find(String id, Collection<String> propsToFilter);
 
-    Collection<JsonNode> findAll(List<String> fields, Map<String, String> filtering);
+    Collection<JsonNode> findAll(List<String> fields, Map<String, String> filtering, String sort);
 
     Either<DomainError, Resource> save(Resource resource);
 
@@ -24,5 +24,5 @@ interface ResourceRepository {
 
     void clean();
 
-    Collection<JsonNode> findAll(List<String> fields, Map<String, String> filtering, int offset, int limit);
+    Collection<JsonNode> findAll(List<String> fields, Map<String, String> filtering, int offset, int limit, String sort);
 }

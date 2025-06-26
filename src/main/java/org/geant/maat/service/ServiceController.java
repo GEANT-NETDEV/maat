@@ -61,11 +61,13 @@ public class ServiceController implements ResultMapper{
             @RequestParam(required = false, defaultValue = "") List<String> fields,
             @RequestParam Map<String, String> allRequestParams,
             @RequestParam(required = false, defaultValue = "0") int offset,
-            @RequestParam(required = false, defaultValue = "0") int limit
+            @RequestParam(required = false, defaultValue = "0") int limit,
+            @RequestParam(required = false, defaultValue = "") String sort
     ) {
         allRequestParams.remove("fields");
         allRequestParams.remove("offset");
         allRequestParams.remove("limit");
+        allRequestParams.remove("sort");
 
         for (Map.Entry<String, String> entry : allRequestParams.entrySet()) {
             String value = entry.getValue();
@@ -78,18 +80,18 @@ public class ServiceController implements ResultMapper{
         if (Objects.equals(keycloakStatus, "true") && Objects.equals(keycloakAuthorizationL2Status, "true")) {
             UserDataFilters userFilters = new UserDataFilters(serviceService, false);
             if (offset == 0 && limit == 0) {
-                var allServicesWithFilters = userFilters.getFilter(fields, allRequestParams, "service");
+                var allServicesWithFilters = userFilters.getFilter(fields, allRequestParams, sort, "service");
                 return toResponseEntity(allServicesWithFilters, allServicesWithFilters.size());
             } else {
-                var allServicesWithFilters = userFilters.getFilter(fields, allRequestParams, offset, limit, "service");
+                var allServicesWithFilters = userFilters.getFilter(fields, allRequestParams, offset, limit, sort, "service");
                 return toResponseEntity(allServicesWithFilters, allServicesWithFilters.size());
             }
         } else {
-            var allServices = serviceService.getServices(fields, allRequestParams);
+            var allServices = serviceService.getServices(fields, allRequestParams, sort);
             if (offset == 0 && limit == 0) {
                 return toResponseEntity(allServices, allServices.size());
             }
-            return toResponseEntity(serviceService.getServices(fields, allRequestParams, offset, limit),
+            return toResponseEntity(serviceService.getServices(fields, allRequestParams, offset, limit, sort),
                     allServices.size());
         }
     }

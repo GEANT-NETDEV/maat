@@ -11,12 +11,12 @@ class ServiceFinder {
 
     ServiceFinder(ServiceRepository repository) {this.repository = repository;}
 
-    Collection<JsonNode> find(List<String> fields, Map<String, String> filtering) {
-        return repository.findAll(fields, filtering);
+    Collection<JsonNode> find(List<String> fields, Map<String, String> filtering, String sort) {
+        return repository.findAll(fields, filtering, sort);
     }
 
-    Collection<JsonNode> find(List<String> fields, Map<String, String> filtering, int offset, int limit) {
-        return repository.findAll(fields, filtering, offset, limit);
+    Collection<JsonNode> find(List<String> fields, Map<String, String> filtering, int offset, int limit, String sort) {
+        return repository.findAll(fields, filtering, offset, limit, sort);
     }
 
 }

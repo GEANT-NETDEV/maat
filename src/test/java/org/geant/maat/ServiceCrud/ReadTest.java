@@ -20,14 +20,14 @@ public class ReadTest extends ServiceTest{
     @Test
     @DisplayName("It should be able to read all of them")
     void readAll() {
-        var services = serviceService.getServices(Collections.emptyList(), Collections.emptyMap());
+        var services = serviceService.getServices(Collections.emptyList(), Collections.emptyMap(), "");
         assertEquals(2, services.size());
     }
 
     @TestFactory
     @DisplayName("It should be able to read each by id")
     Stream<DynamicTest> readById() {
-        return serviceService.getServices(Collections.emptyList(), Collections.emptyMap()).stream()
+        return serviceService.getServices(Collections.emptyList(), Collections.emptyMap(), "").stream()
                 .map(jsonNode -> jsonNode.get("id").asText())
                 .map(id -> dynamicTest(id, () -> assertTrue(serviceService.getService(id).isPresent())));
     }
@@ -35,7 +35,7 @@ public class ReadTest extends ServiceTest{
     @ParameterizedTest
     @CsvSource({"1, 1, 1", "1, 4, 1", "4, 4, 0"})
     void shouldGetCorrectNumberOfResourcesWithOffsetAndLimit(int offset, int limit, int expectedSize) {
-        var services = serviceService.getServices(List.of(), Map.of(), offset, limit);
+        var services = serviceService.getServices(List.of(), Map.of(), offset, limit, "");
 
         assertEquals(expectedSize, services.size());
     }
@@ -51,7 +51,7 @@ public class ReadTest extends ServiceTest{
     @Test
     @DisplayName("When getting services with empty fields and filtering then all fields and services should be returned")
     void emptyFieldsAndFiltering() {
-        var service = serviceService.getServices(Collections.emptyList(), Collections.emptyMap());
+        var service = serviceService.getServices(Collections.emptyList(), Collections.emptyMap(), "");
 
         assertEquals(2, service.size());
         assertTrue(service.containsAll(List.of(service123.toJson(), service456.toJson())));
@@ -78,8 +78,8 @@ public class ReadTest extends ServiceTest{
     @Test
     @DisplayName("When passing filtering then only service matching criteria should be returned")
     void filtering() {
-        var all = serviceService.getServices(List.of(), Map.of());
-        var filtered = serviceService.getServices(List.of(), Map.of("name", "123"));
+        var all = serviceService.getServices(List.of(), Map.of(), "");
+        var filtered = serviceService.getServices(List.of(), Map.of("name", "123"), "");
 
         assertEquals(2, all.size());
         assertEquals(1, filtered.size());

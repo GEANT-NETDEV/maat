@@ -93,21 +93,21 @@ public class BaseServiceService implements ServiceService {
     }
 
     @Override
-    public Collection<JsonNode> getServices(List<String> fields, Map<String, String> filtering) {
-        BaseServiceService.BaseServiceLogger.info(String.format("Getting services' fields %s matching filters %s", fields, filtering));
+    public Collection<JsonNode> getServices(List<String> fields, Map<String, String> filtering, String sort) {
+        BaseServiceService.BaseServiceLogger.info(String.format("Getting services' fields %s matching filters %s sort %s", fields, filtering, sort));
 
-        var services = finder.find(fields, filtering);
+        var services = finder.find(fields, filtering, sort);
 
         BaseServiceService.BaseServiceLogger.info(String.format("Found %d services", services.size()));
         return services;
     }
 
     @Override
-    public Collection<JsonNode> getServices(List<String> fields, Map<String, String> filtering, int offset, int limit) {
-        BaseServiceService.BaseServiceLogger.info(String.format("Getting services' fields %s matching filters %s offset %s limit %s",
-                fields, filtering, offset, limit));
+    public Collection<JsonNode> getServices(List<String> fields, Map<String, String> filtering, int offset, int limit, String sort) {
+        BaseServiceService.BaseServiceLogger.info(String.format("Getting services' fields %s matching filters %s offset %s limit %s sort %s",
+                fields, filtering, offset, limit, sort));
 
-        var services = finder.find(fields, filtering, offset, limit);
+        var services = finder.find(fields, filtering, offset, limit, sort);
 
         BaseServiceService.BaseServiceLogger.info(String.format("Found %d services", services.size()));
         return services;

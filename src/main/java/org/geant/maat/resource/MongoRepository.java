@@ -13,10 +13,12 @@ import org.bson.conversions.Bson;
 import org.geant.maat.infrastructure.DomainError;
 import org.geant.maat.resource.dto.BaseResource;
 
+
 import java.util.*;
 
 import static com.mongodb.client.model.Filters.*;
 import static com.mongodb.client.model.Projections.excludeId;
+import static com.mongodb.client.model.Sorts.*;
 
 class MongoRepository implements ResourceRepository {
     private final MongoCollection<BaseResource> collection;
@@ -59,12 +61,12 @@ class MongoRepository implements ResourceRepository {
     }
 
     @Override
-    public Collection<JsonNode> findAll(List<String> fields, Map<String, String> filtering) {
+    public Collection<JsonNode> findAll(List<String> fields, Map<String, String> filtering, String sort) {
         if(filtering.containsKey("id")){
             filtering.put("_id", filtering.get("id"));
             filtering.remove("id");
         }
-        return findAllQuery(fields, filtering).into(new ArrayList<>())
+        return findAllQuery(fields, filtering, sort).into(new ArrayList<>())
                 .stream()
                 .map(BaseResource::toJson)
                 .toList();
@@ -101,12 +103,12 @@ class MongoRepository implements ResourceRepository {
     }
 
     @Override
-    public Collection<JsonNode> findAll(List<String> fields, Map<String, String> filtering, int offset, int limit) {
+    public Collection<JsonNode> findAll(List<String> fields, Map<String, String> filtering, int offset, int limit, String sort) {
         if(filtering.containsKey("id")){
             filtering.put("_id", filtering.get("id"));
             filtering.remove("id");
         }
-        return findAllQuery(fields, filtering)
+        return findAllQuery(fields, filtering, sort)
                 .skip(offset)
                 .limit(limit)
                 .into(new ArrayList<>())
@@ -115,7 +117,7 @@ class MongoRepository implements ResourceRepository {
                 .toList();
     }
 
-    public FindIterable<BaseResource> findAllQuery(List<String> fields, Map<String, String> filtering) {
+    public FindIterable<BaseResource> findAllQuery(List<String> fields, Map<String, String> filtering, String sort) {
         if(filtering.containsKey("id")){
             filtering.put("_id", filtering.get("id"));
             filtering.remove("id");
@@ -136,15 +138,32 @@ class MongoRepository implements ResourceRepository {
             }
         });
 
-        if (filters.isEmpty()) {
-            if (fields.isEmpty()) {
-                return collection.find();
-            } else {
-                return collection.find().projection(Projections.include(fields));
+        Bson projection = fields.isEmpty() ? null : Projections.include(fields);
+
+        // Parse TMF-style sort string
+        Bson sortBson = null;
+        if (sort != null && !sort.isBlank()) {
+            List<Bson> sortFields = new ArrayList<>();
+            for (String field : sort.split(",")) {
+                field = field.trim();
+                if (field.startsWith("-")) {
+                    sortFields.add(descending(field.substring(1)));
+                } else {
+                    sortFields.add(ascending(field));
+                }
             }
+            sortBson = orderBy(sortFields);
         }
 
-        return collection.find(and(filters)).projection(Projections.include(fields));
+        var query = filters.isEmpty() ? collection.find() : collection.find(and(filters));
+        if (projection != null) {
+            query = query.projection(projection);
+        }
+        if (sortBson != null) {
+            query = query.sort(sortBson);
+        }
+
+        return query;
 
     }
 

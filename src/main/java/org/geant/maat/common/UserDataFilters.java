@@ -51,7 +51,7 @@ public class UserDataFilters {
         return getCurrentRequestAuthentication().map(JwtAuthenticationToken::getToken).map(Jwt::getTokenValue);
     }
 
-    public Collection<JsonNode> getFilter(List<String> fields, Map<String, String> oldRequestsParams, String type) {
+    public Collection<JsonNode> getFilter(List<String> fields, Map<String, String> oldRequestsParams, String sort, String type) {
         String cleanedToken = getBearerToken().get();
         DecodedJWT jwt = JWT.decode(cleanedToken);
         Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
@@ -64,25 +64,25 @@ public class UserDataFilters {
                 orFilters.addAll(getFilterList);
             } else {
                 if (type.equals("resource")){
-                    return resourceService.getResources(fields, oldRequestsParams);
+                    return resourceService.getResources(fields, oldRequestsParams, sort);
                 }
                 else {
-                    return serviceService.getServices(fields, oldRequestsParams);
+                    return serviceService.getServices(fields, oldRequestsParams, sort);
                 }
             }
         } else {
             if (type.equals("resource")){
-                return resourceService.getResources(fields, oldRequestsParams);
+                return resourceService.getResources(fields, oldRequestsParams, sort);
             }
             else {
-                return serviceService.getServices(fields, oldRequestsParams);
+                return serviceService.getServices(fields, oldRequestsParams, sort);
             }
         }
 
         Collection<JsonNode> finalResult = new ArrayList<>();
 
         if (orFilters.isEmpty()) {
-            return resourceService.getResources(fields, oldRequestsParams);
+            return resourceService.getResources(fields, oldRequestsParams, sort);
         }
 
         for (Map<String, String> filter : orFilters) {
@@ -90,10 +90,10 @@ public class UserDataFilters {
             combinedParams.putAll(filter);
             Collection<JsonNode> currentResult;
             if (type.equals("resource")){
-                currentResult = resourceService.getResources(fields, combinedParams);
+                currentResult = resourceService.getResources(fields, combinedParams, sort);
             }
             else {
-                currentResult = serviceService.getServices(fields, combinedParams);
+                currentResult = serviceService.getServices(fields, combinedParams, sort);
             }
             finalResult.addAll(currentResult);
         }
@@ -103,7 +103,7 @@ public class UserDataFilters {
     }
 
     public Collection<JsonNode> getFilter(List<String> fields, Map<String, String> oldRequestsParams, int offset,
-                                          int limit, String type) {
+                                          int limit, String sort, String type) {
         String cleanedToken = getBearerToken().get();
         DecodedJWT jwt = JWT.decode(cleanedToken);
         Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
@@ -116,18 +116,18 @@ public class UserDataFilters {
                 orFilters.addAll(getFilterList);
             } else {
                 if (type.equals("resource")){
-                    return resourceService.getResources(fields, oldRequestsParams, offset, limit);
+                    return resourceService.getResources(fields, oldRequestsParams, offset, limit, sort);
                 }
                 else {
-                    return serviceService.getServices(fields, oldRequestsParams, offset, limit);
+                    return serviceService.getServices(fields, oldRequestsParams, offset, limit, sort);
                 }
             }
         } else {
             if (type.equals("resource")){
-                return resourceService.getResources(fields, oldRequestsParams, offset, limit);
+                return resourceService.getResources(fields, oldRequestsParams, offset, limit, sort);
             }
             else {
-                return serviceService.getServices(fields, oldRequestsParams, offset, limit);
+                return serviceService.getServices(fields, oldRequestsParams, offset, limit, sort);
             }
         }
 
@@ -139,10 +139,10 @@ public class UserDataFilters {
             Collection<JsonNode> currentResult;
 
             if (type.equals("resource")){
-                currentResult = resourceService.getResources(fields, combinedParams);
+                currentResult = resourceService.getResources(fields, combinedParams, sort);
             }
             else {
-                currentResult = serviceService.getServices(fields, combinedParams);
+                currentResult = serviceService.getServices(fields, combinedParams, sort);
             }
 
             finalResult.addAll(currentResult);

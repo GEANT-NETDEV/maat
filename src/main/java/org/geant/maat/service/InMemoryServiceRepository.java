@@ -47,7 +47,7 @@ class InMemoryServiceRepository implements ServiceRepository {
     }
 
     @Override
-    public Collection<JsonNode> findAll(List<String> fields, Map<String, String> filtering) {
+    public Collection<JsonNode> findAll(List<String> fields, Map<String, String> filtering, String sort) {
         Predicate<JsonNode> matchesAllFieldFilters = (json) -> {
             for (var entry : filtering.entrySet()) {
                 var key = entry.getKey();
@@ -92,8 +92,8 @@ class InMemoryServiceRepository implements ServiceRepository {
     }
 
     @Override
-    public Collection<JsonNode> findAll(List<String> fields, Map<String, String> filtering, int offset, int limit) {
-        return findAll(fields, filtering).stream().skip(offset).limit(limit).toList();
+    public Collection<JsonNode> findAll(List<String> fields, Map<String, String> filtering, int offset, int limit, String sort) {
+        return findAll(fields, filtering, sort).stream().skip(offset).limit(limit).toList();
     }
 
 }
