@@ -1,8 +1,7 @@
 services:
 
   maat:
-    #image: artifactory.software.geant.org/spa-docker/maat:1.0.11
-    image: maat_test4
+    image: artifactory.software.geant.org/spa-docker/maat:1.0.11
     hostname: $MAAT_HOST
     ports:
       - "8080:8080"
@@ -246,7 +245,7 @@ services:
     restart: on-failure
 
   react:
-    image: "artifactory.software.geant.org/spa-docker/maat-ui/assets:make-build-9090689"
+    image: "artifactory.software.geant.org/spa-docker/maat-ui/assets:0.9.1.005"
     read_only: true
     ports:
       - "9100:9100"
@@ -261,8 +260,11 @@ services:
       - SERVICES_MAAT_API_URL=$MAAT_SERVICE_PROTOCOL://$MAAT_SERVICE_ADDRESS:$MAAT_SERVICE_PORT/serviceInventoryManagement/v4.0.0/service
       - RESOURCES_MAAT_API_URL=$MAAT_RESOURCE_PROTOCOL://$MAAT_RESOURCE_ADDRESS:$MAAT_RESOURCE_PORT/resourceInventoryManagement/v4.0.0/resource
 
+      - SERVICES_MAAT_SCHEMA_LOCATION_URL=https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/TMF638-ServiceInventory-v4-pionier.json
+      - RESOURCES_MAAT_SCHEMA_LOCATION_URL=https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/TMF639-ResourceInventory-v4-pionier.json
+
       - AUTH_OPENID_PROVIDER=$KEYCLOAK_PROTOCOL://$KEYCLOAK_HOST:$KEYCLOAK_PORT/realms/MaatRealm
-      - AUTH_CLIENT_ID=maat-account
+      - AUTH_CLIENT_ID=$KEYCLOAK_CLIENT_ID_FOR_USERS
       - AUTH_VERIFY_ACCESS_TOKEN=False
     tmpfs:
       - "/run:exec"

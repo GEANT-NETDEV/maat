@@ -149,7 +149,7 @@ services:
     entrypoint: sh -c "sleep 1 && /opt/keycloak/scripts/keycloak-setup.sh"
 
   react:
-    image: "artifactory.software.geant.org/spa-docker/maat-ui/assets:make-build-15766860"
+    image: "artifactory.software.geant.org/spa-docker/maat-ui/assets:0.9.1.005"
     read_only: true
     ports:
       - "9100:9100"
@@ -166,6 +166,10 @@ services:
 
       - SERVICES_MAAT_SCHEMA_LOCATION_URL=https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/TMF638-ServiceInventory-v4-pionier.json
       - RESOURCES_MAAT_SCHEMA_LOCATION_URL=https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/TMF639-ResourceInventory-v4-pionier.json
+
+      - AUTH_OPENID_PROVIDER=$KEYCLOAK_PROTOCOL://$KEYCLOAK_HOST:$KEYCLOAK_PORT/realms/MaatRealm
+      - AUTH_CLIENT_ID=$KEYCLOAK_CLIENT_ID_FOR_USERS
+      - AUTH_VERIFY_ACCESS_TOKEN=False
     tmpfs:
       - "/run:exec"
       - "/var/cache/nginx"
