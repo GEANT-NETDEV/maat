@@ -1,7 +1,8 @@
 services:
 
   maat:
-    image: artifactory.software.geant.org/spa-docker/maat:1.0.11
+    #image: artifactory.software.geant.org/spa-docker/maat:1.0.11
+    image: maat_test4
     hostname: $MAAT_HOST
     ports:
       - "8080:8080"
@@ -47,7 +48,7 @@ services:
     expose:
       - "27017"
     volumes:
-      - mongodb-maat-temp2:/data/db
+      - mongodb-maat:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_USER
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
@@ -122,7 +123,7 @@ services:
     expose:
       - "27022"
     volumes:
-      - mongodb-eventlistener-temp2:/data/db
+      - mongodb-eventlistener:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_EL_USER
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_EL_PASSWORD
@@ -145,7 +146,7 @@ services:
     ports:
       - "8090:8090"
     volumes:
-      - keycloak_data_temp2:/opt/keycloak/data
+      - keycloak_data:/opt/keycloak/data
     expose:
       - "8090"
     environment:
@@ -270,9 +271,9 @@ services:
       - "/var/log/nginx:uid=999,gid=998"  # default error log location is opened before config file is read
 
 volumes:
-  mongodb-maat-temp2:
-  mongodb-eventlistener-temp2:
+  mongodb-maat:
+  mongodb-eventlistener:
   mongodb-graylog_data:
   graylog_data:
   graylog_journal:
-  keycloak_data_temp2:
+  keycloak_data:

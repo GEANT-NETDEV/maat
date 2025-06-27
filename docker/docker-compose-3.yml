@@ -45,7 +45,7 @@ services:
     expose:
       - "27017"
     volumes:
-      - mongodb-maat-temp3:/data/db
+      - mongodb-maat:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_USER
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
@@ -98,7 +98,7 @@ services:
     expose:
       - "27022"
     volumes:
-      - mongodb-eventlistener-temp3:/data/db
+      - mongodb-eventlistener:/data/db
     environment:
       - MONGO_INITDB_ROOT_USERNAME=$MONGO_EL_USER
       - MONGO_INITDB_ROOT_PASSWORD=$MONGO_EL_PASSWORD
@@ -117,7 +117,7 @@ services:
     ports:
       - "8090:8090"
     volumes:
-      - keycloak_data_temp3:/opt/keycloak/data
+      - keycloak_data:/opt/keycloak/data
     expose:
       - "8090"
     environment:
@@ -173,6 +173,6 @@ services:
       - "/var/log/nginx:uid=999,gid=998"  # default error log location is opened before config file is read
 
 volumes:
-  mongodb-maat-temp3:
-  mongodb-eventlistener-temp3:
-  keycloak_data_temp3:
+  mongodb-maat:
+  mongodb-eventlistener:
+  keycloak_data:
