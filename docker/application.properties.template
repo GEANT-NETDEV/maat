@@ -32,11 +32,15 @@ server.ssl.key-store=src/main/resources/spa-inventory3.p12
 server.ssl.key-store-password=thisisInventory3
 server.ssl.key-alias=spa-inventory3
 
+server.ssl.trust-store=classpath:truststore.jks
+server.ssl.trust-store-password=changeit
+server.ssl.trust-store-type=JKS
+
 # Keycloak properties
 keycloak.enabled=$KEYCLOAK_ENABLED
 keycloak.authorization.l1.roles=$KEYCLOAK_AUTHORIZATION_L1_ROLES
 keycloak.authorization.l2.filters=$KEYCLOAK_AUTHORIZATION_L2_FILTERS
-spring.security.oauth2.resourceserver.jwt.issuer-uri=http://$KEYCLOAK_HOST:$KEYCLOAK_PORT/realms/MaatRealm
+spring.security.oauth2.resourceserver.jwt.issuer-uri=$KEYCLOAK_PROTOCOL://$KEYCLOAK_HOST/realms/$KEYCLOAK_REALM
 spring.security.oauth2.resourceserver.jwt.jwk-set-uri=${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
 
 token.converter.principal-attribute=preferred_username
