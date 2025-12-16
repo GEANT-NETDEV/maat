@@ -40,7 +40,7 @@ server.ssl.trust-store-type=JKS
 keycloak.enabled=$KEYCLOAK_ENABLED
 keycloak.authorization.l1.roles=$KEYCLOAK_AUTHORIZATION_L1_ROLES
 keycloak.authorization.l2.filters=$KEYCLOAK_AUTHORIZATION_L2_FILTERS
-spring.security.oauth2.resourceserver.jwt.issuer-uri=$KEYCLOAK_PROTOCOL://$KEYCLOAK_HOST/realms/$KEYCLOAK_REALM
+spring.security.oauth2.resourceserver.jwt.issuer-uri=$KEYCLOAK_PROTOCOL://$KEYCLOAK_HOST:$KEYCLOAK_PORT/realms/$KEYCLOAK_REALM
 spring.security.oauth2.resourceserver.jwt.jwk-set-uri=${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
 
 token.converter.principal-attribute=preferred_username

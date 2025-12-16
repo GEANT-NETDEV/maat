@@ -1,6 +1,6 @@
 services:
   maat:
-    image: artifactory.software.geant.org/spa-docker/maat:1.0.12
+    image: artifactory.software.geant.org/spa-docker/maat:1.0.12.11
     hostname: $MAAT_HOST
     ports:
       - "8080:8080"
@@ -8,6 +8,10 @@ services:
       - KEYCLOAK_ENABLED=false
       - KEYCLOAK_AUTHORIZATION_L1_ROLES=false
       - KEYCLOAK_AUTHORIZATION_L2_FILTERS=false
+      - KEYCLOAK_PROTOCOL=$KEYCLOAK_PROTOCOL
+      - KEYCLOAK_HOST=$KEYCLOAK_HOST
+      - KEYCLOAK_PORT=$KEYCLOAK_PORT
+      - KEYCLOAK_REALM=$KEYCLOAK_REALM
       - server.ssl.enabled=false
       - MONGO_HOST=$MONGODB_HOST
       - MONGO_USER=$MONGO_USER

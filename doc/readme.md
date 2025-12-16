@@ -247,6 +247,10 @@ Maat UI is a user interface for the Maat application, which manages information 
 
 The default port used by Maat UI is 9100
 
+Settings for client in Keycloak (working with MaatUI) should look like below:
+![Screenshot of client scope](images/maat-keycloak-client-for-user-settings.png "Client settings in Keycloak for Maat UI")
+![Screenshot of client scope](images/maat-keycloak-client-for-user-settings2.png "Client settings in Keycloak for Maat UI")
+
 Go to **docker/** folder and run:
 
 ```docker compose -f docker-compose-3.yml up```

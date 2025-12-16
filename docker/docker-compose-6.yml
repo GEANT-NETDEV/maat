@@ -1,6 +1,6 @@
 services:
   maat:
-    image: artifactory.software.geant.org/spa-docker/maat:1.0.12
+    image: artifactory.software.geant.org/spa-docker/maat:1.0.12.11
     hostname: $MAAT_HOST
     ports:
       - "8080:8080"
@@ -10,8 +10,10 @@ services:
       - MAAT_ROLE_DELETE_ONLY=$MAAT_ROLE_DELETE_ONLY
       - MAAT_ROLE_PATCH_ONLY=$MAAT_ROLE_PATCH_ONLY
       - KEYCLOAK_ENABLED=$KEYCLOAK_ENABLED
+      - KEYCLOAK_PROTOCOL=$KEYCLOAK_PROTOCOL
       - KEYCLOAK_HOST=$KEYCLOAK_HOST
       - KEYCLOAK_PORT=$KEYCLOAK_PORT
+      - KEYCLOAK_REALM=$KEYCLOAK_REALM
       - KEYCLOAK_CLIENT_ID_FOR_USERS=$KEYCLOAK_CLIENT_ID_FOR_USERS
       - KEYCLOAK_AUTHORIZATION_L1_ROLES=$KEYCLOAK_AUTHORIZATION_L1_ROLES
       - KEYCLOAK_AUTHORIZATION_L2_FILTERS=$KEYCLOAK_AUTHORIZATION_L2_FILTERS
@@ -26,6 +28,8 @@ services:
       - MAAT_SERVICE_PROTOCOL=$MAAT_SERVICE_PROTOCOL
       - MAAT_SERVICE_ADDRESS=$MAAT_SERVICE_ADDRESS
       - MAAT_SERVICE_PORT=$MAAT_SERVICE_PORT
+      - GRAYLOG_HOST=$GRAYLOG_HOST
+      - GRAYLOG_PORT=$GRAYLOG_PORT
       - LOGGING_CONFIG=$LOGGING_CONFIG
       - LOKI_HOST=$LOKI_HOST
     depends_on:
@@ -158,12 +162,18 @@ services:
     volumes:
       - ./keycloak_conf/keycloak-setup.sh:/opt/keycloak/scripts/keycloak-setup.sh
     environment:
+      - KEYCLOAK_PROTOCOL=$KEYCLOAK_PROTOCOL
       - KEYCLOAK_HOST=$KEYCLOAK_HOST
+      - KEYCLOAK_PORT=$KEYCLOAK_PORT
+      - KEYCLOAK_REALM=$KEYCLOAK_REALM
       - KEYCLOAK_USER=$KEYCLOAK_USER
       - KEYCLOAK_PASS=$KEYCLOAK_PASS
       - KEYCLOAK_CLIENT_ID_FOR_CLIENTS=$KEYCLOAK_CLIENT_ID_FOR_CLIENTS
       - KEYCLOAK_CLIENT_ID_FOR_USERS=$KEYCLOAK_CLIENT_ID_FOR_USERS
       - KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_CLIENT_SECRET
+      - MAAT_UI_PROTOCOL=$MAAT_UI_PROTOCOL
+      - MAAT_UI_HOST=$MAAT_UI_HOST
+      - MAAT_UI_PORT=$MAAT_UI_PORT
     entrypoint: sh -c "sleep 1 && /opt/keycloak/scripts/keycloak-setup.sh"
 
   loki:
@@ -209,7 +219,7 @@ services:
       - "3000:3000"
 
   react:
-    image: "artifactory.software.geant.org/spa-docker/maat-ui/assets:make-build-12004724"
+    image: "artifactory.software.geant.org/spa-docker/maat-ui/assets:0.9.1.014"
     read_only: true
     ports:
       - "9100:9100"
@@ -227,7 +237,7 @@ services:
       - SERVICES_MAAT_SCHEMA_LOCATION_URL=https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/TMF638-ServiceInventory-v4-pionier.json
       - RESOURCES_MAAT_SCHEMA_LOCATION_URL=https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/TMF639-ResourceInventory-v4-pionier.json
 
-      - AUTH_OPENID_PROVIDER=$KEYCLOAK_PROTOCOL://$KEYCLOAK_HOST:$KEYCLOAK_PORT/realms/MaatRealm
+      - AUTH_OPENID_PROVIDER=$KEYCLOAK_PROTOCOL://$KEYCLOAK_HOST:$KEYCLOAK_PORT/realms/$KEYCLOAK_REALM
       - AUTH_CLIENT_ID=$KEYCLOAK_CLIENT_ID_FOR_USERS
       - AUTH_VERIFY_ACCESS_TOKEN=False
     tmpfs:
