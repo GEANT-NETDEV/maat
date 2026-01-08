@@ -35,7 +35,8 @@ services:
       retries: 10
 
   mongodb-maat:
-    image: mongo:7.0.4
+    image: mongo:8.2.3
+    # Previously used version: 7.0.4. For upgrade instructions, see the "MongoDB Version Upgrade" section in the documentation
     hostname: $MONGODB_HOST
     ports:
       - "27017:27017"
@@ -95,7 +96,8 @@ services:
       - LOGGING_CONFIG=classpath:logback-with-file-and-console-without-graylog.xml
 
   mongodb-eventlistener:
-    image: mongo:7.0.4
+    image: mongo:8.2.3
+    # Previously used version: 7.0.4. For upgrade instructions, see the "MongoDB Version Upgrade" section in the documentation
     hostname: $MONGODB_EL_HOST
     ports:
       - "27022:27017"
