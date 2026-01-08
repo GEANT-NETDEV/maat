@@ -41,6 +41,7 @@
     - [Rest method filtering](#rest-method-filtering)
     - [JSON content filtering](#json-content-filtering)
 - [MongoDB](#mongodb)
+  - [MongoDB version upgrade](#mongodb-version-upgrade)
   - [MongoDB backup data](#mongodb-backup-data)
   - [MongoDB delete data](#mongodb-delete-data)
 - [Graylog - log aggregation](#graylog---log-aggregation) 
@@ -814,6 +815,24 @@ This filter allows updating resources where the resourceCharacteristic.name is "
 
 <a name="mongodb"></a>
 ## MongoDB
+
+<a name="mongodb-version-upgrade"></a>
+### MongoDB Version Upgrade
+
+When upgrading MongoDB version (e.g., from 7.0.4 to 8.2.3) in Docker Compose with existing data stored in Docker volumes, you must first prepare the database in the older version (8.0.0) before upgrading to 8.2.3.
+
+**Steps to upgrade from MongoDB 7.x to 8.x (when using Docker volumes):**
+
+1. Replace the MongoDB version (from 7.0.4 to 8.0.0) in your docker-compose.yml file.
+1. Set the feature compatibility version in MongoDB version 8.0.0: <br>
+   ```docker exec -it <container_name> mongosh -u <username> -p <password> --authenticationDatabase admin``` <br>
+2. In the MongoDB shell, execute: <br>
+   ```db.adminCommand({ setFeatureCompatibilityVersion: "8.0", confirm: true })``` <br>
+3. Exit the MongoDB shell and stop the container.
+4. Replace the MongoDB version (from 8.0.0 to 8.2.3) in your docker-compose.yml file.
+5. Start the container with the new MongoDB version.
+
+**Note:** If MongoDB does not use Docker volumes, after creating a backup of the data it is enough to update the MongoDB version and then restore the data from the backup. Updating the FCV (Feature Compatibility Version) is not required.
 
 <a name="mongodb-backup-data"></a>
 ### MongoDB backup data
