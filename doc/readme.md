@@ -823,14 +823,16 @@ When upgrading MongoDB version (e.g., from 7.0.4 to 8.2.3) in Docker Compose wit
 
 **Steps to upgrade from MongoDB 7.x to 8.x (when using Docker volumes):**
 
-1. Replace the MongoDB version (from 7.0.4 to 8.0.0) in your docker-compose.yml file.
-1. Set the feature compatibility version in MongoDB version 8.0.0: <br>
+1. Replace the MongoDB version (from 7.0.4 to <u><strong>8.0.0</strong></u>
+   ) in your docker-compose.yml file.
+2. **Start (or restart) the container with MongoDB version 8.0.0 by docker compose command.**
+3. Set the feature compatibility version in MongoDB version 8.0.0: <br>
    ```docker exec -it <container_name> mongosh -u <username> -p <password> --authenticationDatabase admin``` <br>
-2. In the MongoDB shell, execute: <br>
+4. In the MongoDB shell, execute: <br>
    ```db.adminCommand({ setFeatureCompatibilityVersion: "8.0", confirm: true })``` <br>
-3. Exit the MongoDB shell and stop the container.
-4. Replace the MongoDB version (from 8.0.0 to 8.2.3) in your docker-compose.yml file.
-5. Start the container with the new MongoDB version.
+5. Exit the MongoDB shell and stop the container.
+6. Replace the MongoDB version (from 8.0.0 to 8.2.3) in your docker-compose.yml file.
+7. Start the container with the new MongoDB version.
 
 **Note:** If MongoDB does not use Docker volumes, after creating a backup of the data it is enough to update the MongoDB version and then restore the data from the backup. Updating the FCV (Feature Compatibility Version) is not required.
 
