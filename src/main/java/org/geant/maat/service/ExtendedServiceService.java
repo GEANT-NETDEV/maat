@@ -235,14 +235,14 @@ public class ExtendedServiceService implements ServiceService {
             service.peek(r -> notifications.registerNewEvent(new EventDto(EventType.ServiceCreateEvent, r.toJson())));
 
         service.peek(r -> ExtendedServiceLogger.infoJson("Service created: ", r.toJson()))
-                .peek(r -> updateAfterCreate(mapServicesExists, serviceCategory, r, mapServicesExistsSetName.keySet(), "service"))
-                .peek(r -> updateAfterCreate(mapResourcesExists, serviceCategory, r, mapResourcesExistsSetName.keySet(), "resource"))
+                .peek(r -> updateAfterCreate(mapServicesExists, serviceCategory, r, mapServicesExistsSetName.keySet(), "service", registerNewEventFlag))
+                .peek(r -> updateAfterCreate(mapResourcesExists, serviceCategory, r, mapResourcesExistsSetName.keySet(), "resource", registerNewEventFlag))
                 .peekLeft(error -> ExtendedServiceLogger.info("Could not create service, because: " + error.message()));
 
         return service.map(Service::toJson);
     }
 
-    public void updateAfterCreate(Map<String, String> map, String serviceCategory, Service newService, Set<String> set, String resourceOrService) {
+    public void updateAfterCreate(Map<String, String> map, String serviceCategory, Service newService, Set<String> set, String resourceOrService, Boolean registerNewEventFlag) {
         String finalServiceCategory = "bref:" + serviceCategory;
         Map<String, String> mapWithSetName=new HashMap<>();
         Map<String, String> mapNoSetName=new HashMap<>();
@@ -254,12 +254,12 @@ public class ExtendedServiceService implements ServiceService {
                 mapNoSetName.put(s, newService.getName());
             }
         }
-        if(resourceOrService.equals("service")) mapNoSetName.forEach((key, val) -> addRelationsToService(key, finalServiceCategory, newService.getHref()));
+        if(resourceOrService.equals("service")) mapNoSetName.forEach((key, val) -> addRelationsToService(key, finalServiceCategory, newService.getHref(), registerNewEventFlag));
         else if(resourceOrService.equals("resource")) mapNoSetName.forEach((key, val) -> addRelationsToResource(key, finalServiceCategory, newService.getHref()));
         for(String key : mapWithSetName.keySet()){
             Map<String, String> mapPom = new HashMap<>();
             mapPom.put(key, mapWithSetName.get(key));
-            if(resourceOrService.equals("service"))addRelationsToService(key, finalServiceCategory, newService.getHref(), mapPom);
+            if(resourceOrService.equals("service"))addRelationsToService(key, finalServiceCategory, newService.getHref(), mapPom, registerNewEventFlag);
             else if(resourceOrService.equals("resource"))addRelationsToResource(key, finalServiceCategory, newService.getHref(), mapPom);
         }
     }
@@ -622,7 +622,7 @@ public class ExtendedServiceService implements ServiceService {
                 .peek(s -> ExtendedServiceLogger.infoJson(String.format("Service %s deleted", id), deletedService.get()))
                 .peek(s-> {
                     assert service != null;
-                    UpdateDeletedRelationshipsServices(service);
+                    UpdateDeletedRelationshipsServices(service, registerNewEventFlag);
                 })
                 .peekLeft(error -> ExtendedServiceLogger.info("Deleting failed: " + error.message()));
 
@@ -631,14 +631,14 @@ public class ExtendedServiceService implements ServiceService {
         return result;
     }
 
-    private void UpdateDeletedRelationshipsServices(@NotNull Service service) {
+    private void UpdateDeletedRelationshipsServices(@NotNull Service service, Boolean registerNewEventFlag) {
         JsonNode serviceJson=service.toJson();
 
         Map<String, ArrayList<String>> map;
         Map<String, ArrayList<String>> mapResources;
         map=getServicesWithRelations(serviceJson);
         mapResources=getResourcesWithRelations(serviceJson);
-        map.forEach((k,v)->deleteRelationsFromService(k, service.getHref()));
+        map.forEach((k,v)->deleteRelationsFromService(k, service.getHref(), registerNewEventFlag));
         mapResources.forEach((k,v)->deleteRelationsFromResource(k, service.getHref()));
     }
 
@@ -867,13 +867,13 @@ public class ExtendedServiceService implements ServiceService {
         if (registerNewEventFlag) result.peek(json -> notifications.registerNewEvent(new EventDto(EventType.ServiceAttributeValueChangeEvent, json)));
 
         for( String add : differentKeysToAdd ){
-            addRelationsToService(add, relationNames.get(add), href, mapRelationsHrefWithSetName);
+            addRelationsToService(add, relationNames.get(add), href, mapRelationsHrefWithSetName, registerNewEventFlag);
         }
         for( String add : differentKeysResourceToAdd ){
             addRelationsToResource(add, relationResourceNames.get(add), href, mapResourceRelationsHrefWithSetName);
         }
         for( String del : differentKeysToDelete ){
-            deleteRelationsFromService(del, href);
+            deleteRelationsFromService(del, href, registerNewEventFlag);
         }
         for( String del : differentKeysResourceToDelete ){
             deleteRelationsFromResource(del, href);
@@ -904,7 +904,7 @@ public class ExtendedServiceService implements ServiceService {
         return Either.right(true);
     }
 
-    private void addRelationsToService(String serviceHref, String relationName, String baseHref) {
+    private void addRelationsToService(String serviceHref, String relationName, String baseHref, Boolean registerNewEventFlag) {
         Service ifServiceExists = checkServiceExisting(serviceHref).getOrNull();
         if (ifServiceExists == null) {
             return;
@@ -930,11 +930,12 @@ public class ExtendedServiceService implements ServiceService {
             if (!exist) {
                 ((ArrayNode) service.withArray("serviceRelationship")).add(createRelationshipTypeJson(changePrefix(relationName), baseHref));
             }
-            updater.update(ifServiceExists.getId(), deletePropertiesForbiddenToUpdate(service));
+            var update=updater.update(ifServiceExists.getId(), deletePropertiesForbiddenToUpdate(service));
+            if (registerNewEventFlag) update.peek(json -> notifications.registerNewEvent(new EventDto(EventType.ServiceAttributeValueChangeEvent, json)));
         }
     }
 
-    private void addRelationsToService(String serviceHref, String relationName, String baseHref, Map<String, String> mapRelationsHrefWithSetName) {
+    private void addRelationsToService(String serviceHref, String relationName, String baseHref, Map<String, String> mapRelationsHrefWithSetName, Boolean registerNewEventFlag) {
         Service ifServiceExists = checkServiceExisting(serviceHref).getOrNull();
 
         if (ifServiceExists == null) {
@@ -964,7 +965,8 @@ public class ExtendedServiceService implements ServiceService {
                 }
                 else ((ArrayNode) service.withArray("serviceRelationship")).add(createRelationshipTypeJson(changePrefix(relationName), baseHref));
             }
-            updater.update(ifServiceExists.getId(), deletePropertiesForbiddenToUpdate(service));
+            var update = updater.update(ifServiceExists.getId(), deletePropertiesForbiddenToUpdate(service));
+            if (registerNewEventFlag) update.peek(json -> notifications.registerNewEvent(new EventDto(EventType.ServiceAttributeValueChangeEvent, json)));
         }
     }
 
@@ -1043,7 +1045,7 @@ public class ExtendedServiceService implements ServiceService {
         updateResource(resourceHref, deletePropertiesForbiddenToUpdate(resource));
     }
 
-    private void deleteRelationsFromService(String serviceHref, String baseHref) {
+    private void deleteRelationsFromService(String serviceHref, String baseHref, Boolean registerNewEventFlag) {
         Service ifServiceExists=checkServiceExisting(serviceHref).getOrNull();
 
         if(ifServiceExists==null){
@@ -1066,7 +1068,8 @@ public class ExtendedServiceService implements ServiceService {
                 }
             }
         }
-        updater.update(ifServiceExists.getId(), deletePropertiesForbiddenToUpdate(service));
+        var update=updater.update(ifServiceExists.getId(), deletePropertiesForbiddenToUpdate(service));
+        if (registerNewEventFlag) update.peek(json -> notifications.registerNewEvent(new EventDto(EventType.ServiceAttributeValueChangeEvent, json)));
     }
 
     private void deleteRelationsFromResource(String resourceHref, String baseHref) {
