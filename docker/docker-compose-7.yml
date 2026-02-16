@@ -184,70 +184,6 @@ services:
       - MAAT_UI_PORT=$MAAT_UI_PORT
     entrypoint: sh -c "sleep 1 && /opt/keycloak/scripts/keycloak-setup.sh"
 
-  mongodb-graylog:
-    image: mongo:6.0.14
-    ports:
-      - "27018:27018"
-    volumes:
-      - mongodb-graylog_data:/data/db
-    restart: on-failure
-    command: --port 27018
-
-  opensearch:
-    image: opensearchproject/opensearch:2.12.0
-    environment:
-      - OPENSEARCH_JAVA_OPTS=-Xms1g -Xmx1g
-      - bootstrap.memory_lock=true
-      - discovery.type=single-node
-      - action.auto_create_index=false
-      - plugins.security.ssl.http.enabled=false
-      - plugins.security.disabled=true
-      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=+_8r#wliY3Pv5-HMIf4qzXImYzZf-M=M
-    ulimits:
-      memlock:
-        hard: -1
-        soft: -1
-      nofile:
-        soft: 65536
-        hard: 65536
-    restart: on-failure
-
-  graylog:
-    hostname: $GRAYLOG_HOST
-    image: graylog/graylog:6.0
-    depends_on:
-      mongodb-graylog:
-        condition: service_started
-      opensearch:
-        condition: service_started
-    entrypoint: /usr/bin/tini -- wait-for-it opensearch:9200 -- /docker-entrypoint.sh
-    environment:
-      - GRAYLOG_HTTP_BIND_ADDRESS=0.0.0.0:9000
-      - GRAYLOG_ELASTICSEARCH_HOSTS=http://opensearch:9200
-      - GRAYLOG_MONGODB_URI=mongodb://mongodb-graylog:27018/graylog
-      - GRAYLOG_REPORT_DISABLE_SANDBOX=true
-      - GRAYLOG_PASSWORD_SECRET=somepasswordpepper
-      - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
-      - GRAYLOG_HTTP_EXTERNAL_URI=http://127.0.0.1:9000/
-    ports:
-      - 9000:9000/tcp
-      - 5044:5044/tcp
-      - 5140:5140/tcp
-      - 5140:5140/udp
-      - 12201:12201/tcp
-      - 12201:12201/udp
-      - 13301:13301/tcp
-      - 13302:13302/tcp
-    volumes:
-      - graylog_data:/usr/share/graylog/data/data
-      - graylog_journal:/usr/share/graylog/data/journal
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:9000"]
-      interval: 30s
-      timeout: 10s
-      retries: 10
-    restart: on-failure
-
   maat-ui:
     image: "artifactory.software.geant.org/spa-docker/maat-ui/assets:0.9.2.001"
     read_only: true
@@ -324,7 +260,7 @@ services:
     restart: on-failure
 
 volumes:
-  mongodb-maat-fosdem:
+  mongodb-maat:
   mongodb-eventlistener:
   mongodb-graylog_data:
   graylog_data:
