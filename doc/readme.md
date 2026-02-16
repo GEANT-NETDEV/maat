@@ -44,7 +44,11 @@
   - [MongoDB version upgrade](#mongodb-version-upgrade)
   - [MongoDB backup data](#mongodb-backup-data)
   - [MongoDB delete data](#mongodb-delete-data)
-- [Graylog - log aggregation](#graylog---log-aggregation) 
+- [MaatUI](#maatui)
+  - [MaatUI Docker Compose Configuration](#maatui-docker-compose-configuration)
+- [MaatAI](#maatai)
+  - [MaatAI Docker Compose Configuration](#maatai-docker-compose-configuration)
+- [Graylog - log aggregation](#graylog---log-aggregation)
     - [Graylog in Docker](#graylog-in-docker)
     - [Graylog in Maat or EventListener](#graylog-in-maat-or-eventlistener)
     - [Graylog Input Configuration Guide](#graylog-input-configuration-guide)
@@ -867,6 +871,70 @@ To delete data from MongoDB for resources_db, services_db and listeners_db follo
   ```docker exec -it <container_id> /usr/bin/mongosh --username <username> --password <password> --authenticationDatabase admin --eval "use listeners_db;" --eval  "db.dropDatabase()"```
 - for all of these databases:
   ```docker exec -it <container_id> /usr/bin/mongosh --username <username> --password <password> --authenticationDatabase admin --eval "use resources_db;" --eval  "db.dropDatabase()" --eval "use services_db;" --eval  "db.dropDatabase()" --eval "use listeners_db;" --eval  "db.dropDatabase()"```
+
+
+<a name="maatui"></a>
+## MaatUI
+
+MaatUI is a web-based user interface for the Maat application. It provides a graphical interface for interacting with the Maat, allowing users to view, add, update, and delete resources and services.
+
+When using the prepared docker-compose files, MaatUI is installed by default together with Maat in version `docker-compose-3` and later...
+
+The MaatUI is accessible at `http://<IP_address>:9100`.
+
+<a name="maatui-docker-compose-configuration"></a>
+### MaatUI Docker Compose Configuration
+
+The following environment variables can be configured for MaatUI in docker-compose:
+
+|              Property              |                                                             Values                                                             |                                Description                                 |
+|:----------------------------------:|:------------------------------------------------------------------------------------------------------------------------------:|:--------------------------------------------------------------------------:|
+|       RESOURCES_MAAT_API_URL       | `$MAAT_RESOURCE_PROTOCOL://$MAAT_RESOURCE_ADDRESS:$MAAT_RESOURCE_PORT/resourceInventoryManagement/v4.0.0/resource`             |       URL to the Maat API for resources (TMF 639 Resource Inventory)       |
+|       SERVICES_MAAT_API_URL        | `$MAAT_SERVICE_PROTOCOL://$MAAT_SERVICE_ADDRESS:$MAAT_SERVICE_PORT/serviceInventoryManagement/v4.0.0/service`                  |        URL to the Maat API for services (TMF 638 Service Inventory)        |
+| RESOURCES_MAAT_SCHEMA_LOCATION_URL | `https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/TMF639-ResourceInventory-v4-pionier.json`          |          URL to the JSON schema file used for resource validation          |
+| SERVICES_MAAT_SCHEMA_LOCATION_URL  | `https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/TMF638-ServiceInventory-v4-pionier.json`           |          URL to the JSON schema file used for service validation           |
+|        AUTH_OPENID_PROVIDER        | `$KEYCLOAK_PROTOCOL://$KEYCLOAK_HOST:$KEYCLOAK_PORT/realms/$KEYCLOAK_REALM`                                                   |              URL to the OpenID Connect provider (Keycloak)                 |
+|          AUTH_CLIENT_ID            | `$KEYCLOAK_CLIENT_ID_FOR_USERS`                                                                                                |         Client ID used for user authentication in Keycloak                 |
+|     AUTH_VERIFY_ACCESS_TOKEN       |                                                          True/False                                                            |               Enable/disable access token verification                     |
+|          MAAT_UI_RO                |                                                          True/False                                                            | Enable read-only mode (disables adding and deleting). Default: False       |
+
+<a name="maatai"></a>
+## MaatAI
+
+MaatAI is a set of AI tools for the Maat application that enable natural language interaction with inventory data. It consists of two components:
+- **MCP Server** - a Model Context Protocol server that provides AI tools with access to the Maat API for managing resources and services.
+- **Maat AI Assistant** - a web-based chat interface that allows users to interact with Maat using natural language via the MCP Server.
+
+The MaatAI is available in `docker-compose-7`. The Maat AI Assistant is accessible at `http://<IP_address>:8501`.
+
+**Warning!** <br> If Keycloak integration is not used, all Keycloak-related environment variables for MCP Server and Maat AI Assistant **must be commented out** in the docker-compose file. Otherwise, the services will fail to start or will not work correctly.
+
+<a name="maatai-docker-compose-configuration"></a>
+### MaatAI Docker Compose Configuration
+
+The following environment variables can be configured for MaatAI in the `.env` file:
+
+**MCP Server parameters:**
+
+|           Property            |                                        Values                                         |                              Description                               |
+|:-----------------------------:|:--------------------------------------------------------------------------------------:|:----------------------------------------------------------------------:|
+|        MAAT_TIMEOUT           |                                          60                                            |          Timeout (in seconds) for connections to the Maat API          |
+|    MAAT_RESOURCE_ENDPOINT     |              `/resourceInventoryManagement/v4.0.0/resource`                             |                  Maat API endpoint for resources                       |
+|    MAAT_SERVICE_ENDPOINT      |              `/serviceInventoryManagement/v4.0.0/service`                               |                  Maat API endpoint for services                        |
+|       MAAT_TLS_VERIFY         |                                      true/false                                        |             Enable/disable TLS certificate verification                |
+|          LOG_LEVEL            |                                DEBUG/INFO/WARNING/ERROR                                 |                    Logging level for MCP Server                        |
+| KEYCLOAK_TOKEN_REFRESH_MARGIN |                                          30                                            | Time (in seconds) before token expiry to trigger a refresh             |
+
+**Maat AI Assistant parameters:**
+
+|      Property      |              Values               |                                   Description                                    |
+|:------------------:|:---------------------------------:|:--------------------------------------------------------------------------------:|
+|      MCP_URL       | `http://<IP_address>:8002/mcp`    |                       URL to the MCP Server endpoint                             |
+|     API_TYPE       |           openwebui               |             Type of the AI API backend (e.g., openwebui)                         |
+|  OPENAI_BASE_URL   |    `https://<ai_server_address>`  |                    Base URL of the OpenAI-compatible API                          |
+|   OPENAI_API_KEY   |         `<api_key>`               |                       API key for the AI backend                                 |
+|   OPENAI_MODEL     |        `<model_name>`             |                   Name of the AI model to use                                    |
+|    SSL_VERIFY      |           true/false              |              Enable/disable SSL certificate verification                         |
 
 <a name="graylog---log-aggregation"></a>
 ## Graylog - log aggregation
