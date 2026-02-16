@@ -1,0 +1,332 @@
+services:
+
+  maat:
+    image: artifactory.software.geant.org/spa-docker/maat:1.0.14
+    hostname: $MAAT_HOST
+    ports:
+      - "8080:8080"
+    environment:
+      - MAAT_ROLE_GET_ONLY=$MAAT_ROLE_GET_ONLY
+      - MAAT_ROLE_POST_ONLY=$MAAT_ROLE_POST_ONLY
+      - MAAT_ROLE_DELETE_ONLY=$MAAT_ROLE_DELETE_ONLY
+      - MAAT_ROLE_PATCH_ONLY=$MAAT_ROLE_PATCH_ONLY
+      - KEYCLOAK_ENABLED=$KEYCLOAK_ENABLED
+      - KEYCLOAK_PROTOCOL=$KEYCLOAK_PROTOCOL
+      - KEYCLOAK_HOST=$KEYCLOAK_HOST
+      - KEYCLOAK_PORT=$KEYCLOAK_PORT
+      - KEYCLOAK_REALM=$KEYCLOAK_REALM
+      - KEYCLOAK_CLIENT_ID_FOR_USERS=$KEYCLOAK_CLIENT_ID_FOR_USERS
+      - KEYCLOAK_AUTHORIZATION_L1_ROLES=$KEYCLOAK_AUTHORIZATION_L1_ROLES
+      - KEYCLOAK_AUTHORIZATION_L2_FILTERS=$KEYCLOAK_AUTHORIZATION_L2_FILTERS
+      - server.ssl.enabled=false
+      - MONGO_HOST=$MONGODB_HOST
+      - MONGO_USER=$MONGO_USER
+      - MONGO_PASSWORD=$MONGO_PASSWORD
+      - MAAT_PORT=$MAAT_PORT
+      - MAAT_RESOURCE_PROTOCOL=$MAAT_RESOURCE_PROTOCOL
+      - MAAT_RESOURCE_ADDRESS=$MAAT_RESOURCE_ADDRESS
+      - MAAT_RESOURCE_PORT=$MAAT_RESOURCE_PORT
+      - MAAT_SERVICE_PROTOCOL=$MAAT_SERVICE_PROTOCOL
+      - MAAT_SERVICE_ADDRESS=$MAAT_SERVICE_ADDRESS
+      - MAAT_SERVICE_PORT=$MAAT_SERVICE_PORT
+      - GRAYLOG_HOST=$GRAYLOG_HOST
+      - GRAYLOG_PORT=$GRAYLOG_PORT
+      - LOGGING_CONFIG=$LOGGING_CONFIG
+    depends_on:
+      mongodb-maat:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080 --server-response 2>&1 | grep -E \"(401|200)\" || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+
+  mongodb-maat:
+    image: mongo:7.0.4
+    hostname: $MONGODB_HOST
+    ports:
+      - "27017:27017"
+    expose:
+      - "27017"
+    volumes:
+      - mongodb-maat-fosdem:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGO_USER
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_PASSWORD
+    command: mongod | logger --udp --server $GRAYLOG_HOST --port 514 -t mongodb-maat
+    depends_on:
+      keycloak-dev:
+        condition: service_healthy
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 10
+
+  gateway:
+    hostname: nginxhost
+    build:
+      context: .
+      dockerfile: Dockerfile_nginx_ssl
+    ports:
+      - 8082:443
+    environment:
+      - MAAT_PROTOCOL=$MAAT_PROTOCOL
+      - MAAT_HOST=$MAAT_HOST
+      - MAAT_PORT=$MAAT_PORT
+      - GRAYLOG_HOST=$GRAYLOG_HOST
+    command: /bin/sh -c "envsubst < /etc/nginx/nginx.conf.template > /etc/nginx/nginx.conf; nginx -g 'daemon off;' | logger --udp --server $GRAYLOG_HOST --port 514 -t nginx"
+    depends_on:
+      maat:
+        condition: service_healthy
+
+  eventListener:
+    image: artifactory.software.geant.org/spa-docker/eventlistener:1.0.4
+    hostname: $EVENT_LISTENER_HOST
+    ports:
+      - "8081:8081"
+    depends_on:
+      mongodb-eventlistener:
+        condition: service_healthy
+      maat:
+        condition: service_healthy
+    restart: on-failure
+    environment:
+      - MONGO_HOST=$MONGODB_EL_HOST
+      - MONGO_USER=$MONGO_EL_USER
+      - MONGO_PASSWORD=$MONGO_EL_PASSWORD
+      - MONGO_PORT=$MONGO_EL_PORT
+      - MONGO_TIMEOUT=$MONGO_EL_TIMEOUT
+      - AUTO_REGISTER=$AUTO_REGISTER
+      - MAAT_PROTOCOL=$MAAT_PROTOCOL
+      - MAAT_HOST=$MAAT_HOST
+      - MAAT_PORT=$MAAT_PORT
+      - EVENT_LISTENER_PROTOCOL=$EVENT_LISTENER_PROTOCOL
+      - EVENT_LISTENER_HOST=$EVENT_LISTENER_HOST
+      - EVENT_LISTENER_PORT=$EVENT_LISTENER_PORT
+      - KEYCLOAK_PROTOCOL=$KEYCLOAK_PROTOCOL
+      - KEYCLOAK_HOST=$KEYCLOAK_HOST
+      - KEYCLOAK_PORT=$KEYCLOAK_PORT
+      - KEYCLOAK_CLIENT_ID=$KEYCLOAK_CLIENT_ID_FOR_CLIENTS
+      - KEYCLOAK_GRANT_TYPE=$KEYCLOAK_GRANT_TYPE_FOR_CLIENTS
+      - KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_CLIENT_SECRET
+      - GRAYLOG_HOST=$GRAYLOG_HOST
+      - GRAYLOG_PORT=$GRAYLOG_PORT
+      - LOGGING_CONFIG=$LOGGING_CONFIG
+
+  mongodb-eventlistener:
+    image: mongo:8.2.3
+    hostname: $MONGODB_EL_HOST
+    ports:
+      - "27022:27017"
+    expose:
+      - "27022"
+    volumes:
+      - mongodb-eventlistener:/data/db
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=$MONGO_EL_USER
+      - MONGO_INITDB_ROOT_PASSWORD=$MONGO_EL_PASSWORD
+      - GRAYLOG_HOST=$GRAYLOG_HOST
+      - GRAYLOG_PORT=514
+      - APP_NAME=mongodb-maat
+    command: mongod | logger --udp --server $GRAYLOG_HOST --port 514 -t mongodb-eventlistener
+    depends_on:
+      keycloak-dev:
+        condition: service_healthy
+    healthcheck:
+      test: echo 'db.runCommand("ping").ok' | mongosh localhost:27017/test --quiet
+      interval: 30s
+      timeout: 10s
+      retries: 10
+
+  keycloak-dev:
+    image: quay.io/keycloak/keycloak:25.0.4
+    hostname: $KEYCLOAK_HOST
+    ports:
+      - "8090:8090"
+    volumes:
+      - keycloak_data:/opt/keycloak/data
+    expose:
+      - "8090"
+    environment:
+      - KEYCLOAK_ADMIN=$KEYCLOAK_USER
+      - KEYCLOAK_ADMIN_PASSWORD=$KEYCLOAK_PASS
+    command: start-dev --http-port 8090 --health-enabled=true --log="syslog" --log-level=info --log-syslog-endpoint=$GRAYLOG_HOST:514 --log-syslog-app-name=Keycloak --log-syslog-protocol=udp
+    depends_on:
+      graylog:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/127.0.0.1/9000;echo -e \"GET /health/ready HTTP/1.1\r\nhost: http://localhost\r\nConnection: close\r\n\r\n\" >&3;grep \"HTTP/1.1 200 OK\" <&3"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    restart: unless-stopped
+
+  keycloak-dev-setup:
+    image: quay.io/keycloak/keycloak:25.0.4
+    depends_on:
+      keycloak-dev:
+        condition: service_healthy
+    volumes:
+      - ./keycloak_conf/keycloak-setup.sh:/opt/keycloak/scripts/keycloak-setup.sh
+    environment:
+      - KEYCLOAK_PROTOCOL=$KEYCLOAK_PROTOCOL
+      - KEYCLOAK_HOST=$KEYCLOAK_HOST
+      - KEYCLOAK_PORT=$KEYCLOAK_PORT
+      - KEYCLOAK_REALM=$KEYCLOAK_REALM
+      - KEYCLOAK_USER=$KEYCLOAK_USER
+      - KEYCLOAK_PASS=$KEYCLOAK_PASS
+      - KEYCLOAK_CLIENT_ID_FOR_CLIENTS=$KEYCLOAK_CLIENT_ID_FOR_CLIENTS
+      - KEYCLOAK_CLIENT_ID_FOR_USERS=$KEYCLOAK_CLIENT_ID_FOR_USERS
+      - KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_CLIENT_SECRET
+      - MAAT_UI_PROTOCOL=$MAAT_UI_PROTOCOL
+      - MAAT_UI_HOST=$MAAT_UI_HOST
+      - MAAT_UI_PORT=$MAAT_UI_PORT
+    entrypoint: sh -c "sleep 1 && /opt/keycloak/scripts/keycloak-setup.sh"
+
+  mongodb-graylog:
+    image: mongo:6.0.14
+    ports:
+      - "27018:27018"
+    volumes:
+      - mongodb-graylog_data:/data/db
+    restart: on-failure
+    command: --port 27018
+
+  opensearch:
+    image: opensearchproject/opensearch:2.12.0
+    environment:
+      - OPENSEARCH_JAVA_OPTS=-Xms1g -Xmx1g
+      - bootstrap.memory_lock=true
+      - discovery.type=single-node
+      - action.auto_create_index=false
+      - plugins.security.ssl.http.enabled=false
+      - plugins.security.disabled=true
+      - OPENSEARCH_INITIAL_ADMIN_PASSWORD=+_8r#wliY3Pv5-HMIf4qzXImYzZf-M=M
+    ulimits:
+      memlock:
+        hard: -1
+        soft: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    restart: on-failure
+
+  graylog:
+    hostname: $GRAYLOG_HOST
+    image: graylog/graylog:6.0
+    depends_on:
+      mongodb-graylog:
+        condition: service_started
+      opensearch:
+        condition: service_started
+    entrypoint: /usr/bin/tini -- wait-for-it opensearch:9200 -- /docker-entrypoint.sh
+    environment:
+      - GRAYLOG_HTTP_BIND_ADDRESS=0.0.0.0:9000
+      - GRAYLOG_ELASTICSEARCH_HOSTS=http://opensearch:9200
+      - GRAYLOG_MONGODB_URI=mongodb://mongodb-graylog:27018/graylog
+      - GRAYLOG_REPORT_DISABLE_SANDBOX=true
+      - GRAYLOG_PASSWORD_SECRET=somepasswordpepper
+      - GRAYLOG_ROOT_PASSWORD_SHA2=8c6976e5b5410415bde908bd4dee15dfb167a9c873fc4bb8a81f6f2ab448a918
+      - GRAYLOG_HTTP_EXTERNAL_URI=http://127.0.0.1:9000/
+    ports:
+      - 9000:9000/tcp
+      - 5044:5044/tcp
+      - 5140:5140/tcp
+      - 5140:5140/udp
+      - 12201:12201/tcp
+      - 12201:12201/udp
+      - 13301:13301/tcp
+      - 13302:13302/tcp
+    volumes:
+      - graylog_data:/usr/share/graylog/data/data
+      - graylog_journal:/usr/share/graylog/data/journal
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:9000"]
+      interval: 30s
+      timeout: 10s
+      retries: 10
+    restart: on-failure
+
+  maat-ui:
+    image: "artifactory.software.geant.org/spa-docker/maat-ui/assets:0.9.2.001"
+    read_only: true
+    ports:
+      - "9100:9100"
+    environment:
+      - LISTEN_PORT=9100
+      - S6_READ_ONLY_ROOT=1
+      - MAIN_DOMAIN=localhost.maat-ui.pl
+      - USE_REDUX_LOGGER=false
+      - SENTRY_DSN=
+      - SENTRY_ENVIRONMENT=
+
+      - SERVICES_MAAT_API_URL=$MAAT_SERVICE_PROTOCOL://$MAAT_SERVICE_ADDRESS:$MAAT_SERVICE_PORT/serviceInventoryManagement/v4.0.0/service
+      - RESOURCES_MAAT_API_URL=$MAAT_RESOURCE_PROTOCOL://$MAAT_RESOURCE_ADDRESS:$MAAT_RESOURCE_PORT/resourceInventoryManagement/v4.0.0/resource
+
+      - SERVICES_MAAT_SCHEMA_LOCATION_URL=https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/TMF638-ServiceInventory-v4-pionier.json
+      - RESOURCES_MAAT_SCHEMA_LOCATION_URL=https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-schema/raw/TMF639-ResourceInventory-v4-pionier.json
+
+      - AUTH_OPENID_PROVIDER=$KEYCLOAK_PROTOCOL://$KEYCLOAK_HOST:$KEYCLOAK_PORT/realms/$KEYCLOAK_REALM
+      - AUTH_CLIENT_ID=$KEYCLOAK_CLIENT_ID_FOR_USERS
+      - AUTH_VERIFY_ACCESS_TOKEN=False
+    tmpfs:
+      - "/run:exec"
+      - "/var/cache/nginx"
+      - "/var/lib/nginx/tmp:uid=999,gid=998"
+      - "/var/log/nginx:uid=999,gid=998"
+
+  mcp-server:
+    image: artifactory.software.geant.org/spa-docker/maat-mcp-server:1.0.0
+    ports:
+      - "8002:8002"
+    environment:
+      - MAAT_BASE_URL=$MAAT_RESOURCE_PROTOCOL://$MAAT_RESOURCE_ADDRESS:$MAAT_RESOURCE_PORT
+      - MAAT_TLS_VERIFY=$MAAT_TLS_VERIFY
+      - MAAT_TIMEOUT=$MAAT_TIMEOUT
+      - MAAT_RESOURCE_ENDPOINT=$MAAT_RESOURCE_ENDPOINT
+      - MAAT_SERVICE_ENDPOINT=$MAAT_SERVICE_ENDPOINT
+      - MCP_HOST=0.0.0.0
+      - MCP_PORT=8002
+      - KEYCLOAK_URL=$KEYCLOAK_PROTOCOL://KEYCLOAK_HOST:KEYCLOAK_PORT
+      - KEYCLOAK_REALM=$KEYCLOAK_REALM
+      - KEYCLOAK_CLIENT_ID=$KEYCLOAK_CLIENT_ID_FOR_CLIENTS
+      - KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_CLIENT_SECRET
+      - KEYCLOAK_TOKEN_REFRESH_MARGIN=$KEYCLOAK_TOKEN_REFRESH_MARGIN
+      - LOG_LEVEL=$LOG_LEVEL
+    depends_on:
+      gateway:
+        condition: service_started
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import socket; s=socket.create_connection(('localhost',8002),2); s.close()\""]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+    restart: on-failure
+
+  maat-ai-assistant:
+    image: artifactory.software.geant.org/spa-docker/maat-ai-assistant:1.0.0
+    ports:
+      - "8501:8501"
+    environment:
+      - MCP_URL=$MCP_URL
+      - API_TYPE=$API_TYPE
+      - OPENAI_BASE_URL=$OPENAI_BASE_URL
+      - OPENAI_API_KEY=$OPENAI_API_KEY
+      - OPENAI_MODEL=$OPENAI_MODEL
+      - SSL_VERIFY=$SSL_VERIFY
+      - KEYCLOAK_URL=$KEYCLOAK_PROTOCOL://$KEYCLOAK_HOST:$KEYCLOAK_PORT
+      - KEYCLOAK_REALM=$KEYCLOAK_REALM
+      - KEYCLOAK_CLIENT_ID=$KEYCLOAK_CLIENT_ID_FOR_USERS
+    depends_on:
+      mcp-server:
+        condition: service_healthy
+    restart: on-failure
+
+volumes:
+  mongodb-maat-fosdem:
+  mongodb-eventlistener:
+  mongodb-graylog_data:
+  graylog_data:
+  graylog_journal:
+  keycloak_data:
