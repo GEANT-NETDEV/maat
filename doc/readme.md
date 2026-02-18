@@ -902,6 +902,7 @@ The following environment variables can be configured for MaatUI in docker-compo
 ## MaatAI
 
 MaatAI is a set of AI tools for the Maat application that enable natural language interaction with inventory data. It consists of two components:
+
 - **MCP Server** - a Model Context Protocol server that provides AI tools with access to the Maat API for managing resources and services.
 - **Maat AI Assistant** - a web-based chat interface that allows users to interact with Maat using natural language via the MCP Server.
 
