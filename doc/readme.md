@@ -117,6 +117,28 @@ Go to **target/** folder and run .jar file with created name for Maat.
 
 Maat can be run in a Docker container. The Docker image is available on the Artifactory repository at `artifactory.software.geant.org/spa-docker/maat:<actuall_version e.g. 1.0.15>`.
 
+### Building a local Docker image with custom certificates
+
+The local `docker/Dockerfile` imports all certificates placed in `docker/certs/`.
+
+To build a local image using only the certificates bundled in the repository, run:
+
+```bash
+docker build -t maat -f docker/Dockerfile .
+```
+
+If you also want to download and import the certificate chain from a remote TLS endpoint during the build, use:
+
+```bash
+docker build -t maat --build-arg TLS_CERT_HOST=<tls_host> --build-arg TLS_CERT_PORT=443 -f docker/Dockerfile .
+```
+
+Example:
+
+```bash
+docker build -t maat --build-arg TLS_CERT_HOST=https://example-website.com --build-arg TLS_CERT_PORT=443 -f docker/Dockerfile .
+```
+
 <a name="configuration-of-the-env-file"></a>
 ### Configuration of the .env file
 

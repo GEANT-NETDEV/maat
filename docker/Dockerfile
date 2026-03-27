@@ -11,7 +11,10 @@ RUN mvn install -Dmaven.test.failure.ignore=true -Dmaven.test.skip=true
 
 # base image to build a JRE
 FROM amazoncorretto:21.0.3-alpine AS corretto-jdk
-# required for strip-debug to work + openssl do pobrania łańcucha certów
+ARG TLS_CERT_HOST=""
+ARG TLS_CERT_PORT="443"
+
+# required for strip-debug to work and for downloading certificate chains
 RUN apk add --no-cache binutils openssl
 
 # Build small JRE image
@@ -27,23 +30,37 @@ RUN $JAVA_HOME/bin/jlink \
 RUN mkdir -p /customjre/lib/security && \
     cp -v "$JAVA_HOME/lib/security/cacerts" "/customjre/lib/security/cacerts"
 
-COPY /docker/certs/harica-root-2015.pem /tmp/harica-root-2015.pem
-COPY /docker/certs/harica-tls-rsa-root-2021.pem /tmp/harica-tls-rsa-root-2021.pem
+COPY docker/certs/ /tmp/certs/
 
-RUN openssl s_client -servername keycloak-pionier.man.poznan.pl \
-      -connect keycloak-pionier.man.poznan.pl:443 -showcerts </dev/null \
-      | awk '/BEGIN CERTIFICATE/{i++} /BEGIN CERTIFICATE/,/END CERTIFICATE/{print > ("/tmp/cert-" i ".pem")}' && \
-    for f in /tmp/cert-*.pem; do \
-      echo "Importing $f into Java cacerts"; \
+RUN find /tmp/certs -type f \( -name '*.crt' -o -name '*.pem' \) | while read -r cert; do \
+      echo "Importing $cert into Java cacerts"; \
       "$JAVA_HOME/bin/keytool" -importcert -trustcacerts \
-        -alias "$(basename "$f" .pem)" \
-        -file "$f" \
+        -alias "$(basename "$cert" | sed 's/[^A-Za-z0-9._-]/-/g')" \
+        -file "$cert" \
         -keystore /customjre/lib/security/cacerts \
-        -storepass changeit -noprompt || true; \
+        -storepass changeit -noprompt; \
     done
+
+RUN if [ -n "$TLS_CERT_HOST" ]; then \
+      openssl s_client -servername "$TLS_CERT_HOST" \
+        -connect "$TLS_CERT_HOST:$TLS_CERT_PORT" -showcerts </dev/null \
+        | awk '/BEGIN CERTIFICATE/{i++} /BEGIN CERTIFICATE/,/END CERTIFICATE/{print > ("/tmp/remote-cert-" i ".pem")}'; \
+      for cert in /tmp/remote-cert-*.pem; do \
+        if [ -f "$cert" ]; then \
+          echo "Importing $cert from $TLS_CERT_HOST into Java cacerts"; \
+          "$JAVA_HOME/bin/keytool" -importcert -trustcacerts \
+            -alias "$(basename "$cert" .pem)" \
+            -file "$cert" \
+            -keystore /customjre/lib/security/cacerts \
+            -storepass changeit -noprompt; \
+        fi; \
+      done; \
+    fi
 
 # main app image
 FROM alpine:latest
+ARG TLS_CERT_HOST=""
+ARG TLS_CERT_PORT="443"
 ENV JAVA_HOME=/jre
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
 
@@ -54,10 +71,16 @@ WORKDIR /home/maat
 
 RUN apk add --no-cache ca-certificates gettext curl openssl && update-ca-certificates
 
-RUN mkdir -p /usr/local/share/ca-certificates && \
-    openssl s_client -servername keycloak-pionier.man.poznan.pl \
-      -connect keycloak-pionier.man.poznan.pl:443 -showcerts </dev/null \
-      | awk '/BEGIN CERTIFICATE/{i++} /BEGIN CERTIFICATE/,/END CERTIFICATE/{print > ("/usr/local/share/ca-certificates/keycloak-" i ".crt")}' && \
+COPY docker/certs/ /usr/local/share/ca-certificates/custom/
+
+RUN find /usr/local/share/ca-certificates/custom -type f \( -name '*.crt' -o -name '*.pem' \) | while read -r cert; do \
+      cp "$cert" "/usr/local/share/ca-certificates/$(basename "$cert" .pem).crt"; \
+    done && \
+    if [ -n "$TLS_CERT_HOST" ]; then \
+      openssl s_client -servername "$TLS_CERT_HOST" \
+        -connect "$TLS_CERT_HOST:$TLS_CERT_PORT" -showcerts </dev/null \
+        | awk '/BEGIN CERTIFICATE/{i++} /BEGIN CERTIFICATE/,/END CERTIFICATE/{print > ("/usr/local/share/ca-certificates/remote-cert-" i ".crt")}'; \
+    fi && \
     update-ca-certificates
 
 ENV JAVA_TOOL_OPTIONS="-Djavax.net.ssl.trustStore=/jre/lib/security/cacerts -Djavax.net.ssl.trustStorePassword=changeit"
