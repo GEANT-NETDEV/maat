@@ -928,8 +928,13 @@ The following environment variables can be configured for MaatUI in docker-compo
 
 MaatAI is a set of AI tools for the Maat application that enable natural language interaction with inventory data. It consists of two components:
 
-- **MCP Server** - a Model Context Protocol server that provides AI tools with access to the Maat API for managing resources and services.
-- **Maat AI Assistant** - a web-based chat interface that allows users to interact with Maat using natural language via the MCP Server.
+- **[MCP Server](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-mcp-server/browse/README.md)** - a Model Context Protocol server that provides AI tools with access to the Maat API for managing resources and services.
+- **[Maat AI Assistant](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-ai/browse/README.md)** - a web-based chat interface that allows users to interact with Maat using natural language via the MCP Server.
+
+The repositories are available at
+
+- **MCP Server** - https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-mcp-server
+- **Maat AI Assistant** - https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-ai
 
 The MaatAI is available in `docker-compose-7`. The Maat AI Assistant is accessible at `http://<IP_address>:8501`.
 
