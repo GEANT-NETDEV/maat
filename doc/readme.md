@@ -933,8 +933,8 @@ MaatAI is a set of AI tools for the Maat application that enable natural languag
 
 The repositories are available at
 
-- **MCP Server** - https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-mcp-server
-- **Maat AI Assistant** - https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-ai
+- **MCP Server** - [https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-mcp-server](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-mcp-server)
+- **Maat AI Assistant** - [https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-ai](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-ai)
 
 The MaatAI is available in `docker-compose-7`. The Maat AI Assistant is accessible at `http://<IP_address>:8501`.
 
