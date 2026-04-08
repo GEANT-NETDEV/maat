@@ -50,6 +50,7 @@ class HttpSendNotifierTest extends org.geant.maat.integration.testcontainers.Bas
         notificationService.registerNewEventForTests(new EventDto(EventType.ResourceCreateEvent, mapper.createObjectNode()));
         var json = mapper.readTree(event.get().get());
 
-        return Stream.of("eventId", "eventTime", "eventType", "event").map(p -> dynamicTest(p, () -> json.has(p)));
+        return Stream.of("eventId", "eventTime", "eventType", "event", "changedByUser")
+                .map(p -> dynamicTest(p, () -> json.has(p)));
     }
 }

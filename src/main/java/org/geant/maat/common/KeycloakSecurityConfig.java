@@ -97,6 +97,7 @@ public class KeycloakSecurityConfig {
                         "Accept",
                         "X-Requested-With",
                         "remember-me",
+                        CurrentUserResolver.AUTHENTICATED_USER_HEADER,
                         "Authorization"
                 ));
                 config.setAllowCredentials(true);

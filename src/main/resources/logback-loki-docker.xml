@@ -3,7 +3,7 @@
 
 <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
     <encoder>
-        <pattern>{%d{yyyy-MM-dd HH:mm:ss} "level":"%level", [%thread] %-5level %logger{36} - %msg}%n</pattern>
+        <pattern>{%d{yyyy-MM-dd HH:mm:ss} "level":"%level", "user":"%X{maat.user:-unknown}", [%thread] %-5level %logger{36} - %msg}%n</pattern>
     </encoder>
     <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
         <level>DEBUG</level>
@@ -19,7 +19,7 @@
         <totalSizeCap>1GB</totalSizeCap>
     </rollingPolicy>
     <encoder>
-        <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n</pattern>
+        <pattern>%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} user=%X{maat.user:-unknown} - %msg%n</pattern>
     </encoder>
     <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
         <level>WARN</level>

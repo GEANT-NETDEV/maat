@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Either;
+import org.geant.maat.common.CurrentUserResolver;
 import org.geant.maat.infrastructure.DomainError;
 import org.geant.maat.notification.dto.CreateListenerDto;
 import org.geant.maat.notification.dto.EventDto;
@@ -23,6 +24,7 @@ public class NotificationService {
     private final Collection<Listener> listeners;
     private final Notifier notifier;
     private final ListenerCreator creator;
+    private final CurrentUserResolver currentUserResolver;
     private static SaveListenerToMongoDB finder;
 
     @Autowired
@@ -30,16 +32,27 @@ public class NotificationService {
 
 
     public NotificationService(String mongoConnectionData, Notifier notifier) {
+        this(mongoConnectionData, notifier, () -> CurrentUserResolver.UNKNOWN_USER);
+    }
+
+    public NotificationService(String mongoConnectionData, Notifier notifier, CurrentUserResolver currentUserResolver) {
         this.notifier = notifier;
         this.creator = new ListenerCreator();
         this.listeners = new ArrayList<>();
+        this.currentUserResolver = currentUserResolver;
         this.finder = new SaveListenerToMongoDB(mongoConnectionData);
     }
 
     public NotificationService(String mongoConnectionData, Notifier notifier, String testCollection) {
+        this(mongoConnectionData, notifier, testCollection, () -> CurrentUserResolver.UNKNOWN_USER);
+    }
+
+    public NotificationService(String mongoConnectionData, Notifier notifier, String testCollection,
+                               CurrentUserResolver currentUserResolver) {
         this.notifier = notifier;
         this.creator = new ListenerCreator();
         this.listeners = new ArrayList<>();
+        this.currentUserResolver = currentUserResolver;
         this.finder = new SaveListenerToMongoDB(mongoConnectionData, testCollection);
     }
 
@@ -69,15 +82,18 @@ public class NotificationService {
     public void registerNewEvent(EventDto eventDto) {
         // TODO log when notifier fails to send event
         if(Objects.requireNonNull(environment.getProperty("notification.sendNotificationToListeners")).equalsIgnoreCase("true")) {
+            String changedByUser = currentUserResolver.resolveCurrentUser();
+            NotificationLogger.info(String.format("Registering event %s changedByUser=%s", eventDto.type(), changedByUser));
             this.getListenersFromDb();
-            listeners.forEach(listener -> notifier.notifyListener(listener, Event.from(eventDto)));
+            listeners.forEach(listener -> notifier.notifyListener(listener, Event.from(eventDto, changedByUser)));
         }
     }
 
     public void registerNewEventForTests(EventDto eventDto) {
         // TODO log when notifier fails to send event
+            String changedByUser = currentUserResolver.resolveCurrentUser();
             this.getListenersFromDb();
-            listeners.forEach(listener -> notifier.notifyListener(listener, Event.from(eventDto)));
+            listeners.forEach(listener -> notifier.notifyListener(listener, Event.from(eventDto, changedByUser)));
     }
 
     public Either<DomainError, ?> deleteListener(String id) {

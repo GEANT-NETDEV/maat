@@ -11,7 +11,6 @@ import java.net.URL;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.junit.jupiter.api.DynamicTest.dynamicTest;
 
 class NotificationsTest extends org.geant.maat.integration.testcontainers.BaseTestContainers{
     private final ObjectMapper mapper = new ObjectMapper();
@@ -88,6 +87,18 @@ class NotificationsTest extends org.geant.maat.integration.testcontainers.BaseTe
         assertEquals(1, notifier.getSentNotificationsCount());
     }
 
+    @Test
+    void registerEventShouldIncludeChangedByUser() throws JsonProcessingException {
+        var capturingNotifier = new CapturingNotifier();
+        String mongoConnectionData = String.format("mongodb://admin:abc123@localhost");
+        notificationService = new NotificationService(mongoConnectionData, capturingNotifier, "testListeners", () -> "adamski");
+        notificationService.addListener(dummyDto());
+
+        notificationService.registerNewEventForTests(new EventDto(EventType.ResourceCreateEvent, mapper.createObjectNode()));
+
+        assertEquals("adamski", capturingNotifier.lastEvent.changedByUser());
+    }
+
     private CreateListenerDto dummyDto(String query) {
         try {
             return new CreateListenerDto(new URL("http://example.com"), query);
@@ -98,5 +109,15 @@ class NotificationsTest extends org.geant.maat.integration.testcontainers.BaseTe
 
     private CreateListenerDto dummyDto() {
         return dummyDto(null);
+    }
+
+    private static class CapturingNotifier extends Notifier {
+        private Event lastEvent;
+
+        @Override
+        io.vavr.control.Either<String, String> sendNotification(Listener listener, Event event) {
+            this.lastEvent = event;
+            return io.vavr.control.Either.right("OK");
+        }
     }
 }
