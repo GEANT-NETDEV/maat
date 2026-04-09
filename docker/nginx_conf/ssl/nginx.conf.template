@@ -44,5 +44,16 @@ http {
             proxy_pass $MAAT_PROTOCOL://$MAAT_HOST:$MAAT_PORT;
             proxy_set_header Host $MAAT_HOST;
         }
+
+        # MCP Server - reverse proxy for HTTPS access (e.g. HuggingFace Chat UI)
+        location /mcp {
+            proxy_pass http://mcp-server:8002/mcp;
+            proxy_set_header X-Forwarded-Proto https;
+
+            # SSE/streaming support for MCP streamable-http
+            proxy_buffering off;
+            proxy_cache off;
+            proxy_read_timeout 300s;
+        }
     }
 }
