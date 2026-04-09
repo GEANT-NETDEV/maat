@@ -34,11 +34,14 @@ COPY docker/certs/ /tmp/certs/
 
 RUN find /tmp/certs -type f \( -name '*.crt' -o -name '*.pem' \) | while read -r cert; do \
       echo "Importing $cert into Java cacerts"; \
+      normalized="/tmp/$(basename "$cert").der"; \
+      tr -d '\r' < "$cert" > /tmp/import-cert.pem && \
+      openssl x509 -inform PEM -in /tmp/import-cert.pem -outform DER -out "$normalized" && \
       "$JAVA_HOME/bin/keytool" -importcert -trustcacerts \
         -alias "$(basename "$cert" | sed 's/[^A-Za-z0-9._-]/-/g')" \
-        -file "$cert" \
+        -file "$normalized" \
         -keystore /customjre/lib/security/cacerts \
-        -storepass changeit -noprompt; \
+        -storepass changeit -noprompt || echo "Skipping Java cacerts import for $cert"; \
     done
 
 RUN if [ -n "$TLS_CERT_HOST" ]; then \
@@ -48,9 +51,12 @@ RUN if [ -n "$TLS_CERT_HOST" ]; then \
       for cert in /tmp/remote-cert-*.pem; do \
         if [ -f "$cert" ]; then \
           echo "Importing $cert from $TLS_CERT_HOST into Java cacerts"; \
+          normalized="/tmp/$(basename "$cert").der"; \
+          tr -d '\r' < "$cert" > /tmp/import-cert.pem; \
+          openssl x509 -inform PEM -in /tmp/import-cert.pem -outform DER -out "$normalized"; \
           "$JAVA_HOME/bin/keytool" -importcert -trustcacerts \
             -alias "$(basename "$cert" .pem)" \
-            -file "$cert" \
+            -file "$normalized" \
             -keystore /customjre/lib/security/cacerts \
             -storepass changeit -noprompt; \
         fi; \
@@ -74,7 +80,10 @@ RUN apk add --no-cache ca-certificates gettext curl openssl && update-ca-certifi
 COPY docker/certs/ /usr/local/share/ca-certificates/custom/
 
 RUN find /usr/local/share/ca-certificates/custom -type f \( -name '*.crt' -o -name '*.pem' \) | while read -r cert; do \
-      cp "$cert" "/usr/local/share/ca-certificates/$(basename "$cert" .pem).crt"; \
+      name="$(basename "$cert")"; \
+      name="${name%.pem}"; \
+      name="${name%.crt}"; \
+      cp "$cert" "/usr/local/share/ca-certificates/${name}.crt"; \
     done && \
     if [ -n "$TLS_CERT_HOST" ]; then \
       openssl s_client -servername "$TLS_CERT_HOST" \
