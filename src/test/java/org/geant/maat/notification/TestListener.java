@@ -11,7 +11,7 @@ import java.net.InetSocketAddress;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
 
-class TestListener extends org.geant.maat.integration.testcontainers.BaseTestContainers{
+class TestListener {
     public final URL address;
     private final TestHandler handler;
     private final HttpServer httpServer;

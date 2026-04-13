@@ -80,20 +80,37 @@ public class NotificationService {
     }
 
     public void registerNewEvent(EventDto eventDto) {
-        // TODO log when notifier fails to send event
         if(Objects.requireNonNull(environment.getProperty("notification.sendNotificationToListeners")).equalsIgnoreCase("true")) {
             String changedByUser = currentUserResolver.resolveCurrentUser();
-            NotificationLogger.info(String.format("Registering event %s changedByUser=%s", eventDto.type(), changedByUser));
-            this.getListenersFromDb();
-            listeners.forEach(listener -> notifier.notifyListener(listener, Event.from(eventDto, changedByUser)));
+            Event event = Event.from(eventDto, changedByUser);
+            NotificationLogger.info(String.format("Registering event id=%s type=%s changedByUser=%s",
+                    event.eventId(), event.eventType(), changedByUser));
+            var listenersResult = this.getListenersFromDb();
+            if (listenersResult.isLeft()) {
+                NotificationLogger.warning(String.format("Event id=%s could not be dispatched because listeners could not be loaded",
+                        event.eventId()));
+                return;
+            }
+            NotificationLogger.info(String.format("Dispatching event id=%s to %d listeners",
+                    event.eventId(), listeners.size()));
+            listeners.forEach(listener -> notifier.notifyListener(listener, event));
         }
     }
 
     public void registerNewEventForTests(EventDto eventDto) {
-        // TODO log when notifier fails to send event
             String changedByUser = currentUserResolver.resolveCurrentUser();
-            this.getListenersFromDb();
-            listeners.forEach(listener -> notifier.notifyListener(listener, Event.from(eventDto, changedByUser)));
+            Event event = Event.from(eventDto, changedByUser);
+            NotificationLogger.info(String.format("Registering test event id=%s type=%s changedByUser=%s",
+                    event.eventId(), event.eventType(), changedByUser));
+            var listenersResult = this.getListenersFromDb();
+            if (listenersResult.isLeft()) {
+                NotificationLogger.warning(String.format("Test event id=%s could not be dispatched because listeners could not be loaded",
+                        event.eventId()));
+                return;
+            }
+            NotificationLogger.info(String.format("Dispatching test event id=%s to %d listeners",
+                    event.eventId(), listeners.size()));
+            listeners.forEach(listener -> notifier.notifyListener(listener, event));
     }
 
     public Either<DomainError, ?> deleteListener(String id) {
