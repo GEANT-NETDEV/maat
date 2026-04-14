@@ -3,13 +3,14 @@ package org.geant.maat.common;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
+import org.springframework.security.oauth2.server.resource.web.authentication.BearerTokenAuthenticationFilter;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -32,20 +33,16 @@ public class KeycloakSecurityConfig {
     @Value("${keycloak.authorization.l1.roles}")
     private String keycloakAuthorizationL1Status;
 
-    private final KeycloakJwtTokenConverter keycloakJwtTokenConverter;
+    private final ObjectProvider<KeycloakServiceTokenUserContextFilter> keycloakServiceTokenUserContextFilter;
 
 
-    public KeycloakSecurityConfig(TokenConverterProperties properties) {
-        JwtGrantedAuthoritiesConverter jwtGrantedAuthoritiesConverter
-                = new JwtGrantedAuthoritiesConverter();
-        this.keycloakJwtTokenConverter
-                = new KeycloakJwtTokenConverter(
-                jwtGrantedAuthoritiesConverter,
-                properties);
+    public KeycloakSecurityConfig(ObjectProvider<KeycloakServiceTokenUserContextFilter> keycloakServiceTokenUserContextFilter) {
+        this.keycloakServiceTokenUserContextFilter = keycloakServiceTokenUserContextFilter;
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http,
+                                                   KeycloakJwtTokenConverter keycloakJwtTokenConverter) throws Exception {
         if (Objects.equals(keycloakAuthorizationL1Status, "true")) {
             http
                     .authorizeHttpRequests(authorize -> authorize
@@ -67,6 +64,9 @@ public class KeycloakSecurityConfig {
         http
                 .oauth2ResourceServer(oauth2 -> oauth2
                         .jwt(jwt -> jwt.jwtAuthenticationConverter(keycloakJwtTokenConverter)));
+        keycloakServiceTokenUserContextFilter.ifAvailable(
+                filter -> http.addFilterAfter(filter, BearerTokenAuthenticationFilter.class)
+        );
         http
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS));

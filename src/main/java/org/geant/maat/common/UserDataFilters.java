@@ -1,16 +1,11 @@
 package org.geant.maat.common;
 
-import com.auth0.jwt.JWT;
-import com.auth0.jwt.interfaces.DecodedJWT;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.vavr.control.Either;
 import org.geant.maat.infrastructure.DomainError;
-import org.geant.maat.infrastructure.ErrorEntity;
-import org.geant.maat.notification.NotificationService;
-import org.geant.maat.resource.Resource;
 import org.geant.maat.resource.ResourceService;
 import org.geant.maat.service.ServiceService;
 import org.slf4j.Logger;
@@ -47,14 +42,19 @@ public class UserDataFilters {
         return Optional.empty();
     }
 
-    static Optional<String> getBearerToken() {
-        return getCurrentRequestAuthentication().map(JwtAuthenticationToken::getToken).map(Jwt::getTokenValue);
+    static Optional<Jwt> getCurrentJwt() {
+        return getCurrentRequestAuthentication().map(JwtAuthenticationToken::getToken);
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> getUserAccessFiltersClaim() {
+        return getCurrentJwt()
+                .map(jwt -> (Map<String, Object>) jwt.getClaims().get("user_access_filters"))
+                .orElse(null);
     }
 
     public Collection<JsonNode> getFilter(List<String> fields, Map<String, String> oldRequestsParams, String sort, String type) {
-        String cleanedToken = getBearerToken().get();
-        DecodedJWT jwt = JWT.decode(cleanedToken);
-        Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
+        Map<String, Object> userAccessFilters = getUserAccessFiltersClaim();
 
         List<Map<String, String>> orFilters = new ArrayList<>();
         if (userAccessFilters != null) {
@@ -104,9 +104,7 @@ public class UserDataFilters {
 
     public Collection<JsonNode> getFilter(List<String> fields, Map<String, String> oldRequestsParams, int offset,
                                           int limit, String sort, String type) {
-        String cleanedToken = getBearerToken().get();
-        DecodedJWT jwt = JWT.decode(cleanedToken);
-        Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
+        Map<String, Object> userAccessFilters = getUserAccessFiltersClaim();
 
         List<Map<String, String>> orFilters = new ArrayList<>();
         if (userAccessFilters != null) {
@@ -157,9 +155,7 @@ public class UserDataFilters {
     }
 
     public Either<DomainError, JsonNode> getFilterById(String id, List<String> fields, String type) {
-        String cleanedToken = getBearerToken().get();
-        DecodedJWT jwt = JWT.decode(cleanedToken);
-        Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
+        Map<String, Object> userAccessFilters = getUserAccessFiltersClaim();
 
         List<Map<String, String>> orFilters = new ArrayList<>();
 
@@ -221,9 +217,7 @@ public class UserDataFilters {
     }
 
     public Either<DomainError, JsonNode> postFilter(JsonNode requestBody, String type) {
-        String cleanedToken = getBearerToken().get();
-        DecodedJWT jwt = JWT.decode(cleanedToken);
-        Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
+        Map<String, Object> userAccessFilters = getUserAccessFiltersClaim();
 
         List<Map<String, String>> orFilters = new ArrayList<>();
 
@@ -273,9 +267,7 @@ public class UserDataFilters {
     }
 
     public Either<DomainError, String> deleteFilter(String id, String type) {
-        String cleanedToken = getBearerToken().get();
-        DecodedJWT jwt = JWT.decode(cleanedToken);
-        Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
+        Map<String, Object> userAccessFilters = getUserAccessFiltersClaim();
 
         List<Map<String, String>> orFilters = new ArrayList<>();
 
@@ -336,9 +328,7 @@ public class UserDataFilters {
     }
 
     public Either<DomainError, JsonNode> patchFilter(String id, JsonNode requestBody, String type) {
-        String cleanedToken = getBearerToken().get();
-        DecodedJWT jwt = JWT.decode(cleanedToken);
-        Map<String, Object> userAccessFilters = jwt.getClaim("user_access_filters").asMap();
+        Map<String, Object> userAccessFilters = getUserAccessFiltersClaim();
 
         List<Map<String, String>> orFilters = new ArrayList<>();
 

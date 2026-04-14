@@ -20,7 +20,7 @@ class RequestCurrentUserResolverTest {
 
     @Test
     void shouldReturnUnknownWhenKeycloakDisabled() {
-        var resolver = new RequestCurrentUserResolver(false, tokenConverterProperties());
+        var resolver = new RequestCurrentUserResolver(false, tokenConverterProperties(), serviceTokenProperties(false));
 
         assertEquals(CurrentUserResolver.UNKNOWN_USER, resolver.resolveCurrentUser());
     }
@@ -29,26 +29,36 @@ class RequestCurrentUserResolverTest {
     void shouldResolveUserFromToken() {
         SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(jwtWithUsername("adamski")));
 
-        var resolver = new RequestCurrentUserResolver(true, tokenConverterProperties());
+        var resolver = new RequestCurrentUserResolver(true, tokenConverterProperties(), serviceTokenProperties(false));
 
         assertEquals("adamski", resolver.resolveCurrentUser());
     }
 
     @Test
     void shouldResolveUserFromHeaderForServiceToken() {
-        SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(jwtWithUsername("service-account-maat")));
+        SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(serviceJwt("maat")));
         setCurrentRequest("adamski");
 
-        var resolver = new RequestCurrentUserResolver(true, tokenConverterProperties());
+        var resolver = new RequestCurrentUserResolver(true, tokenConverterProperties(), serviceTokenProperties(true));
 
         assertEquals("adamski", resolver.resolveCurrentUser());
     }
 
     @Test
     void shouldReturnUnknownForServiceTokenWithoutHeader() {
-        SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(jwtWithUsername("service-account-maat")));
+        SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(serviceJwt("maat")));
 
-        var resolver = new RequestCurrentUserResolver(true, tokenConverterProperties());
+        var resolver = new RequestCurrentUserResolver(true, tokenConverterProperties(), serviceTokenProperties(true));
+
+        assertEquals(CurrentUserResolver.UNKNOWN_USER, resolver.resolveCurrentUser());
+    }
+
+    @Test
+    void shouldReturnUnknownForUntrustedServiceTokenHeaderWhenMechanismEnabled() {
+        SecurityContextHolder.getContext().setAuthentication(new JwtAuthenticationToken(serviceJwt("other-client")));
+        setCurrentRequest("adamski");
+
+        var resolver = new RequestCurrentUserResolver(true, tokenConverterProperties(), serviceTokenProperties(true));
 
         assertEquals(CurrentUserResolver.UNKNOWN_USER, resolver.resolveCurrentUser());
     }
@@ -66,9 +76,25 @@ class RequestCurrentUserResolverTest {
                 .build();
     }
 
+    private static Jwt serviceJwt(String clientId) {
+        return Jwt.withTokenValue("token")
+                .header("alg", "none")
+                .claim("preferred_username", "service-account-maat")
+                .claim("azp", clientId)
+                .claim("client_id", clientId)
+                .build();
+    }
+
     private static TokenConverterProperties tokenConverterProperties() {
         TokenConverterProperties properties = new TokenConverterProperties();
         properties.setPrincipalAttribute("preferred_username");
+        return properties;
+    }
+
+    private static KeycloakServiceTokenUserContextProperties serviceTokenProperties(boolean enabled) {
+        KeycloakServiceTokenUserContextProperties properties = new KeycloakServiceTokenUserContextProperties();
+        properties.setEnabled(enabled);
+        properties.setTrustedClient("maat");
         return properties;
     }
 }

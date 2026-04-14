@@ -17,12 +17,15 @@ import java.util.Optional;
 public class RequestCurrentUserResolver implements CurrentUserResolver {
     private final boolean keycloakEnabled;
     private final String principalClaimName;
+    private final KeycloakServiceTokenUserContextProperties properties;
 
     public RequestCurrentUserResolver(
             @Value("${keycloak.enabled}") boolean keycloakEnabled,
-            TokenConverterProperties tokenConverterProperties) {
+            TokenConverterProperties tokenConverterProperties,
+            KeycloakServiceTokenUserContextProperties properties) {
         this.keycloakEnabled = keycloakEnabled;
         this.principalClaimName = tokenConverterProperties.getPrincipalAttribute().orElse("preferred_username");
+        this.properties = properties;
     }
 
     @Override
@@ -51,8 +54,8 @@ public class RequestCurrentUserResolver implements CurrentUserResolver {
         }
 
         if (request != null) {
-            String headerUser = request.getHeader(AUTHENTICATED_USER_HEADER);
-            if (StringUtils.hasText(headerUser)) {
+            String headerUser = request.getHeader(properties.getHeaderName());
+            if (StringUtils.hasText(headerUser) && isHeaderTrustedForCurrentToken()) {
                 return headerUser.trim();
             }
         }
@@ -77,8 +80,34 @@ public class RequestCurrentUserResolver implements CurrentUserResolver {
                 .map(String::trim);
     }
 
+    private boolean isHeaderTrustedForCurrentToken() {
+        if (!properties.isEnabled()) {
+            return true;
+        }
+        return getCurrentJwt()
+                .map(jwt -> {
+                    String trustedClient = properties.getTrustedClient();
+                    String azp = jwt.getClaimAsString("azp");
+                    String clientId = jwt.getClaimAsString("client_id");
+                    return StringUtils.hasText(trustedClient)
+                            && (trustedClient.equals(azp) || trustedClient.equals(clientId));
+                })
+                .orElse(false);
+    }
+
     private boolean isServiceAccount(String user) {
         return user.startsWith("service-account-");
+    }
+
+    private Optional<Jwt> getCurrentJwt() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication instanceof JwtAuthenticationToken jwtAuthenticationToken) {
+            return Optional.of(jwtAuthenticationToken.getToken());
+        }
+        if (authentication != null && authentication.getPrincipal() instanceof Jwt jwt) {
+            return Optional.of(jwt);
+        }
+        return Optional.empty();
     }
 
     private Optional<HttpServletRequest> currentRequest() {
