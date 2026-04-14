@@ -40,6 +40,14 @@ server.ssl.trust-store-type=JKS
 keycloak.enabled=$KEYCLOAK_ENABLED
 keycloak.authorization.l1.roles=$KEYCLOAK_AUTHORIZATION_L1_ROLES
 keycloak.authorization.l2.filters=$KEYCLOAK_AUTHORIZATION_L2_FILTERS
+keycloak.service-token-user-context.enabled=$KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_ENABLED
+keycloak.service-token-user-context.header-name=$KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_HEADER_NAME
+keycloak.service-token-user-context.trusted-client=$KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_TRUSTED_CLIENT
+keycloak.service-token-user-context.admin-client-id=$KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_ADMIN_CLIENT_ID
+keycloak.service-token-user-context.admin-client-secret=$KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_ADMIN_CLIENT_SECRET
+keycloak.service-token-user-context.cache-ttl-seconds=$KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_CACHE_TTL_SECONDS
+keycloak.service-token-user-context.fail-on-keycloak-error=$KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_FAIL_ON_KEYCLOAK_ERROR
+keycloak.service-token-user-context.user-access-filter-attributes=$KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_USER_ACCESS_FILTER_ATTRIBUTES
 spring.security.oauth2.resourceserver.jwt.issuer-uri=$KEYCLOAK_ISSUER_URI
 spring.security.oauth2.resourceserver.jwt.jwk-set-uri=${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs
 

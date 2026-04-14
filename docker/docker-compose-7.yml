@@ -1,25 +1,11 @@
 services:
 
   maat:
-    image: artifactory.software.geant.org/spa-docker/maat:1.0.15
+    image: artifactory.software.geant.org/spa-docker/maat:1.0.15.11
     hostname: $MAAT_HOST
     ports:
       - "8080:8080"
     environment:
-      - MAAT_ROLE_GET_ONLY=$MAAT_ROLE_GET_ONLY
-      - MAAT_ROLE_POST_ONLY=$MAAT_ROLE_POST_ONLY
-      - MAAT_ROLE_DELETE_ONLY=$MAAT_ROLE_DELETE_ONLY
-      - MAAT_ROLE_PATCH_ONLY=$MAAT_ROLE_PATCH_ONLY
-      - KEYCLOAK_ENABLED=$KEYCLOAK_ENABLED
-      - KEYCLOAK_PROTOCOL=$KEYCLOAK_PROTOCOL
-      - KEYCLOAK_HOST=$KEYCLOAK_HOST
-      - KEYCLOAK_PORT=$KEYCLOAK_PORT
-      - KEYCLOAK_REALM=$KEYCLOAK_REALM
-      - KEYCLOAK_ISSUER_URI=$KEYCLOAK_ISSUER_URI
-      - KEYCLOAK_CLIENT_ID_FOR_USERS=$KEYCLOAK_CLIENT_ID_FOR_USERS
-      - KEYCLOAK_AUTHORIZATION_L1_ROLES=$KEYCLOAK_AUTHORIZATION_L1_ROLES
-      - KEYCLOAK_AUTHORIZATION_L2_FILTERS=$KEYCLOAK_AUTHORIZATION_L2_FILTERS
-      - server.ssl.enabled=false
       - MONGO_HOST=$MONGODB_HOST
       - MONGO_USER=$MONGO_USER
       - MONGO_PASSWORD=$MONGO_PASSWORD
@@ -30,6 +16,29 @@ services:
       - MAAT_SERVICE_PROTOCOL=$MAAT_SERVICE_PROTOCOL
       - MAAT_SERVICE_ADDRESS=$MAAT_SERVICE_ADDRESS
       - MAAT_SERVICE_PORT=$MAAT_SERVICE_PORT
+      - MAAT_ROLE_GET_ONLY=$MAAT_ROLE_GET_ONLY
+      - MAAT_ROLE_POST_ONLY=$MAAT_ROLE_POST_ONLY
+      - MAAT_ROLE_DELETE_ONLY=$MAAT_ROLE_DELETE_ONLY
+      - MAAT_ROLE_PATCH_ONLY=$MAAT_ROLE_PATCH_ONLY
+        #Keycloak
+      - KEYCLOAK_ENABLED=$KEYCLOAK_ENABLED
+      - KEYCLOAK_PROTOCOL=$KEYCLOAK_PROTOCOL
+      - KEYCLOAK_HOST=$KEYCLOAK_HOST
+      - KEYCLOAK_PORT=$KEYCLOAK_PORT
+      - KEYCLOAK_REALM=$KEYCLOAK_REALM
+      - KEYCLOAK_ISSUER_URI=$KEYCLOAK_ISSUER_URI
+      - KEYCLOAK_CLIENT_ID_FOR_USERS=$KEYCLOAK_CLIENT_ID_FOR_USERS
+      - KEYCLOAK_AUTHORIZATION_L1_ROLES=$KEYCLOAK_AUTHORIZATION_L1_ROLES
+      - KEYCLOAK_AUTHORIZATION_L2_FILTERS=$KEYCLOAK_AUTHORIZATION_L2_FILTERS
+      - KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_ENABLED=$KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_ENABLED
+      - KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_HEADER_NAME=$KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_HEADER_NAME
+      - KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_TRUSTED_CLIENT=$KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_TRUSTED_CLIENT
+      - KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_ADMIN_CLIENT_ID=$KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_ADMIN_CLIENT_ID
+      - KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_ADMIN_CLIENT_SECRET=$KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_ADMIN_CLIENT_SECRET
+      - KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_CACHE_TTL_SECONDS=$KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_CACHE_TTL_SECONDS
+      - KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_FAIL_ON_KEYCLOAK_ERROR=$KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_FAIL_ON_KEYCLOAK_ERROR
+      - KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_USER_ACCESS_FILTER_ATTRIBUTES=$KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_USER_ACCESS_FILTER_ATTRIBUTES
+      - server.ssl.enabled=false
       - GRAYLOG_HOST=$GRAYLOG_HOST
       - GRAYLOG_PORT=$GRAYLOG_PORT
       - LOGGING_CONFIG=$LOGGING_CONFIG
@@ -44,6 +53,7 @@ services:
 
   mongodb-maat:
     image: mongo:8.2.3
+    #image: mongo:7.0.4
     hostname: $MONGODB_HOST
     ports:
       - "27017:27017"
@@ -82,7 +92,7 @@ services:
         condition: service_healthy
 
   eventListener:
-    image: artifactory.software.geant.org/spa-docker/eventlistener:1.0.4
+    image: artifactory.software.geant.org/spa-docker/eventlistener:1.0.5
     hostname: $EVENT_LISTENER_HOST
     ports:
       - "8081:8081"
@@ -108,6 +118,7 @@ services:
       - KEYCLOAK_PROTOCOL=$KEYCLOAK_PROTOCOL
       - KEYCLOAK_HOST=$KEYCLOAK_HOST
       - KEYCLOAK_PORT=$KEYCLOAK_PORT
+      - KEYCLOAK_REALM=$KEYCLOAK_REALM
       - KEYCLOAK_CLIENT_ID=$KEYCLOAK_CLIENT_ID_FOR_CLIENTS
       - KEYCLOAK_GRANT_TYPE=$KEYCLOAK_GRANT_TYPE_FOR_CLIENTS
       - KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_CLIENT_SECRET
@@ -208,7 +219,7 @@ services:
       - "/var/log/nginx:uid=999,gid=998"
 
   mcp-server:
-    image: artifactory.software.geant.org/spa-docker/maat-mcp-server:1.0.0
+    image: artifactory.software.geant.org/spa-docker/maat-mcp-server:1.0.2
     ports:
       - "8002:8002"
     environment:
@@ -219,7 +230,7 @@ services:
       - MAAT_SERVICE_ENDPOINT=$MAAT_SERVICE_ENDPOINT
       - MCP_HOST=0.0.0.0
       - MCP_PORT=8002
-      - KEYCLOAK_URL=$KEYCLOAK_PROTOCOL://KEYCLOAK_HOST:KEYCLOAK_PORT
+      - KEYCLOAK_URL=$KEYCLOAK_PROTOCOL://$KEYCLOAK_HOST:$KEYCLOAK_PORT
       - KEYCLOAK_REALM=$KEYCLOAK_REALM
       - KEYCLOAK_CLIENT_ID=$KEYCLOAK_CLIENT_ID_FOR_CLIENTS
       - KEYCLOAK_CLIENT_SECRET=$KEYCLOAK_CLIENT_SECRET
@@ -236,7 +247,7 @@ services:
     restart: on-failure
 
   maat-ai-assistant:
-    image: artifactory.software.geant.org/spa-docker/maat-ai-assistant:1.0.0
+    image: artifactory.software.geant.org/spa-docker/maat-ai-assistant:1.0.2
     ports:
       - "8501:8501"
     environment:
@@ -246,19 +257,102 @@ services:
       - OPENAI_API_KEY=$OPENAI_API_KEY
       - OPENAI_MODEL=$OPENAI_MODEL
       - SSL_VERIFY=$SSL_VERIFY
-      - KEYCLOAK_URL=$KEYCLOAK_PROTOCOL://$KEYCLOAK_HOST:$KEYCLOAK_PORT
-      - KEYCLOAK_REALM=$KEYCLOAK_REALM
-      - KEYCLOAK_CLIENT_ID=$KEYCLOAK_CLIENT_ID_FOR_USERS
-      - KEYCLOAK_REDIRECT_URI=$KEYCLOAK_REDIRECT_URI
+      - KEYCLOAK_URL=
+      - KEYCLOAK_REALM=
+      - KEYCLOAK_CLIENT_ID=
+      - KEYCLOAK_REDIRECT_URI=
     depends_on:
       mcp-server:
         condition: service_healthy
     restart: on-failure
 
+  # MongoDB for HuggingFace Chat UI (requires replica set)
+  mongodb-chatui:
+    image: mongo:7
+    hostname: mongo-chatui
+    ports:
+      - "27023:27017"
+    volumes:
+      - mongodb-chatui:/data/db
+    command: --replSet rs0 --bind_ip_all
+    healthcheck:
+      test: >
+        mongosh --quiet --eval
+        'try {rs.status().ok} catch(e) {rs.initiate({_id:"rs0",members:[{_id:0,host:"mongo-chatui:27017"}]}).ok}'
+      interval: 5s
+      timeout: 10s
+      retries: 10
+    restart: always
+
+  # HuggingFace Chat UI - chat interface with MCP integration
+  chatui:
+    extra_hosts:
+      - "webui.suziml.pl:10.44.1.171"
+    build:
+      context: c:/Praca/Projekt_Geant/MaatAI/Projekty/maat_clients/huggingface/chat-ui
+      dockerfile: Dockerfile
+    ports:
+      - "5173:3000"
+    environment:
+      - MONGODB_URL=mongodb://mongo-chatui:27017/chat-ui?replicaSet=rs0
+      - MONGODB_DB_NAME=chat-ui
+      - OPENAI_BASE_URL=https://webui.suziml.pl/api/v1
+      - OPENAI_API_KEY=sk-41f39fcd1df04e83b7b903b004758e3e
+      - PUBLIC_APP_NAME=Maat AI Chat
+      - MCP_SERVERS=[{"name":"maat","url":"https://172.19.87.122:8082/mcp"}]
+      - NODE_TLS_REJECT_UNAUTHORIZED=0
+      - ORIGIN=http://172.19.87.122:5173
+      - PUBLIC_ORIGIN=http://172.19.87.122:5173
+      - ALLOW_INSECURE_COOKIES=true
+#      - OPENID_CLIENT_ID=maat-chatui
+#      - OPENID_CLIENT_SECRET=odzW1lIZiSxJ68n25UrVh9GhBOxmSCRa
+#      - OPENID_PROVIDER_URL=http://172.19.87.122:8090/realms/MaatRealm
+#      - OPENID_SCOPES=openid profile email
+#      - OPENID_ID_TOKEN_SIGNED_RESPONSE_ALG=RS256
+      - OPENID_CONFIG={"CLIENT_ID":"maat-chatui","CLIENT_SECRET":"odzW1lIZiSxJ68n25UrVh9GhBOxmSCRa","PROVIDER_URL":"http://172.19.87.122:8090/realms/MaatRealm","SCOPES":"openid profile email","ID_TOKEN_SIGNED_RESPONSE_ALG":"RS256"}
+      - ADMIN_CLI_LOGIN=false
+      - AUTOMATIC_LOGIN=true
+    depends_on:
+      mongodb-chatui:
+        condition: service_healthy
+      mcp-server:
+        condition: service_healthy
+    restart: on-failure
+
+  n8n:
+    image: n8nio/n8n:latest
+    container_name: n8n
+    restart: always
+    ports:
+      - "5678:5678"
+    environment:
+      # Basic auth (zalecane!)
+      - N8N_BASIC_AUTH_ACTIVE=true
+      - N8N_BASIC_AUTH_USER=admin
+      - N8N_BASIC_AUTH_PASSWORD=admin123
+
+      # Timezone
+      - TZ=Europe/Warsaw
+
+      # URL webhooków (WAŻNE dla Maat!)
+      - WEBHOOK_URL=http://172.19.87.122:5678/
+
+      # Host / port
+      - N8N_HOST=172.19.87.122
+      - N8N_PORT=5678
+      - N8N_PROTOCOL=http
+
+      - N8N_SECURE_COOKIE=false
+
+      # Persistencja
+      - DB_TYPE=sqlite
+
 volumes:
+  #mongodb-maat-fosdem:
   mongodb-maat:
   mongodb-eventlistener:
   mongodb-graylog_data:
   graylog_data:
   graylog_journal:
   keycloak_data:
+  mongodb-chatui:
