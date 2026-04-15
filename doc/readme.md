@@ -39,6 +39,8 @@
     - [Enabling authentication in Maat with Keycloak](#enabling-authentication-in-maat-with-keycloak)
   - [Authorization](#authorization)
     - [Rest method filtering](#rest-method-filtering)
+    - [Service token user context](#service-token-user-context)
+    - [Keycloak configuration for service token user context](#keycloak-configuration-for-service-token-user-context)
     - [JSON content filtering](#json-content-filtering)
 - [MongoDB](#mongodb)
   - [MongoDB version upgrade](#mongodb-version-upgrade)
@@ -144,12 +146,30 @@ docker build -t maat --build-arg TLS_CERT_HOST=https://example-website.com --bui
 
 Environment variables are key-value pairs that are used to configure application settings and other parameters that may
 vary between environments.
-<br><br>The ```.env``` file is located in the ```docker/``` folder.
+<br><br>The repository contains the example file `docker/.env.example`. Before running Docker Compose, create your local
+configuration file `docker/.env` based on this example.
+
+Example:
+
+```bash
+cp docker/.env.example docker/.env
+```
+
+On Windows PowerShell:
+
+```powershell
+Copy-Item docker/.env.example docker/.env
+```
 
 **Warning!** <br> It is not recommended to use localhost in the .env file. Instead, use the address of the machine where Docker is running (e.g., the IP address).
 
-The .env file contains environment variables used to configure the Maat application and other related services. Below is
-a description of the most important configuration options.
+The local `docker/.env` file contains environment variables used to configure the Maat application and other related services.
+Below is a description of the most important configuration options.
+
+In Docker deployments the `.env` file is not read directly by the Spring Boot application. Values from `.env` are first
+substituted into `docker-compose*.yml`, then passed to the `maat` container through the `environment` section, and
+finally written to `application.properties` from `docker/application.properties.template` by `envsubst` during
+container startup.
 
 <a name="maat-parameters"></a>
 #### Maat Parameters
@@ -196,6 +216,14 @@ a description of the most important configuration options.
 |         KEYCLOAK_ENABLED          |     true/false     |      Enable/disable Keycloak application for Maat       |
 |  KEYCLOAK_AUTHORIZATION_L1_ROLES  |     true/false     |  Enable/disable level 1 role authorization in Keycloak  |
 | KEYCLOAK_AUTHORIZATION_L2_FILTERS |     true/false     | Enable/disable level 2 filter authorization in Keycloak |
+| KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_ENABLED | true/false | Enable/disable resolving effective user context for service tokens |
+| KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_HEADER_NAME | X-Authenticated-User-Id | Header used to pass the end-user login together with a service token |
+| KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_TRUSTED_CLIENT | maat | The only trusted service client for which the user header is accepted |
+| KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_ADMIN_CLIENT_ID | maat | Client ID used to call the Keycloak Admin API |
+| KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_ADMIN_CLIENT_SECRET | <client_secret> | Client secret used to call the Keycloak Admin API |
+| KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_CACHE_TTL_SECONDS | 300 | Cache time in seconds for resolved Keycloak user context |
+| KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_FAIL_ON_KEYCLOAK_ERROR | true/false | If true, Keycloak communication errors stop the request |
+| KEYCLOAK_SERVICE_TOKEN_USER_CONTEXT_USER_ACCESS_FILTER_ATTRIBUTES | user_access_filters | Comma-separated list of Keycloak user attributes merged into the `user_access_filters` claim |
 
 <a name="eventlistener-parameters-for-maat"></a>
 #### EventListener Parameters for Maat
@@ -582,6 +610,14 @@ POST method are provided in the section above.
 | spring.security.oauth2.resourceserver.jwt.jwk-set-uri | ${spring.security.oauth2.resourceserver.jwt.issuer-uri}/protocol/openid-connect/certs |                            JSON Web Key URI to use to verify the JWT token                             |
 |          token.converter.principal-attribute          |                                  preferred_username                                   | Parameter that allows to extract the Keycloak user name from a token available on the Spring Boot side |
 |              token.converter.resource-id              |                                     maat-account                                      |                        The name of the client that Spring Boot application uses                        |
+|     keycloak.service-token-user-context.enabled       |                                      true/false                                       | Enables resolving the effective user from a service token and request header. Default is `false` when missing |
+|   keycloak.service-token-user-context.header-name     |                               X-Authenticated-User-Id                                 | Header containing the end-user login passed by the integrating application |
+| keycloak.service-token-user-context.trusted-client    |                                         maat                                          | Only this service client is allowed to use the user header |
+|  keycloak.service-token-user-context.admin-client-id  |                                         maat                                          | Client ID used for Keycloak Admin API lookups |
+| keycloak.service-token-user-context.admin-client-secret |                                   <client_secret>                                   | Client secret used for Keycloak Admin API lookups |
+| keycloak.service-token-user-context.cache-ttl-seconds |                                          300                                          | Cache time in seconds for resolved user context |
+| keycloak.service-token-user-context.fail-on-keycloak-error |                                  true/false                                   | If true, Keycloak communication errors return an error response instead of continuing |
+| keycloak.service-token-user-context.user-access-filter-attributes |                            user_access_filters                             | Comma-separated list of Keycloak user attributes merged into `user_access_filters` |
 
 <a name="graylog-configuration"></a>
 ### Graylog Configuration
@@ -695,7 +731,7 @@ To enable authentication in Maat using Keycloak, the following properties must b
 
 Example values are in the [Authentication and authorization configuration - Keycloak](#authentication-and-authorization-configuration---keycloak) section.
 
-- or in .env file for Docker:
+- or in the local `docker/.env` file created from `docker/.env.example`:
   - KEYCLOAK_ENABLED (true)
   - KEYCLOAK_PROTOCOL
   - KEYCLOAK_HOST
@@ -711,6 +747,11 @@ It is recommended to use Docker for the Maat application with Keycloak. In docke
 There is also separate container (keycloak-dev-setup) with script for Keycloak configuration. The script is used to create roles, clients, and users in Keycloak and run it automatically when the container starts.
 
 More information about fetching the access token from Keycloak and accessing the Maat application by sample clients is available in the [/clients](../clients/readme.md) folder.
+
+If you want to support requests authenticated with a service token and the end-user login in a request header, you must
+also configure the `keycloak.service-token-user-context.*` properties. This mechanism is disabled by default. If the
+`keycloak.service-token-user-context.enabled` property is missing, Maat keeps the previous behavior and does not try to
+resolve user roles and filters from Keycloak for service tokens.
 
 
 <a name="authorization"></a>
@@ -732,6 +773,84 @@ The roles and their corresponding HTTP methods are as follows:
 If the keycloak.authorization.l1.roles property is set to true, the application will enforce these REST method access controls.
 Otherwise, all authenticated users will have access to the endpoints.
 
+<a name="service-token-user-context"></a>
+#### Service token user context
+
+Maat can optionally resolve the effective end-user for requests authenticated with a Keycloak service token.
+
+This mechanism is intended for integrations where:
+
+- the request is authenticated with a service token, for example `service-account-maat`
+- the service token does not contain user roles or `user_access_filters`
+- the integrating application forwards the end-user login in a request header, by default `X-Authenticated-User-Id`
+
+When `keycloak.service-token-user-context.enabled=true`, Maat uses the following rules:
+
+1. If Keycloak integration is disabled, the mechanism is inactive.
+2. If a standard user token is used, Maat reads the user directly from the token.
+3. If a `service-account-*` token is used and the trusted client matches `keycloak.service-token-user-context.trusted-client`, Maat reads the user login from the configured header and queries Keycloak for that user's roles and attributes.
+4. If the mechanism is disabled or the required data is missing, Maat falls back to the previous behavior.
+
+The resolved user context is then used for:
+
+- level 1 authorization based on roles
+- level 2 authorization based on `user_access_filters`
+- notification payloads in the `changedByUser` field
+- request logs
+
+Example request:
+
+```http
+POST /resourceInventoryManagement/v4.0.0/resource HTTP/1.1
+Authorization: Bearer <service_token>
+X-Authenticated-User-Id: test-user
+Content-Type: application/json
+```
+
+In this scenario Maat authenticates the request with the service token, then loads the effective user context for
+`test-user` from Keycloak.
+
+Expected error responses for this mechanism:
+
+- `400 Bad Request` if the service token mode is used but the required user header is missing or empty
+- `403 Forbidden` if the user exists but does not have sufficient permissions
+- `404 Not Found` if the user from the header does not exist in Keycloak
+- `503 Service Unavailable` if Maat cannot query the Keycloak Admin API
+
+<a name="keycloak-configuration-for-service-token-user-context"></a>
+#### Keycloak configuration for service token user context
+
+The service account of the trusted client must be allowed to query the Keycloak Admin API. The simplest setup is to use
+the existing `maat` client both as:
+
+- the trusted service client
+- the client used by Maat to call the Keycloak Admin API
+
+In this case set:
+
+- `keycloak.service-token-user-context.trusted-client=maat`
+- `keycloak.service-token-user-context.admin-client-id=maat`
+- `keycloak.service-token-user-context.admin-client-secret=<maat_client_secret>`
+
+Then configure the `maat` client in the Keycloak UI:
+
+1. Open realm `MaatRealm`.
+2. Open `Clients`.
+3. Select client `maat`.
+4. In `Settings` or `Capability config`, make sure `Client authentication` is enabled.
+5. Make sure `Service accounts roles` is enabled.
+6. Open `Service account roles`.
+7. Click `Assign role`.
+8. Select client roles from `realm-management`.
+9. Assign these roles:
+   - `query-users`
+   - `view-users`
+   - `query-clients`
+   - `view-clients`
+
+Without these roles Maat cannot resolve the effective user context for service-token-based requests and returns
+`503 Service Unavailable` with a Keycloak Admin API error.
+
 <a name="json-content-filtering"></a>
 #### JSON content filtering
 
@@ -742,6 +861,10 @@ These filters are applied on top of the role-based filtering to further restrict
 The token-based filters are defined in the user_access_filters claim within the JWT token.
 This claim can include different types of filters such as get_filter, post_filter, patch_filter, and delete_filter.
 These filters are applied to the corresponding HTTP methods to ensure that users can only access data that matches the specified criteria.
+
+When `keycloak.service-token-user-context.enabled=true`, the `user_access_filters` claim can also be built dynamically
+from one or more Keycloak user attributes configured in
+`keycloak.service-token-user-context.user-access-filter-attributes`.
 
 **Adding Attribute Mapping with filters to Token (Instructions for Keycloak)**
 
@@ -943,7 +1066,7 @@ The MaatAI is available in `docker-compose-7`. The Maat AI Assistant is accessib
 <a name="maatai-docker-compose-configuration"></a>
 ### MaatAI Docker Compose Configuration
 
-The following environment variables can be configured for MaatAI in the `.env` file:
+The following environment variables can be configured in the local `docker/.env` file created from `docker/.env.example`:
 
 **MCP Server parameters:**
 
@@ -973,7 +1096,7 @@ Graylog is a log management system that allows you to collect, index, and analyz
 
 <a name="graylog-in-docker"></a>
 ### Graylog in Docker
-In order to launch a docker instance in which Graylog will run, use docker-compose-5.yml. This is described in: [Installation of Maat (with EventListener, NGINX, Keycloak and Graylog)](#installation-of-maat-with-eventlistener-nginx-keycloak-and-graylog). The user should additionally make sure that the variables for Graylog are set correctly in the .env file. These are contained in: [Graylog Parameters](#graylog-parameters) and [Logging Configuration](#logging-configuration).
+In order to launch a docker instance in which Graylog will run, use docker-compose-5.yml. This is described in: [Installation of Maat (with EventListener, NGINX, Keycloak and Graylog)](#installation-of-maat-with-eventlistener-nginx-keycloak-and-graylog). The user should additionally make sure that the variables for Graylog are set correctly in the local `docker/.env` file created from `docker/.env.example`. These are contained in: [Graylog Parameters](#graylog-parameters) and [Logging Configuration](#logging-configuration).
 
 <a name="graylog-in-maat-or-eventlistener"></a>
 ### Graylog in Maat or EventListener
@@ -1037,7 +1160,7 @@ Grafana Loki is a set of open source components that can be composed into a full
 
 <a name="grafana-lokir"></a>
 ### Grafana Loki in Docker
-In order to launch a docker instance in which Grafana Loki will run, use docker-compose-6.yml. This is described in: [Installation of Maat (with EventListener, NGINX, Keycloak and Grafana Loki)](#installation-of-maat-with-eventlistener-nginx-keycloak-and-grafana-loki). The user should additionally make sure that the variables for Grafana Loki are set correctly in the .env file. These are contained in: [Grafana Loki Parameters](#grafana-loki-parameters) and [Logging Configuration](#logging-configuration). Use `classpath:logback-loki-docker.xml`. 
+In order to launch a docker instance in which Grafana Loki will run, use docker-compose-6.yml. This is described in: [Installation of Maat (with EventListener, NGINX, Keycloak and Grafana Loki)](#installation-of-maat-with-eventlistener-nginx-keycloak-and-grafana-loki). The user should additionally make sure that the variables for Grafana Loki are set correctly in the local `docker/.env` file created from `docker/.env.example`. These are contained in: [Grafana Loki Parameters](#grafana-loki-parameters) and [Logging Configuration](#logging-configuration). Use `classpath:logback-loki-docker.xml`. 
 
 <a name="grafana-loki-in-maat-or-eventlistener"></a>
 ### Grafana Loki in Maat or EventListener
