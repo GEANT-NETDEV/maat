@@ -39,3 +39,6 @@ build/
 ### OBSIDIAN ###
 .obsidian/
 /logs/
+
+### Local Docker env ###
+docker/.env
