@@ -16,7 +16,13 @@ public class KeycloakServiceTokenUserContextProperties {
     private String adminClientSecret;
     private long cacheTtlSeconds = 300;
     private boolean failOnKeycloakError = true;
-    private List<String> userAccessFilterAttributes = new ArrayList<>(List.of("user_access_filters"));
+    private List<String> userAccessFilterAttributes = new ArrayList<>(List.of(
+            "user_access_filters",
+            "get_filter",
+            "post_filter",
+            "delete_filter",
+            "patch_filter"
+    ));
 
     public boolean isEnabled() {
         return enabled;

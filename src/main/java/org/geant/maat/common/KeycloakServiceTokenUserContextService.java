@@ -1,7 +1,6 @@
 package org.geant.maat.common;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
@@ -72,23 +71,39 @@ class KeycloakServiceTokenUserContextService {
 
             if (attributeNode.isArray()) {
                 for (JsonNode valueNode : attributeNode) {
-                    mergeFilters(mergedFilters, parseFilterValue(attributeName, valueNode.asText()));
+                    mergeFilters(mergedFilters, normalizeFilterValue(attributeName, parseFilterValue(attributeName, valueNode.asText())));
                 }
             } else if (attributeNode.isTextual()) {
-                mergeFilters(mergedFilters, parseFilterValue(attributeName, attributeNode.asText()));
+                mergeFilters(mergedFilters, normalizeFilterValue(attributeName, parseFilterValue(attributeName, attributeNode.asText())));
             }
         }
 
         return mergedFilters;
     }
 
-    private Map<String, Object> parseFilterValue(String attributeName, String rawValue) {
+    private Object parseFilterValue(String attributeName, String rawValue) {
         try {
-            return objectMapper.readValue(rawValue, new TypeReference<>() { });
+            return objectMapper.readValue(rawValue, Object.class);
         } catch (JsonProcessingException exception) {
             throw new KeycloakServiceTokenUserContextException(503,
                     "Could not parse Keycloak user attribute " + attributeName + ": " + exception.getMessage());
         }
+    }
+
+    @SuppressWarnings("unchecked")
+    private Map<String, Object> normalizeFilterValue(String attributeName, Object parsedValue) {
+        if (parsedValue instanceof Map<?, ?> mapValue) {
+            return (Map<String, Object>) mapValue;
+        }
+
+        if (parsedValue instanceof List<?> listValue) {
+            Map<String, Object> wrappedValue = new HashMap<>();
+            wrappedValue.put(attributeName, listValue);
+            return wrappedValue;
+        }
+
+        throw new KeycloakServiceTokenUserContextException(503,
+                "Unsupported Keycloak user attribute format for " + attributeName);
     }
 
     @SuppressWarnings("unchecked")

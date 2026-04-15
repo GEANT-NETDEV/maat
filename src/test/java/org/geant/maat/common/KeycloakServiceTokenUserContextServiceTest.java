@@ -38,6 +38,24 @@ class KeycloakServiceTokenUserContextServiceTest {
     }
 
     @Test
+    void shouldSupportDedicatedFilterAttributes() {
+        KeycloakAdminClient adminClient = mock(KeycloakAdminClient.class);
+        KeycloakServiceTokenUserContextProperties properties = new KeycloakServiceTokenUserContextProperties();
+        properties.setUserAccessFilterAttributes(List.of("get_filter", "post_filter"));
+        KeycloakServiceTokenUserContextService service =
+                new KeycloakServiceTokenUserContextService(adminClient, properties, objectMapper);
+
+        when(adminClient.findUserByUsername("test")).thenReturn(Optional.of(userSummary("user-1")));
+        when(adminClient.getUserDetails("user-1")).thenReturn(userDetailsWithDedicatedFilterAttributes());
+        when(adminClient.getUserClientRoles("user-1")).thenReturn(clientRoles("get"));
+
+        KeycloakUserContext context = service.load("test");
+
+        assertEquals(1, ((List<?>) context.userAccessFilters().get("get_filter")).size());
+        assertEquals(1, ((List<?>) context.userAccessFilters().get("post_filter")).size());
+    }
+
+    @Test
     void shouldReturn404WhenUserMissing() {
         KeycloakAdminClient adminClient = mock(KeycloakAdminClient.class);
         when(adminClient.findUserByUsername("missing")).thenReturn(Optional.empty());
@@ -68,6 +86,19 @@ class KeycloakServiceTokenUserContextServiceTest {
         filtersB.add("{\"post_filter\":[{\"category\":\"device.router\"}]}");
         attributes.set("filters-a", filtersA);
         attributes.set("filters-b", filtersB);
+        node.set("attributes", attributes);
+        return node;
+    }
+
+    private ObjectNode userDetailsWithDedicatedFilterAttributes() {
+        ObjectNode node = objectMapper.createObjectNode();
+        ObjectNode attributes = objectMapper.createObjectNode();
+        ArrayNode getFilter = objectMapper.createArrayNode();
+        getFilter.add("[{\"category\":\"device.router\"}]");
+        ArrayNode postFilter = objectMapper.createArrayNode();
+        postFilter.add("[{\"category\":\"device.switch\"}]");
+        attributes.set("get_filter", getFilter);
+        attributes.set("post_filter", postFilter);
         node.set("attributes", attributes);
         return node;
     }
