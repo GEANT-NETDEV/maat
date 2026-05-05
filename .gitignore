@@ -42,4 +42,4 @@ build/
 
 ### Local Docker env ###
 docker/.env
-docker/docker-compose-7.yml
+docker/docker-compose-7-old.yml
