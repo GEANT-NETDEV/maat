@@ -112,12 +112,12 @@ In both cases, the *jar* application will be created in the *target* folder.
 
 Go to **target/** folder and run .jar file with created name for Maat.
 
-``` java -jar maat-1.0.15.jar ```
+``` java -jar maat-1.0.16.jar ```
 
 <a name="installation-using-docker"></a>
 ## Installation using Docker
 
-Maat can be run in a Docker container. The Docker image is available on the Artifactory repository at `artifactory.software.geant.org/spa-docker/maat:<actuall_version e.g. 1.0.15>`.
+Maat can be run in a Docker container. The Docker image is available on the Artifactory repository at `artifactory.software.geant.org/spa-docker/maat:<actuall_version e.g. 1.0.16>`.
 
 ### Building a local Docker image with custom certificates
 
