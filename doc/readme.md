@@ -1021,7 +1021,7 @@ To delete data from MongoDB for resources_db, services_db and listeners_db follo
 <a name="maatui"></a>
 ## MaatUI
 
-MaatUI is a web-based user interface for the Maat application. It provides a graphical interface for interacting with the Maat, allowing users to view, add, update, and delete resources and services.
+**[MaatUI](https://bitbucket.software.geant.org/projects/OSSBSS/repos/maat-gui)** is a web-based user interface for the Maat application. It provides a graphical interface for interacting with the Maat, allowing users to view, add, update, and delete resources and services.
 
 When using the prepared docker-compose files, MaatUI is installed by default together with Maat in version `docker-compose-3` and later...
 
