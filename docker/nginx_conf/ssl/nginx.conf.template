@@ -18,8 +18,8 @@ http {
                       '$status $body_bytes_sent "$http_referer" '
                       '"$http_user_agent" "$http_x_forwarded_for"';
 
-    access_log /dev/stdout;  # Przekierowujemy logi dostępu do stdout
-    error_log /dev/stderr;    # Przekierowujemy logi błędów do stderr
+    access_log /dev/stdout;
+    error_log /dev/stderr;
 
     #access_log  /var/log/nginx/access.log  main;
 
@@ -55,5 +55,18 @@ http {
             proxy_cache off;
             proxy_read_timeout 300s;
         }
+
+        # EventListener MCP Server - reverse proxy (HTTPS termination)
+        location /mcp-eventlistener {
+            rewrite ^/mcp-eventlistener(/.*)?$ /mcp$1 break;
+            proxy_pass http://mcp-server-for-eventlistener:8003;
+            proxy_set_header X-Forwarded-Proto https;
+
+            # SSE/streaming support for MCP streamable-http
+            proxy_buffering off;
+            proxy_cache off;
+            proxy_read_timeout 300s;
+        }
+
     }
 }
