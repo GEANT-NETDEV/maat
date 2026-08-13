@@ -97,6 +97,13 @@ public class ExtendedResourceService implements ResourceService {
     @Override
     public Either<DomainError, JsonNode> createResource(JsonNode json, Boolean registerNewEventFlag) {
         ExtendedResourceLogger.infoJson("Creating resource from json:", json);
+
+        var relationshipsStructure = checkRelationshipsStructure(json);
+        if (relationshipsStructure.isLeft()) {
+            ExtendedResourceLogger.info("Could not create resource, because: " + relationshipsStructure.getLeft().message());
+            return Either.left(relationshipsStructure.getLeft());
+        }
+
         String pomResourceCategory = "defaultCategory";
         boolean isResourceCategory = json.has("category");
         if (isResourceCategory)  pomResourceCategory=json.get("category").textValue();
@@ -772,8 +779,14 @@ public class ExtendedResourceService implements ResourceService {
 
 
     private Either<DomainError, JsonNode> updateDifferences(JsonNode baseResource, JsonNode updateResource, String id, Boolean registerNewEventFlag) {
-        if(checkMultiRelationsAndnoBrefRef(updateResource).isLeft()){
-            return Either.left(checkMultiRelationsAndnoBrefRef(updateResource).getLeft());}
+        var relationshipsStructure = checkRelationshipsStructure(updateResource);
+        if (relationshipsStructure.isLeft()) {
+            return Either.left(relationshipsStructure.getLeft());
+        }
+        var multiRelations = checkMultiRelationsAndnoBrefRef(updateResource);
+        if (multiRelations.isLeft()) {
+            return Either.left(multiRelations.getLeft());
+        }
         Map<String, ArrayList<String>>mapBaseResource=getResourcesWithRelations(baseResource);
         Map<String, ArrayList<String>>mapUpdateResource=getResourcesWithRelations(updateResource);
         Map<String, ArrayList<String>>mapServiceBaseResource=getServicesWithRelations(baseResource);
@@ -882,6 +895,53 @@ public class ExtendedResourceService implements ResourceService {
             deleteRelationsFromService(del, href);
         }
         return result;
+    }
+
+    private Either<DomainError, Boolean> checkRelationshipsStructure(JsonNode json) {
+        var resourceRelationships = checkRelationshipsStructure(json, "resourceRelationship", "resource");
+        if (resourceRelationships.isLeft()) return resourceRelationships;
+        return checkRelationshipsStructure(json, "serviceRelationship", "service");
+    }
+
+    private Either<DomainError, Boolean> checkRelationshipsStructure(JsonNode json, String relationshipsName, String targetName) {
+        JsonNode relationships = json.get(relationshipsName);
+        if (relationships == null || relationships.isNull()) return Either.right(true);
+
+        if (!relationships.isArray()) {
+            return Either.left(new DomainError(String.format("'%s' must be an array", relationshipsName),
+                    Error.RELATIONSHIP_ERROR));
+        }
+
+        int index = 0;
+        for (JsonNode relationship : relationships) {
+            String position = String.format("%s[%d]", relationshipsName, index++);
+
+            if (!relationship.path("relationshipType").isTextual()) {
+                return Either.left(new DomainError(String.format(
+                        "%s: missing required text property 'relationshipType'", position), Error.RELATIONSHIP_ERROR));
+            }
+            if (!relationship.path(targetName).isObject()) {
+                return Either.left(new DomainError(String.format(
+                        "%s: missing required object '%s'", position, targetName), Error.RELATIONSHIP_ERROR));
+            }
+            if (!relationship.path(targetName).path("href").isTextual()) {
+                return Either.left(new DomainError(String.format(
+                        "%s: missing required text property '%s.href'", position, targetName), Error.RELATIONSHIP_ERROR));
+            }
+
+            String href = relationship.get(targetName).get("href").textValue();
+            try {
+                if (new URI(href).getScheme() == null) {
+                    return Either.left(new DomainError(String.format(
+                            "%s: '%s.href' must be an absolute URL, got: %s", position, targetName, href),
+                            Error.RELATIONSHIP_ERROR));
+                }
+            } catch (URISyntaxException uriSyntaxException) {
+                return Either.left(new DomainError(String.format(
+                        "%s: '%s.href' is not a valid URL: %s", position, targetName, href), Error.RELATIONSHIP_ERROR));
+            }
+        }
+        return Either.right(true);
     }
 
     private Either<DomainError, Boolean> checkMultiRelationsAndnoBrefRef(JsonNode resourceJson) {
